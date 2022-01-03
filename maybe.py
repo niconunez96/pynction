@@ -12,7 +12,7 @@ class Nothing(Generic[T]):
     def is_empty(self) -> bool:
         return True
 
-    def map(self, _: Callable[[T], V]) -> 'Nothing':
+    def map(self, _: Callable[[T], V]) -> "Nothing":
         return self
 
     def get_or_else(self, default: T) -> T:
@@ -24,18 +24,19 @@ class Nothing(Generic[T]):
 
 class Just(Generic[T]):
     value: T
+
     def __init__(self, value: T):
         self.value = value
 
     def is_empty(self) -> bool:
         return False
 
-    def map(self, f: Callable[[T], V]) -> 'Just[V]':
+    def map(self, f: Callable[[T], V]) -> "Just[V]":
         return Just(f(self.value))
-    
+
     def get_or_else(self, _: T) -> T:
         return self.value
-    
+
     def to_either(self, _: L) -> Either[L, T]:
         return Right(self.value)
 
