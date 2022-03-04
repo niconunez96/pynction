@@ -1,6 +1,6 @@
 from typing import Callable, Generic, TypeVar, Union
 
-from either import Either, Left, Right
+from fython.either import Either, Left, Right
 
 
 T = TypeVar("T")
@@ -42,23 +42,3 @@ class Just(Generic[T]):
 
 
 Maybe = Union[Nothing[T], Just[T]]
-
-
-def isEmpty(something: Maybe[str]) -> bool:
-    return something.map(lambda s: s.upper()).is_empty()
-
-
-def sum10(something: Maybe[int]) -> int:
-    return something.map(lambda a: a + 10).get_or_else(10)
-
-
-def sum20(something: Maybe[int]) -> Either[str, int]:
-    return something.map(lambda x: x + 20).to_either("NUMBER_NOT_FOUND")
-
-
-print(isEmpty(Nothing()))
-print(isEmpty(Just("something")))
-
-
-print(sum10(Nothing()))
-print(sum10(Just(10)))
