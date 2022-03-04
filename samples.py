@@ -1,6 +1,7 @@
 from typing import Literal, TypedDict
 from fython.maybe import Maybe, Nothing, Just
 from fython.either import Either, Left, Right
+from fython.stream import Stream
 
 # Maybe samples
 def isEmpty(something: Maybe[str]) -> bool:
@@ -13,6 +14,7 @@ def sum10(something: Maybe[int]) -> int:
 
 def sum20(something: Maybe[int]) -> Either[str, int]:
     return something.map(lambda x: x + 20).to_either("NUMBER_NOT_FOUND")
+
 
 print("*** Maybe samples ***")
 print(isEmpty(Nothing()))
@@ -63,5 +65,16 @@ def transform_word(word: str) -> Response:
         lambda error: mapError(error)
     )
 
+
 print("*** Either samples ***")
 print(transform_word("NICOLAS ALEJANDRO NUNEZ"))
+
+
+# Stream example
+bla = Stream([1, 2, 3, 4])\
+    .map(lambda a: a + 1)\
+    .filter(lambda n: n > 2)\
+    .flat_map(lambda n: [n, n*2])\
+    .to_list
+print("*** Stream samples ***")
+print(bla)
