@@ -3,9 +3,10 @@ from typing_extensions import Literal, TypedDict
 from fython.maybe import Maybe, Nothing, Just
 from fython.either import Either, Left, Right
 from fython.stream import Stream
+from fython.try_monad import Try
 
 
-# Maybe samples
+# Maybe examples
 def isEmpty(something: Maybe[str]) -> bool:
     return something.map(lambda s: s.upper()).is_empty()
 
@@ -26,7 +27,7 @@ print(isEmpty(Just("something")))
 print(sum10(Nothing()))
 print(sum10(Just(10)))
 
-# Either samples
+# Either examples
 LESS_THAN_10_LETTERS = Literal["LESS_THAN_10_LETTERS"]
 CONTAINS_UPPERCASE_LETTERS = Literal["CONTAINS_UPPERCASE_LETTERS"]
 Error = Literal[LESS_THAN_10_LETTERS, CONTAINS_UPPERCASE_LETTERS]
@@ -84,3 +85,34 @@ bla = (
 print("*** Stream samples ***")
 print(bla)
 print(foo)
+
+# Try examples
+
+def add_10(n: int) -> int:
+    if n > 10:
+        raise Exception("n must be less than 10")
+    return n + 10
+
+def handle_error(e: Exception) -> int:
+    return -1
+
+try_example = (
+    Try.of(lambda: add_10(11))
+    .catch(handle_error)
+    .map(lambda a: a + 1)
+)
+
+try_example_2 = (
+    Try.of(lambda: add_10(11))
+    .map(lambda a: a + 1)
+)
+
+try_example_3 = (
+    Try.of(lambda: add_10(9))
+    .map(lambda a: a + 1)
+)
+
+print("*** Try samples ***")
+try_example.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
+try_example_2.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
+try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))

@@ -1,4 +1,4 @@
-from typing import Callable, Generic, Iterable, List, Set, TypeVar
+from typing import Callable, Generic, Iterable, List, Set, Tuple, TypeVar
 
 T = TypeVar("T")
 S = TypeVar("S")
@@ -27,7 +27,7 @@ class Stream(Generic[T]):
                 for new_elems in f(elem):
                     yield new_elems
 
-        return Stream(all_elems())
+        return Stream.of(all_elems())
 
     def take_while(self, satisfyCondition: Predicate) -> "Stream[T]":
         def take():
