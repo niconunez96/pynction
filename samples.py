@@ -1,7 +1,9 @@
-from typing import Literal, TypedDict
+from typing import List
+from typing_extensions import Literal, TypedDict
 from fython.maybe import Maybe, Nothing, Just
 from fython.either import Either, Left, Right
 from fython.stream import Stream
+
 
 # Maybe samples
 def isEmpty(something: Maybe[str]) -> bool:
@@ -71,10 +73,14 @@ print(transform_word("NICOLAS ALEJANDRO NUNEZ"))
 
 
 # Stream example
-bla = Stream([1, 2, 3, 4])\
-    .map(lambda a: a + 1)\
-    .filter(lambda n: n > 2)\
-    .flat_map(lambda n: [n, n*2])\
+foo: List[int] = Stream(1, 2, 3, 4).to_list
+bla = (
+    Stream.of([1, 2, 3, 4])
+    .map(lambda a: a + 1)
+    .filter(lambda n: n > 2)
+    .flat_map(lambda n: [n, n * 2])
     .to_list
+)
 print("*** Stream samples ***")
 print(bla)
+print(foo)

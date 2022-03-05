@@ -15,25 +15,25 @@ R1 = TypeVar("R1")
 class Either(abc.ABC, Generic[L, R]):
     @abc.abstractmethod
     def is_left(self) -> bool:
-        raise NotImplemented
+        raise NotImplementedError
 
     @abc.abstractmethod
     def is_right(self) -> bool:
-        raise NotImplemented
+        raise NotImplementedError
 
     @abc.abstractmethod
     def map(self, f: Callable[[R], R1]) -> "Either[L, R1]":
-        raise NotImplemented
+        raise NotImplementedError
 
     @abc.abstractmethod
     def filter_or_else(
         self, predicate: Callable[[R], bool], leftValue: L
     ) -> "Either[L, R]":
-        raise NotImplemented
+        raise NotImplementedError
 
     @abc.abstractmethod
     def get_or_else_get(self, f: Callable[[L], R]) -> R:
-        raise NotImplemented
+        raise NotImplementedError
 
 
 class Right(Either[L, R]):
