@@ -2,7 +2,6 @@ from typing import Callable, Generic, Iterable, List, Set, TypeVar
 
 T = TypeVar("T")
 S = TypeVar("S")
-Predicate = Callable[..., bool]
 
 
 class Stream(Generic[T]):
@@ -18,7 +17,7 @@ class Stream(Generic[T]):
     def map(self, f: Callable[[T], S]) -> "Stream[S]":
         return Stream.of((f(elem) for elem in self._elems))
 
-    def filter(self, satisfyCondition: Predicate) -> "Stream[T]":
+    def filter(self, satisfyCondition: Callable[[T], bool]) -> "Stream[T]":
         return Stream.of((elem for elem in self._elems if satisfyCondition(elem)))
 
     def flat_map(self, f: Callable[[T], Iterable[S]]) -> "Stream[S]":
@@ -29,14 +28,14 @@ class Stream(Generic[T]):
 
         return Stream.of(all_elems())
 
-    def take_while(self, satisfyCondition: Predicate) -> "Stream[T]":
+    def take_while(self, satisfyCondition: Callable[[T], bool]) -> "Stream[T]":
         def take():
             for elem in self._elems:
                 if not satisfyCondition(elem):
                     return
                 yield elem
 
-        return Stream(take())
+        return Stream.of(take())
 
     @property
     def to_list(self) -> List[T]:
