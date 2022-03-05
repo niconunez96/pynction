@@ -88,29 +88,22 @@ print(foo)
 
 # Try examples
 
+
 def add_10(n: int) -> int:
     if n > 10:
         raise Exception("n must be less than 10")
     return n + 10
 
+
 def handle_error(e: Exception) -> int:
     return -1
 
-try_example = (
-    Try.of(lambda: add_10(11))
-    .catch(handle_error)
-    .map(lambda a: a + 1)
-)
 
-try_example_2 = (
-    Try.of(lambda: add_10(11))
-    .map(lambda a: a + 1)
-)
+try_example = Try.of(lambda: add_10(11)).catch(handle_error).map(lambda a: a + 1)
 
-try_example_3 = (
-    Try.of(lambda: add_10(9))
-    .map(lambda a: a + 1)
-)
+try_example_2 = Try.of(lambda: add_10(11)).map(lambda a: a + 1)
+
+try_example_3 = Try.of(lambda: add_10(9)).map(lambda a: a + 1)
 
 print("*** Try samples ***")
 try_example.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))

@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from argparse import ArgumentError
 from typing import Callable, Generic, TypeVar
-from .either import Either, Left, Right
 
+from .either import Either, Left, Right
 
 T = TypeVar("T")
 S = TypeVar("S")

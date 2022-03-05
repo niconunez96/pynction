@@ -1,4 +1,4 @@
-from typing import Callable, Generic, Iterable, List, Set, Tuple, TypeVar
+from typing import Callable, Generic, Iterable, List, Set, TypeVar
 
 T = TypeVar("T")
 S = TypeVar("S")
