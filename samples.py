@@ -41,19 +41,19 @@ class Response(TypedDict):
     status: int
 
 
-def make_upper_case(word: str, number: int) -> Either[Literal[Error, NumberError], str]:
+def make_upper_case_first_n_letters(word: str, number: int) -> Either[Literal[Error, NumberError], str]:
     if len(word) < 10:
         return Left("LESS_THAN_10_LETTERS")
-    elif word.isupper():
-        return Left("CONTAINS_UPPERCASE_LETTERS")
     elif number > 100:
         return Left("GREATER_THAN_100")
+    elif word.isupper():
+        return Left("CONTAINS_UPPERCASE_LETTERS")
     else:
         return Right(word.upper()[0:number])
 
 
 def transform_word(word: str) -> Response:
-    result = make_upper_case(word, 10)
+    result = make_upper_case_first_n_letters(word, 10)
 
     def mapError(error: Literal[Error, NumberError]) -> Response:
         if error == "LESS_THAN_10_LETTERS":
