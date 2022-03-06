@@ -13,11 +13,19 @@ R1 = TypeVar("R1")
 
 
 class Either(abc.ABC, Generic[L, R]):
-    @abc.abstractmethod
+    @staticmethod
+    def right(value: R) -> "Either[L, R]":
+        return Right(value)
+
+    @staticmethod
+    def left(value: L) -> "Either[L, R]":
+        return Left(value)
+
+    @abc.abstractproperty
     def is_left(self) -> bool:
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abc.abstractproperty
     def is_right(self) -> bool:
         raise NotImplementedError
 
@@ -42,9 +50,11 @@ class Right(Either[L, R]):
     def __init__(self, value: R):
         self.value = value
 
+    @property
     def is_left(self) -> bool:
         return False
 
+    @property
     def is_right(self) -> bool:
         return True
 
@@ -69,14 +79,16 @@ class Left(Either[L, R]):
     def __init__(self, value: L):
         self.value = value
 
+    @property
     def is_left(self) -> bool:
         return True
 
+    @property
     def is_right(self) -> bool:
         return False
 
     def map(self, _: Callable[[R], R1]) -> "Either[L, R1]":
-        return Left[L, R1](self.value)
+        return Left(self.value)
 
     def filter_or_else(self, _: Callable[[R], bool], _1: L) -> "Either[L, R]":
         return self
