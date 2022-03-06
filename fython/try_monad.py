@@ -25,7 +25,7 @@ class Try(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def get_or_else_get(self, default: T) -> T:
+    def get_or_else_get(self, default: Callable[[Exception], T]) -> T:
         raise NotImplementedError
 
     @abstractmethod
@@ -50,6 +50,8 @@ class Try(ABC, Generic[T]):
 
 
 class Failure(Try[T]):
+    _e: Exception
+
     def __init__(self, e: Exception):
         self._e = e
 
@@ -59,8 +61,8 @@ class Failure(Try[T]):
     def flat_map(self, _: Callable[[T], "Try[S]"]) -> "Try[S]":
         return Failure(self._e)
 
-    def get_or_else_get(self, default: T) -> T:
-        return default
+    def get_or_else_get(self, default: Callable[[Exception], T]) -> T:
+        return default(self._e)
 
     def on(
         self,
@@ -99,7 +101,7 @@ class Success(Try[T]):
         except Exception as e:
             return Failure(e)
 
-    def get_or_else_get(self, _: T) -> T:
+    def get_or_else_get(self, _: Callable[[Exception], T]) -> T:
         return self._value
 
     def on(
