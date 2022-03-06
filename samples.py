@@ -8,7 +8,7 @@ from fython.try_monad import Try
 
 # Maybe examples
 def isEmpty(something: Maybe[str]) -> bool:
-    return something.map(lambda s: s.upper()).is_empty()
+    return something.map(lambda s: s.upper()).is_empty
 
 
 def sum10(something: Maybe[int]) -> int:

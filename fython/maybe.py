@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from typing import Callable, Generic, TypeVar
 
 from fython.either import Either, Left, Right
@@ -9,7 +9,12 @@ L = TypeVar("L")
 
 
 class Maybe(ABC, Generic[T]):
-    @abstractmethod
+
+    @staticmethod
+    def of(value: T) -> "Maybe[T]":
+        return Nothing() if not value else Just(value)
+
+    @abstractproperty
     def is_empty(self) -> bool:
         raise NotImplementedError
 
@@ -25,6 +30,7 @@ class Maybe(ABC, Generic[T]):
 
 
 class Nothing(Maybe[T]):
+    @property
     def is_empty(self) -> bool:
         return True
 
@@ -44,6 +50,7 @@ class Just(Maybe[T]):
     def __init__(self, value: T):
         self.value = value
 
+    @property
     def is_empty(self) -> bool:
         return False
 
