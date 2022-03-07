@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run mypy
-        run: mypy -p .
+        run: mypy .
   flake8_validation:
     name: Flake8 validation
     runs-on: ubuntu-latest

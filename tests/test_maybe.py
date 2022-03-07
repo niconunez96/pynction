@@ -4,9 +4,10 @@ from fython.maybe import Just, Nothing, Maybe
 class TestMaybe:
     def test_it_should_return_just_when_value_is_not_none(self):
         assert type(Maybe.of(1)) == Just
-    
+
     def test_it_should_return_nothing_when_value_is_none(self):
         assert type(Maybe.of(None)) == Nothing
+
 
 class TestJust:
     def test_it_should_transform_content_of_just(self):
