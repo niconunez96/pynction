@@ -1,4 +1,5 @@
 # Fython 🐍
+[![continuous_integration](https://github.com/niconunez96/fython/actions/workflows/ci.yaml/badge.svg)](https://github.com/niconunez96/fython/actions/workflows/ci.yaml)
 
 Functional based library to support haskell monads like Either, Maybe in
 a scala fashion style. The library also contains Try monad inspired from vavr
