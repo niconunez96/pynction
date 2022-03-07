@@ -11,7 +11,7 @@ TBD
 ## Samples
 
 ### Stream examples
-```
+```python
 from fython.stream import Stream
 
 
@@ -23,7 +23,7 @@ foo = (
     .to_list
 )
 
-foo => [2, 4, 4, 8]
+# foo => [2, 4, 4, 8]
 
 bar = (
     Stream("example", "e", "something")
@@ -31,10 +31,10 @@ bar = (
     .to_list
 )
 
-bar => ["example", "e"]
+# bar => ["example", "e"]
 ```
 ### Maybe examples
-```
+```python
 from fython.maybe import Maybe, Nothing, Just
 
 def divide_10_by(n: int) -> Maybe[int]:
@@ -43,11 +43,11 @@ def divide_10_by(n: int) -> Maybe[int]:
     return Just(10 / n)
 
 result = divide_10_by(2).get_or_else_get(-1)
-result => 5
+# result => 5
 result = divide_10_by(0).get_or_else_get(-1)
-result => -1
+# result => -1
 ```
-```
+```python
 from fython.maybe import Maybe
 
 
@@ -67,7 +67,7 @@ username_or_error: Either[str, str] = (
 )
 ```
 ### Try examples
-```
+```python
 from fython.try_monad import Try
 
 
@@ -78,21 +78,21 @@ def add_10(n: int) -> int:
 
 try_example = Try.of(lambda: add_10(11)).catch(lambda exc: -1)
 try_example.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
-==> Will print "Result: -1"
+# ==> Will print "Result: -1"
 
 
 try_example_2 = Try.of(lambda: add_10(11)).map(lambda a: a + 1)
 try_example_2.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
-==> Will print "Error: n must be less than 10"
+# ==> Will print "Error: n must be less than 10"
 
 try_example_3 = Try.of(lambda: add_10(9)).map(lambda a: a + 1)
 try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
-==> Will print "Result: 20"
+# ==> Will print "Result: 20"
 
 
 ```
 ### Either examples
-```
+```python
 ### This example illustrates how a controller can handle an Either response from the "application" layer ###
 
 ## Application layer
