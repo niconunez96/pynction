@@ -66,7 +66,7 @@ class TestSuccess:
 
         result = example.to_either()
 
-        assert result.is_right() is True
+        assert result.is_right is True
 
 
 class TestFailure:
@@ -108,4 +108,4 @@ class TestFailure:
 
         result = example.to_either()
 
-        assert result.is_left() is True
+        assert result.is_left is True
