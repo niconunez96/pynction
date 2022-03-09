@@ -8,7 +8,8 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="pynction",
-    version="0.0.1",
+    version="0.0.2",
+    license="MIT",
     author="Nicolas Nunez",
     author_email="nicolas110996@gmail.com",
     packages=setuptools.find_packages(),
