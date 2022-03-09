@@ -1,6 +1,6 @@
 # Pynction 🐍
-[![continuous_integration](https://github.com/niconunez96/fython/actions/workflows/ci.yaml/badge.svg)](https://github.com/niconunez96/fython/actions/workflows/ci.yaml)
-[![codecov](https://codecov.io/gh/niconunez96/fython/branch/main/graph/badge.svg?token=YI2ZOWV29E)](https://codecov.io/gh/niconunez96/fython)
+[![continuous_integration](https://github.com/niconunez96/pynction/actions/workflows/ci.yaml/badge.svg)](https://github.com/niconunez96/pynction/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/niconunez96/pynction/branch/main/graph/badge.svg?token=YI2ZOWV29E)](https://codecov.io/gh/niconunez96/pynction)
 
 Functional based library to support haskell monads like Either, Maybe in
 a scala fashion style. The library also contains Try monad inspired from vavr
