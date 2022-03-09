@@ -1,5 +1,5 @@
 from unittest.mock import Mock
-from fython.try_monad import Failure, Success, Try
+from pynction.try_monad import Failure, Success, Try
 
 
 class TestTry:

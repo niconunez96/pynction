@@ -1,6 +1,6 @@
-# Fython 🐍
-[![continuous_integration](https://github.com/niconunez96/fython/actions/workflows/ci.yaml/badge.svg)](https://github.com/niconunez96/fython/actions/workflows/ci.yaml)
-[![codecov](https://codecov.io/gh/niconunez96/fython/branch/main/graph/badge.svg?token=YI2ZOWV29E)](https://codecov.io/gh/niconunez96/fython)
+# Pynction 🐍
+[![continuous_integration](https://github.com/niconunez96/pynction/actions/workflows/ci.yaml/badge.svg)](https://github.com/niconunez96/pynction/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/niconunez96/pynction/branch/main/graph/badge.svg?token=YI2ZOWV29E)](https://codecov.io/gh/niconunez96/pynction)
 
 Functional based library to support haskell monads like Either, Maybe in
 a scala fashion style. The library also contains Try monad inspired from vavr
@@ -13,7 +13,7 @@ TBD
 
 ### Stream examples
 ```python
-from fython.stream import Stream
+from pynction.stream import Stream
 
 
 foo = (
@@ -36,7 +36,7 @@ bar = (
 ```
 ### Maybe examples
 ```python
-from fython.maybe import Maybe, Nothing, Just
+from pynction.maybe import Maybe, Nothing, Just
 
 def divide_10_by(n: int) -> Maybe[int]:
     if n == 0:
@@ -49,7 +49,7 @@ result = divide_10_by(0).get_or_else_get(-1)
 # result => -1
 ```
 ```python
-from fython.maybe import Maybe
+from pynction.maybe import Maybe
 
 
 class User:
@@ -69,7 +69,7 @@ username_or_error: Either[str, str] = (
 ```
 ### Try examples
 ```python
-from fython.try_monad import Try
+from pynction.try_monad import Try
 
 
 def add_10(n: int) -> int:

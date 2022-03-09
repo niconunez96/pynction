@@ -1,4 +1,4 @@
-from fython.maybe import Just, Nothing, Maybe
+from pynction.maybe import Just, Nothing, Maybe
 
 
 class TestMaybe:
