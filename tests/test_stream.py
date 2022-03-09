@@ -1,5 +1,5 @@
 import pytest
-from fython.stream import Stream
+from pynction.stream import Stream
 
 
 class TestStream:

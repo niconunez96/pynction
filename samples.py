@@ -1,9 +1,9 @@
 from typing import List
 from typing_extensions import Literal, TypedDict
-from fython.maybe import Maybe, Nothing, Just
-from fython.either import Either, Left, Right
-from fython.stream import Stream
-from fython.try_monad import Try
+from pynction.maybe import Maybe, Nothing, Just
+from pynction.either import Either, Left, Right
+from pynction.stream import Stream
+from pynction.try_monad import Try
 
 
 # Maybe examples

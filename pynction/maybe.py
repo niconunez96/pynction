@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod, abstractproperty
 from typing import Callable, Generic, TypeVar
 
-from fython.either import Either, Left, Right
+from pynction.either import Either, Left, Right
 
 T = TypeVar("T")
 V = TypeVar("V")

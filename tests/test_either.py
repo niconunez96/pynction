@@ -1,5 +1,5 @@
 from unittest.mock import Mock
-from fython.either import Either, Left, Right
+from pynction.either import Either, Left, Right
 
 
 class TestEither:
