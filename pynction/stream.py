@@ -21,40 +21,43 @@ class StreamIter(Iterator[T]):
         return next(self.elems)
 
 
-class Stream(Generic[T], Iterable[T]):
+class Stream(Iterable[T], Generic[T]):
     _elems: Iterator[T]
 
-    def __init__(self, *args):
-        if len(args) == 1 and type(args[0]) in (
+    def __init__(
+        self,
+        *elems: T,
+    ):
+        if len(elems) == 1 and type(elems[0]) in (
             list,
             set,
-            GeneratorType,
-            Iterator,
-            range,
+            tuple,
             map,
             filter,
+            GeneratorType,
+            range,
         ):
-            self._elems = iter(args[0])
+            self._elems = iter(elems[0])  # type: ignore
         else:
-            self._elems = iter(args)
+            self._elems = iter(elems)
 
     @staticmethod
-    def of(elems: Iterator[T]) -> "Stream[T]":
-        return Stream(elems)
+    def of(elems: Iterable[T]) -> "Stream[T]":
+        return Stream(elems)  # type: ignore
 
     def map(self, f: Callable[[T], S]) -> "Stream[S]":
-        return Stream(map(f, self._elems))
+        return Stream.of(map(f, self._elems))
 
     def filter(self, satisfy_condition: Callable[[T], bool]) -> "Stream[T]":
-        return Stream(filter(satisfy_condition, self._elems))
+        return Stream.of(filter(satisfy_condition, self._elems))
 
-    def flat_map(self, f: Callable[[T], Iterator[S]]) -> "Stream[S]":
+    def flat_map(self, f: Callable[[T], Iterable[S]]) -> "Stream[S]":
         def all_elems():
             for elem in self._elems:
                 for new_elems in f(elem):
                     yield new_elems
 
-        return Stream(all_elems())
+        return Stream.of(all_elems())
 
     def take_while(self, satisfy_condition: Callable[[T], bool]) -> "Stream[T]":
         def take():
@@ -63,7 +66,7 @@ class Stream(Generic[T], Iterable[T]):
                     return
                 yield elem
 
-        return Stream(take())
+        return Stream.of(take())
 
     def __iter__(self) -> Iterator[T]:
         return StreamIter(self._elems)
