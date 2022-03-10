@@ -15,17 +15,17 @@ class Maybe(ABC, Generic[T]):
         return Nothing() if not value else Just(value)
 
     @abstractproperty
-    def is_empty(self) -> bool:
+    def is_empty(self) -> bool:  # pragma: no cover
         raise NotImplementedError
 
     @abstractmethod
-    def map(self, f: Callable[[T], V]) -> "Maybe[V]":
+    def map(self, f: Callable[[T], V]) -> "Maybe[V]":  # pragma: no cover
         raise NotImplementedError
 
-    def get_or_else(self, default: T) -> T:
+    def get_or_else(self, default: T) -> T:  # pragma: no cover
         raise NotImplementedError
 
-    def to_either(self, error: L) -> Either[L, T]:
+    def to_either(self, error: L) -> Either[L, T]:  # pragma: no cover
         raise NotImplementedError
 
 

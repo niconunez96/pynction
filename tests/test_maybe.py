@@ -1,3 +1,4 @@
+from pynction.either import Left, Right
 from pynction.maybe import Just, Nothing, Maybe
 
 
@@ -22,12 +23,19 @@ class TestJust:
 
         assert example.is_empty is False
 
+    def test_it_should_return_either_right_with_value(self):
+        example = Just("EXAMPLE")
+
+        result = example.to_either("error")
+
+        assert result.value == "EXAMPLE"
+
 
 class TestNothing:
     def test_it_should_return_default_value_passed(self):
         example = Nothing()
 
-        result = example.get_or_else("default")
+        result = example.map(lambda a: a + 1).get_or_else("default")
 
         assert result == "default"
 
@@ -35,3 +43,10 @@ class TestNothing:
         example = Nothing()
 
         assert example.is_empty is True
+
+    def test_it_should_return_either_left_with_error(self):
+        example = Nothing()
+
+        result = example.to_either("error")
+
+        assert result.value == "error"
