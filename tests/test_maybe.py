@@ -1,4 +1,3 @@
-from pynction.either import Left, Right
 from pynction.maybe import Just, Nothing, Maybe
 
 
