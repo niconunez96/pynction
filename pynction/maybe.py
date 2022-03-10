@@ -9,23 +9,22 @@ L = TypeVar("L")
 
 
 class Maybe(ABC, Generic[T]):
-
     @staticmethod
     def of(value: T) -> "Maybe[T]":
         return Nothing() if not value else Just(value)
 
     @abstractproperty
-    def is_empty(self) -> bool:  # pragma: no cover
+    def is_empty(self) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    def map(self, f: Callable[[T], V]) -> "Maybe[V]":  # pragma: no cover
+    def map(self, f: Callable[[T], V]) -> "Maybe[V]":
         raise NotImplementedError
 
-    def get_or_else(self, default: T) -> T:  # pragma: no cover
+    def get_or_else(self, default: T) -> T:
         raise NotImplementedError
 
-    def to_either(self, error: L) -> Either[L, T]:  # pragma: no cover
+    def to_either(self, error: L) -> Either[L, T]:
         raise NotImplementedError
 
 

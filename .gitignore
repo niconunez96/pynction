@@ -2,6 +2,6 @@
 .mypy_cache
 env
 *__pycache__
-*coverage*
+*.coverage
 dist/*
 *.egg-info
