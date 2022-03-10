@@ -9,7 +9,6 @@ L = TypeVar("L")
 
 
 class Maybe(ABC, Generic[T]):
-
     @staticmethod
     def of(value: T) -> "Maybe[T]":
         return Nothing() if not value else Just(value)
