@@ -75,3 +75,8 @@ class TestStream:
         example_stream = Stream(1, 1, 1, 1, 1, 1, 1, 2, 2, 2)
 
         assert example_stream.to_set == {1, 2}
+
+    def test_stream_should_be_iterable(self):
+        example_stream = Stream(1, 2, 3, 4)
+
+        assert list(example_stream) == [1, 2, 3, 4]

@@ -41,7 +41,9 @@ class Response(TypedDict):
     status: int
 
 
-def make_upper_case_first_n_letters(word: str, number: int) -> Either[Literal[Error, NumberError], str]:
+def make_upper_case_first_n_letters(
+    word: str, number: int
+) -> Either[Literal[Error, NumberError], str]:
     if len(word) < 10:
         return Left("LESS_THAN_10_LETTERS")
     elif number > 100:
@@ -72,6 +74,10 @@ def transform_word(word: str) -> Response:
 print("*** Either samples ***")
 print(transform_word("NICOLAS ALEJANDRO NUNEZ"))
 
+
+bar = Stream([1, 2, 3, 4], [1, 2])
+bax = Stream.of([""])
+baz = Stream("12", "1")
 
 # Stream example
 foo: List[int] = Stream(1, 2, 3, 4).to_list
