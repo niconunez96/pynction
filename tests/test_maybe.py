@@ -12,6 +12,9 @@ class TestMaybe:
 
 
 class TestJust:
+    def test_str_should_return_value(self):
+        assert str(Just(1)) == "Just(1)"
+
     def test_it_should_transform_content_of_just(self):
         example = Just("EXAMPLE")
 
@@ -31,8 +34,19 @@ class TestJust:
 
         assert result._value == "EXAMPLE"
 
+    def test_it_should_return_just_when_apply_flat_map(self):
+        foo = Just(1)
+
+        result = foo.flat_map(lambda a: Just(a + 5))
+
+        assert result.is_empty is False
+        assert result._value == 6
+
 
 class TestNothing:
+    def test_str_should_return_value(self):
+        assert str(Nothing()) == "Nothing"
+
     def test_it_should_return_default_value_passed(self):
         example = Nothing()
 
@@ -51,6 +65,18 @@ class TestNothing:
         result = example.to_either("error")
 
         assert result._value == "error"
+
+    def test_flat_map_should_return_nothing_when_applied_to_nothing(self):
+        foo = Nothing()
+        bar = foo.flat_map(lambda a: Just(a + 1))
+
+        assert bar.is_empty is True
+
+    def test_flat_map_should_return_nothing_when_expression_returns_nothing(self):
+        foo = Just(1)
+        bar = foo.flat_map(lambda a: Nothing())
+
+        assert bar.is_empty is True
 
 
 # Do notation tests
