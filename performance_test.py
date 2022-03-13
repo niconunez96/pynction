@@ -1,4 +1,5 @@
 from time import time
+
 from pynction.stream import stream_of
 
 

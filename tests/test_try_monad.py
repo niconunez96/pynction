@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+
 from pynction.try_monad import Failure, Success, Try
 
 

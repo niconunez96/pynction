@@ -1,11 +1,5 @@
 import abc
-from typing import (
-    Callable,
-    Generator,
-    Generic,
-    TypeVar,
-)
-
+from typing import Callable, Generator, Generic, TypeVar
 
 L = TypeVar("L")
 L1 = TypeVar("L1")

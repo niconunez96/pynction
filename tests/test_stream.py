@@ -1,4 +1,5 @@
 import pytest
+
 from pynction.stream import stream, stream_of
 
 

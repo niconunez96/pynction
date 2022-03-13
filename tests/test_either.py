@@ -1,7 +1,9 @@
 from typing import Union
-import pytest
 from unittest.mock import Mock
-from pynction.either import Either, Left, Right, do, DoEither
+
+import pytest
+
+from pynction.either import DoEither, Either, Left, Right, do
 
 
 class TestEither:

@@ -1,6 +1,8 @@
-import pytest
 from typing import Union
-from pynction.maybe import DoMaybe, Just, Nothing, Maybe, do
+
+import pytest
+
+from pynction.maybe import DoMaybe, Just, Maybe, Nothing, do
 
 
 class TestMaybe:
