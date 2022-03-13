@@ -1,6 +1,7 @@
 import abc
 from typing import (
     Callable,
+    Generator,
     Generic,
     TypeVar,
 )
@@ -8,13 +9,13 @@ from typing import (
 
 L = TypeVar("L")
 L1 = TypeVar("L1")
-R = TypeVar("R")
+R = TypeVar("R", covariant=True)
 R1 = TypeVar("R1")
 
 
 class Either(abc.ABC, Generic[L, R]):
     @staticmethod
-    def right(value: R) -> "Either[L, R]":
+    def right(value: R) -> "Either[L, R]":  # type: ignore
         return Right(value)
 
     @staticmethod
@@ -45,10 +46,13 @@ class Either(abc.ABC, Generic[L, R]):
 
 
 class Right(Either[L, R]):
-    value: R
+    _value: R
 
     def __init__(self, value: R):
-        self.value = value
+        self._value = value
+
+    def __str__(self) -> str:
+        return f"Right({self._value})"
 
     @property
     def is_left(self) -> bool:
@@ -58,26 +62,29 @@ class Right(Either[L, R]):
     def is_right(self) -> bool:
         return True
 
-    def map(self, f: Callable[[R], R1]) -> "Either[L, R1]":
-        return Right(f(self.value))
+    def map(self, f: Callable[[R], R1]) -> Either[L, R1]:
+        return Right(f(self._value))
 
     def filter_or_else(
         self, satisfyCondition: Callable[[R], bool], leftValue: L
-    ) -> "Either[L, R]":
-        if satisfyCondition(self.value):
+    ) -> Either[L, R]:
+        if satisfyCondition(self._value):
             return self
         else:
             return Left(leftValue)
 
     def get_or_else_get(self, _: Callable[[L], R]) -> R:
-        return self.value
+        return self._value
 
 
 class Left(Either[L, R]):
-    value: L
+    _value: L
 
     def __init__(self, value: L):
-        self.value = value
+        self._value = value
+
+    def __str__(self) -> str:
+        return f"Left({self._value})"
 
     @property
     def is_left(self) -> bool:
@@ -87,11 +94,29 @@ class Left(Either[L, R]):
     def is_right(self) -> bool:
         return False
 
-    def map(self, _: Callable[[R], R1]) -> "Either[L, R1]":
-        return Left(self.value)
+    def map(self, _: Callable[[R], R1]) -> Either[L, R1]:
+        return Left(self._value)
 
-    def filter_or_else(self, _: Callable[[R], bool], _1: L) -> "Either[L, R]":
+    def filter_or_else(self, _: Callable[[R], bool], _1: L) -> Either[L, R]:
         return self
 
     def get_or_else_get(self, f: Callable[[L], R]) -> R:
-        return f(self.value)
+        return f(self._value)
+
+
+DoEither = Generator[Either[L, R], R, R1]
+
+
+def do(generator: Callable[..., DoEither[L, R, R1]]) -> Callable[..., Either[L, R1]]:
+    def wrapper(*args):
+        gen = generator(*args)
+        either_monad = next(gen)
+        while True:
+            try:
+                if type(either_monad) == Left:
+                    return either_monad
+                either_monad = gen.send(either_monad._value)
+            except StopIteration as e:
+                return Right(e.value)
+
+    return wrapper

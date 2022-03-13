@@ -1,5 +1,5 @@
 from time import time
-from pynction.stream import Stream
+from pynction.stream import stream_of
 
 
 def timer(func):
@@ -45,7 +45,7 @@ def python_itertools_way(elem_quantity):
 @timer
 def pynction_way(elem_quantity):
     result = (
-        Stream.of(range(elem_quantity))
+        stream_of(range(elem_quantity))
         .filter(lambda x: x % 2 == 0)
         .map(lambda a: a * 2)
         .flat_map(lambda a: [a + 1, a + 2])
