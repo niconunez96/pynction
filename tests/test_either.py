@@ -13,6 +13,9 @@ class TestEither:
 
 
 class TestRight:
+    def test_str_should_return_value(self):
+        assert str(Right(1)) == "Right(1)"
+
     def test_it_should_return_true_when_ask_if_is_right(self):
         assert Right(1).is_right is True
 
@@ -46,6 +49,9 @@ class TestRight:
 
 
 class TestLeft:
+    def test_str_should_return_value(self):
+        assert str(Left("ERROR")) == "Left(ERROR)"
+
     def test_it_should_return_true_when_ask_if_is_left(self):
         assert Left("ERROR").is_left is True
 
@@ -72,7 +78,7 @@ class TestLeft:
         example = Left("ERROR")
         filter_function = Mock()
 
-        result = example.map(filter_function).get_or_else_get(lambda _: 0)
+        result = example.filter_or_else(filter_function).get_or_else_get(lambda _: 0)
 
         filter_function.assert_not_called()
         assert result == 0
