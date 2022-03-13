@@ -1,7 +1,10 @@
-from typing import List, Generator, Union
+from typing import Generator, List, Union
+
 from typing_extensions import Literal, TypedDict
-from pynction.maybe import Maybe, Nothing, Just, do
-from pynction.either import Either, Left, Right, do as either_do, DoEither
+
+from pynction.either import DoEither, Either, Left, Right
+from pynction.either import do as either_do
+from pynction.maybe import Just, Maybe, Nothing, do
 from pynction.stream import stream, stream_of
 from pynction.try_monad import Try
 
