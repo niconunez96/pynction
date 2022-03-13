@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Generator, Union
 from typing_extensions import Literal, TypedDict
-from pynction.maybe import Maybe, Nothing, Just
-from pynction.either import Either, Left, Right
+from pynction.maybe import Maybe, Nothing, Just, do
+from pynction.either import Either, Left, Right, do as either_do, DoEither
 from pynction.stream import stream, stream_of
 from pynction.try_monad import Try
 
@@ -75,9 +75,15 @@ print("*** Either samples ***")
 print(transform_word("NICOLAS ALEJANDRO NUNEZ"))
 
 
+<<<<<<< HEAD
 bar = stream([1, 2, 3, 4])
 bax = stream_of([""])
 baz = stream("12", "1")
+=======
+bar = Stream([1, 2, 3, 4])
+bax = Stream.of([""])
+baz = Stream("12", "1")
+>>>>>>> Add first version of do notation for either and maybe
 
 # Stream example
 foo: List[int] = stream(1, 2, 3, 4).to_list
@@ -115,3 +121,66 @@ print("*** Try samples ***")
 try_example.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
 try_example_2.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
 try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
+
+
+## Do notation maybe
+def get_name() -> Maybe[str]:
+    return Just("nicolas")
+
+
+def get_age() -> Maybe[int]:
+    return Just(10)
+
+
+example: Maybe[str]
+temp1 = get_name()
+temp2 = get_age()
+temp1.flat_map(lambda name: temp2.map(lambda surname: f"{name} {surname}"))
+
+temp1.flat_map(lambda name: get_age().map(lambda surname: f"{name} {surname}"))
+
+
+@do
+def do_notation_example() -> Generator[Maybe[Union[str, int]], Union[str, int], str]:
+    name = yield get_name()
+    age = yield get_age()
+    return f"{name} {age}"
+
+
+value = do_notation_example()
+print(value)
+
+
+## Do notation for either
+class User:
+    name: str
+
+    def __init__(self, name: str):
+        self.name = name
+
+
+def find_user(id: int) -> Maybe[User]:
+    print(f"ID {id}")
+    return Just(User(name="nicolas"))
+    # return Nothing()
+
+
+def execute_validation(user: User) -> Either[str, User]:
+    return Right(user)
+    # return Left("USER_DOES_NOT_HAVE_PERMS")
+
+
+def execute_use_case(user: User) -> Either[str, User]:
+    return Right(user)
+    # return Left("INVALID_OPERATION")
+
+
+@either_do
+def either_do_example(id: int) -> DoEither[str, User, None]:
+    user = yield find_user(id).to_either("USER_NOT_FOUND")
+    user = yield execute_validation(user)
+    user = yield execute_use_case(user)
+    return None
+
+result = either_do_example(1)
+print(result)
