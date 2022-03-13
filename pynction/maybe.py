@@ -34,7 +34,7 @@ class Maybe(ABC, Generic[T]):
 
 class Nothing(Maybe[T]):
     def __str__(self) -> str:
-        return f"Nothing"
+        return "Nothing"
 
     @property
     def is_empty(self) -> bool:

@@ -75,15 +75,9 @@ print("*** Either samples ***")
 print(transform_word("NICOLAS ALEJANDRO NUNEZ"))
 
 
-<<<<<<< HEAD
 bar = stream([1, 2, 3, 4])
 bax = stream_of([""])
 baz = stream("12", "1")
-=======
-bar = Stream([1, 2, 3, 4])
-bax = Stream.of([""])
-baz = Stream("12", "1")
->>>>>>> Add first version of do notation for either and maybe
 
 # Stream example
 foo: List[int] = stream(1, 2, 3, 4).to_list
@@ -123,7 +117,7 @@ try_example_2.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}")
 try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
 
 
-## Do notation maybe
+# Do notation maybe
 def get_name() -> Maybe[str]:
     return Just("nicolas")
 
@@ -151,7 +145,7 @@ value = do_notation_example()
 print(value)
 
 
-## Do notation for either
+# Do notation for either
 class User:
     name: str
 
@@ -181,6 +175,7 @@ def either_do_example(id: int) -> DoEither[str, User, None]:
     user = yield execute_validation(user)
     user = yield execute_use_case(user)
     return None
+
 
 result = either_do_example(1)
 print(result)
