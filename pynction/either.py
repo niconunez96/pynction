@@ -9,13 +9,13 @@ from typing import (
 
 L = TypeVar("L")
 L1 = TypeVar("L1")
-R = TypeVar("R")
+R = TypeVar("R", covariant=True)
 R1 = TypeVar("R1")
 
 
 class Either(abc.ABC, Generic[L, R]):
     @staticmethod
-    def right(value: R) -> "Either[L, R]":
+    def right(value: R) -> "Either[L, R]":  # type: ignore
         return Right(value)
 
     @staticmethod
@@ -62,12 +62,12 @@ class Right(Either[L, R]):
     def is_right(self) -> bool:
         return True
 
-    def map(self, f: Callable[[R], R1]) -> "Either[L, R1]":
+    def map(self, f: Callable[[R], R1]) -> Either[L, R1]:
         return Right(f(self._value))
 
     def filter_or_else(
         self, satisfyCondition: Callable[[R], bool], leftValue: L
-    ) -> "Either[L, R]":
+    ) -> Either[L, R]:
         if satisfyCondition(self._value):
             return self
         else:
@@ -94,10 +94,10 @@ class Left(Either[L, R]):
     def is_right(self) -> bool:
         return False
 
-    def map(self, _: Callable[[R], R1]) -> "Either[L, R1]":
+    def map(self, _: Callable[[R], R1]) -> Either[L, R1]:
         return Left(self._value)
 
-    def filter_or_else(self, _: Callable[[R], bool], _1: L) -> "Either[L, R]":
+    def filter_or_else(self, _: Callable[[R], bool], _1: L) -> Either[L, R]:
         return self
 
     def get_or_else_get(self, f: Callable[[L], R]) -> R:

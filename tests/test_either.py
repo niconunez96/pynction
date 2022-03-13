@@ -1,5 +1,7 @@
+from typing import Union
+import pytest
 from unittest.mock import Mock
-from pynction.either import Either, Left, Right
+from pynction.either import Either, Left, Right, do, DoEither
 
 
 class TestEither:
@@ -74,3 +76,95 @@ class TestLeft:
 
         filter_function.assert_not_called()
         assert result == 0
+
+
+# Do notation tests
+
+
+@do
+def example_with_nothing() -> DoEither[str, int, int]:
+    x = yield Right(1)
+    y = yield Left("error!")
+    return x + y
+
+
+@do
+def example_with_nothing_2() -> DoEither[str, int, int]:
+    v = yield Right(5)
+    x = yield Right(1)
+    y = yield Left("error!")
+    z = yield Right(10)
+    return v + x + y + z
+
+
+@do
+def example_with_return_value() -> DoEither[str, int, int]:
+    x = yield Right(1)
+    y = yield Right(2)
+    return x + y
+
+
+@do
+def example_with_return_value_2() -> DoEither[str, Union[int, str], str]:
+    def get_name() -> Either[str, str]:
+        return Right("john")
+
+    name = yield get_name()
+    age = yield Right(25)
+    lastname = yield Right("wick")
+    return f"{name} {lastname} with age {age}"
+
+
+@do
+def example_with_unexpected_exception() -> DoEither[str, str, str]:
+    x = yield Right("EXAMPLE")  # noqa: F841
+    y = yield Right("EXAMPLE")  # noqa: F841
+    raise Exception("Unexpected exception")
+    # return x + y
+
+
+@do
+def example_with_arguments(x: int, y: int) -> DoEither[str, int, int]:
+    foo = yield Right(10)
+    return x + y + foo
+
+
+@pytest.mark.parametrize(
+    "do_notation_func", [example_with_nothing, example_with_nothing_2]
+)
+def test_do_notation_should_return_left_when_any_expression_return_a_left(
+    do_notation_func,
+):
+    result = do_notation_func()
+
+    assert result.is_left is True
+    assert result._value == "error!"
+
+
+@pytest.mark.parametrize(
+    "do_notation_func, expected_result",
+    [
+        (example_with_return_value, 3),
+        (example_with_return_value_2, "john wick with age 25"),
+    ],
+)
+def test_do_notation_should_return_a_right_with_value_calculated(
+    do_notation_func, expected_result
+):
+    result = do_notation_func()
+
+    assert result.is_right is True
+    assert result._value == expected_result
+
+
+def test_do_notation_should_not_catch_unexpected_exceptions():
+    with pytest.raises(Exception) as e:
+        example_with_unexpected_exception()
+        assert str(e) == "Unexpected exception"
+
+
+def test_do_notation_should_pass_arguments():
+    result = example_with_arguments(1, 2)
+
+    assert result.is_right is True
+    assert result._value == 13

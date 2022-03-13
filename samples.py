@@ -177,5 +177,15 @@ def either_do_example(id: int) -> DoEither[str, User, None]:
     return None
 
 
+def get_eihter_name() -> Either[str, str]:
+    return Either.right("john")
+
+@either_do
+def example_with_union() -> DoEither[str, Union[int, str], str]:
+    name = yield get_eihter_name()
+    age = yield Right(25)
+    lastname = yield Right("wick")
+    return f"{name} {lastname} with age {age}"
+
 result = either_do_example(1)
 print(result)

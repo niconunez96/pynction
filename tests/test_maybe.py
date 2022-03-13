@@ -104,7 +104,7 @@ def example_with_arguments(x: int, y: int) -> DoMaybe[int, int]:
 @pytest.mark.parametrize(
     "do_notation_func", [example_with_nothing, example_with_nothing_2]
 )
-def test_do_notation_should_return_nothing_when_any_expression_return_none(
+def test_do_notation_should_return_nothing_when_any_expression_return_a_nothing(
     do_notation_func,
 ):
     result = do_notation_func()
