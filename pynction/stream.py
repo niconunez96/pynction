@@ -1,4 +1,3 @@
-from types import GeneratorType
 from typing import (
     Callable,
     Generic,
@@ -26,30 +25,15 @@ class Stream(Iterable[T], Generic[T]):
 
     def __init__(
         self,
-        *elems: T,
+        elems: Iterable[T],
     ):
-        if len(elems) == 1 and type(elems[0]) in (
-            list,
-            set,
-            tuple,
-            map,
-            filter,
-            GeneratorType,
-            range,
-        ):
-            self._elems = iter(elems[0])  # type: ignore
-        else:
-            self._elems = iter(elems)
-
-    @staticmethod
-    def of(elems: Iterable[T]) -> "Stream[T]":
-        return Stream(elems)  # type: ignore
+        self._elems = iter(elems)
 
     def map(self, f: Callable[[T], S]) -> "Stream[S]":
-        return Stream.of(map(f, self._elems))
+        return Stream(map(f, self._elems))
 
     def filter(self, satisfy_condition: Callable[[T], bool]) -> "Stream[T]":
-        return Stream.of(filter(satisfy_condition, self._elems))
+        return Stream(filter(satisfy_condition, self._elems))
 
     def flat_map(self, f: Callable[[T], Iterable[S]]) -> "Stream[S]":
         def all_elems():
@@ -57,7 +41,7 @@ class Stream(Iterable[T], Generic[T]):
                 for new_elems in f(elem):
                     yield new_elems
 
-        return Stream.of(all_elems())
+        return Stream(all_elems())
 
     def take_while(self, satisfy_condition: Callable[[T], bool]) -> "Stream[T]":
         def take():
@@ -66,7 +50,7 @@ class Stream(Iterable[T], Generic[T]):
                     return
                 yield elem
 
-        return Stream.of(take())
+        return Stream(take())
 
     def __iter__(self) -> Iterator[T]:
         return StreamIter(self._elems)
@@ -78,3 +62,11 @@ class Stream(Iterable[T], Generic[T]):
     @property
     def to_set(self) -> Set[T]:
         return set(self._elems)
+
+
+def stream(*args: T) -> Stream[T]:
+    return Stream(args)
+
+
+def stream_of(elems: Iterable[T]) -> Stream[T]:
+    return Stream(elems)

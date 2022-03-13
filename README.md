@@ -13,11 +13,11 @@ TBD
 
 ### Stream examples
 ```python
-from pynction.stream import Stream
+from pynction.stream import stream_of, stream
 
 
 foo = (
-    Stream.of([1, 2, 3, 4])
+    stream_of([1, 2, 3, 4])
     .map(lambda a: a + 1)
     .filter(lambda n: n % 2 == 0)
     .flat_map(lambda n: [n, n * 2])
@@ -27,7 +27,7 @@ foo = (
 # foo => [2, 4, 4, 8]
 
 bar = (
-    Stream("example", "e", "something")
+    stream("example", "e", "something")
     .take_while(lambda s: s.startswith("e"))
     .to_list
 )

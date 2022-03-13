@@ -2,7 +2,7 @@ from typing import List
 from typing_extensions import Literal, TypedDict
 from pynction.maybe import Maybe, Nothing, Just
 from pynction.either import Either, Left, Right
-from pynction.stream import Stream
+from pynction.stream import stream, stream_of
 from pynction.try_monad import Try
 
 
@@ -75,14 +75,14 @@ print("*** Either samples ***")
 print(transform_word("NICOLAS ALEJANDRO NUNEZ"))
 
 
-bar = Stream([1, 2, 3, 4], [1, 2])
-bax = Stream.of([""])
-baz = Stream("12", "1")
+bar = stream([1, 2, 3, 4])
+bax = stream_of([""])
+baz = stream("12", "1")
 
 # Stream example
-foo: List[int] = Stream(1, 2, 3, 4).to_list
+foo: List[int] = stream(1, 2, 3, 4).to_list
 bla = (
-    Stream.of([1, 2, 3, 4])
+    stream_of([1, 2, 3, 4])
     .map(lambda a: a + 1)
     .filter(lambda n: n > 2)
     .flat_map(lambda n: [n, n * 2])
