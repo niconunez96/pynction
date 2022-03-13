@@ -89,8 +89,8 @@ def example_with_return_value_2() -> DoMaybe[Union[int, str], str]:
 
 @do
 def example_with_unexpected_exception() -> DoMaybe[str, str]:
-    x = yield Just("EXAMPLE")
-    y = yield Just("EXAMPLE")
+    x = yield Just("EXAMPLE")  # noqa: F841
+    y = yield Just("EXAMPLE")  # noqa: F841
     raise Exception("Unexpected exception")
     # return x + y
 

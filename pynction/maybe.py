@@ -81,6 +81,7 @@ class Just(Maybe[T]):
 
 DoMaybe = Generator[Maybe[T], T, V]
 
+
 def do(generator: Callable[..., DoMaybe[T, V]]) -> Callable[..., Maybe[V]]:
     def wrapper(*args):
         gen = generator(*args)
