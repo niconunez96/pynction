@@ -92,7 +92,7 @@ def example_with_unexpected_exception() -> DoMaybe[str, str]:
     x = yield Just("EXAMPLE")
     y = yield Just("EXAMPLE")
     raise Exception("Unexpected exception")
-    return x + y
+    # return x + y
 
 
 @do
