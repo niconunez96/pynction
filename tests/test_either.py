@@ -78,10 +78,10 @@ class TestLeft:
         example = Left("ERROR")
         filter_function = Mock()
 
-        result = example.filter_or_else(filter_function).get_or_else_get(lambda _: 0)
+        result = example.filter_or_else(filter_function, "filter failed")
 
         filter_function.assert_not_called()
-        assert result == 0
+        assert result._value == "ERROR"
 
 
 # Do notation tests
