@@ -1,4 +1,3 @@
-from types import GeneratorType
 from typing import (
     Callable,
     Generic,
