@@ -79,10 +79,11 @@ class Just(Maybe[T]):
         return Right(self._value)
 
 
-def do(generator: Callable[[], Generator[Maybe[T], T, V]]) -> Callable[[], Maybe[V]]:
-    gen = generator()
+DoMaybe = Generator[Maybe[T], T, V]
 
-    def wrapper():
+def do(generator: Callable[..., DoMaybe[T, V]]) -> Callable[..., Maybe[V]]:
+    def wrapper(*args):
+        gen = generator(*args)
         maybe_monad = next(gen)
         while True:
             try:
