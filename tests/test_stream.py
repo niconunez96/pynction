@@ -1,6 +1,6 @@
 import pytest
 
-from pynction.stream import stream, stream_of
+from pynction.streams.stream import stream, stream_of
 
 
 class TestStream:

@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from pynction.try_monad import Failure, Success, Try
+from pynction.monads.try_monad import Failure, Success, Try
 
 
 class TestTry:

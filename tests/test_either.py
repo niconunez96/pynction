@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from pynction.either import DoEither, Either, Left, Right, do
+from pynction.monads.either import DoEither, Either, Left, Right, do
 
 
 class TestEither:

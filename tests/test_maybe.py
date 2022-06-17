@@ -2,7 +2,7 @@ from typing import Union
 
 import pytest
 
-from pynction.maybe import DoMaybe, Just, Maybe, Nothing, do
+from pynction.monads.maybe import DoMaybe, Just, Maybe, Nothing, do
 
 
 class TestMaybe:

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod, abstractproperty
 from typing import Callable, Generator, Generic, TypeVar
 
-from pynction.either import Either, Left, Right
+from .either import Either, Left, Right
 
 T = TypeVar("T", covariant=True)
 V = TypeVar("V", covariant=True)
