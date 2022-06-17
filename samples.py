@@ -2,11 +2,10 @@ from typing import Generator, List, Union
 
 from typing_extensions import Literal, TypedDict
 
-from pynction.either import DoEither, Either, Left, Right
-from pynction.either import do as either_do
-from pynction.maybe import Just, Maybe, Nothing, do
-from pynction.stream import stream, stream_of
-from pynction.try_monad import Try
+from pynction import DoEither, Either, do_either, left, right
+from pynction.monads.maybe import Just, Maybe, Nothing, do
+from pynction.monads.try_monad import Try
+from pynction.streams.stream import stream, stream_of
 
 
 # Maybe examples
@@ -48,13 +47,13 @@ def make_upper_case_first_n_letters(
     word: str, number: int
 ) -> Either[Literal[Error, NumberError], str]:
     if len(word) < 10:
-        return Left("LESS_THAN_10_LETTERS")
+        return left("LESS_THAN_10_LETTERS")
     elif number > 100:
-        return Left("GREATER_THAN_100")
+        return left("GREATER_THAN_100")
     elif word.isupper():
-        return Left("CONTAINS_UPPERCASE_LETTERS")
+        return left("CONTAINS_UPPERCASE_LETTERS")
     else:
-        return Right(word.upper()[0:number])
+        return right(word.upper()[0:number])
 
 
 def transform_word(word: str) -> Response:
@@ -163,16 +162,16 @@ def find_user(id: int) -> Maybe[User]:
 
 
 def execute_validation(user: User) -> Either[str, User]:
-    return Right(user)
+    return right(user)
     # return Left("USER_DOES_NOT_HAVE_PERMS")
 
 
 def execute_use_case(user: User) -> Either[str, User]:
-    return Right(user)
+    return right(user)
     # return Left("INVALID_OPERATION")
 
 
-@either_do
+@do_either
 def either_do_example(id: int) -> DoEither[str, User, None]:
     user = yield find_user(id).to_either("USER_NOT_FOUND")
     user = yield execute_validation(user)
@@ -181,14 +180,14 @@ def either_do_example(id: int) -> DoEither[str, User, None]:
 
 
 def get_eihter_name() -> Either[str, str]:
-    return Either.right("john")
+    return right("john")
 
 
-@either_do
+@do_either
 def example_with_union() -> DoEither[str, Union[int, str], str]:
     name = yield get_eihter_name()
-    age = yield Right(25)
-    lastname = yield Right("wick")
+    age = yield right(25)
+    lastname = yield right("wick")
     return f"{name} {lastname} with age {age}"
 
 
