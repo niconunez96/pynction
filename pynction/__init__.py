@@ -4,3 +4,11 @@ from .monads.either import do as do_either  # noqa
 
 right = Either.right
 left = Either.left
+
+
+from .monads.maybe import DoMaybe  # noqa
+from .monads.maybe import Maybe  # noqa
+from .monads.maybe import do as do_maybe  # noqa
+
+maybe = Maybe.of
+nothing = Maybe.of(None)
