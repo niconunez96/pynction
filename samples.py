@@ -2,11 +2,20 @@ from typing import Generator, List, Union
 
 from typing_extensions import Literal, TypedDict
 
-from pynction.either import DoEither, Either, Left, Right
-from pynction.either import do as either_do
-from pynction.maybe import Just, Maybe, Nothing, do
-from pynction.stream import stream, stream_of
-from pynction.try_monad import Try
+from pynction import (
+    DoEither,
+    Either,
+    Maybe,
+    do_either,
+    do_maybe,
+    left,
+    maybe,
+    nothing,
+    right,
+    stream,
+    stream_of,
+    try_of,
+)
 
 
 # Maybe examples
@@ -23,12 +32,12 @@ def sum20(something: Maybe[int]) -> Either[str, int]:
 
 
 print("*** Maybe samples ***")
-print(isEmpty(Nothing()))
-print(isEmpty(Just("something")))
+print(isEmpty(nothing))
+print(isEmpty(maybe("something")))
 
 
-print(sum10(Nothing()))
-print(sum10(Just(10)))
+print(sum10(nothing))
+print(sum10(maybe(10)))
 
 # Either examples
 LESS_THAN_10_LETTERS = Literal["LESS_THAN_10_LETTERS"]
@@ -48,13 +57,13 @@ def make_upper_case_first_n_letters(
     word: str, number: int
 ) -> Either[Literal[Error, NumberError], str]:
     if len(word) < 10:
-        return Left("LESS_THAN_10_LETTERS")
+        return left("LESS_THAN_10_LETTERS")
     elif number > 100:
-        return Left("GREATER_THAN_100")
+        return left("GREATER_THAN_100")
     elif word.isupper():
-        return Left("CONTAINS_UPPERCASE_LETTERS")
+        return left("CONTAINS_UPPERCASE_LETTERS")
     else:
-        return Right(word.upper()[0:number])
+        return right(word.upper()[0:number])
 
 
 def transform_word(word: str) -> Response:
@@ -83,7 +92,7 @@ bax = stream_of([""])
 baz = stream("12", "1")
 
 # Stream example
-foo: List[int] = stream(1, 2, 3, 4).to_list
+foo: List[int] = stream(1, 2, 3, 4).to_list()
 bla = (
     stream_of([1, 2, 3, 4])
     .map(lambda a: a + 1)
@@ -108,11 +117,11 @@ def handle_error(e: Exception) -> int:
     return -1
 
 
-try_example = Try.of(lambda: add_10(11)).catch(handle_error).map(lambda a: a + 1)
+try_example = try_of(lambda: add_10(11)).catch(handle_error).map(lambda a: a + 1)
 
-try_example_2 = Try.of(lambda: add_10(11)).map(lambda a: a + 1)
+try_example_2 = try_of(lambda: add_10(11)).map(lambda a: a + 1)
 
-try_example_3 = Try.of(lambda: add_10(9)).map(lambda a: a + 1)
+try_example_3 = try_of(lambda: add_10(9)).map(lambda a: a + 1)
 
 print("*** Try samples ***")
 try_example.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
@@ -122,11 +131,11 @@ try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}")
 
 # Do notation maybe
 def get_name() -> Maybe[str]:
-    return Just("nicolas")
+    return maybe("nicolas")
 
 
 def get_age() -> Maybe[int]:
-    return Just(10)
+    return maybe(10)
 
 
 example: Maybe[str]
@@ -137,7 +146,7 @@ temp1.flat_map(lambda name: temp2.map(lambda surname: f"{name} {surname}"))
 temp1.flat_map(lambda name: get_age().map(lambda surname: f"{name} {surname}"))
 
 
-@do
+@do_maybe
 def do_notation_example() -> Generator[Maybe[Union[str, int]], Union[str, int], str]:
     name = yield get_name()
     age = yield get_age()
@@ -158,21 +167,21 @@ class User:
 
 def find_user(id: int) -> Maybe[User]:
     print(f"ID {id}")
-    return Just(User(name="nicolas"))
+    return maybe(User(name="nicolas"))
     # return Nothing()
 
 
 def execute_validation(user: User) -> Either[str, User]:
-    return Right(user)
+    return right(user)
     # return Left("USER_DOES_NOT_HAVE_PERMS")
 
 
 def execute_use_case(user: User) -> Either[str, User]:
-    return Right(user)
+    return right(user)
     # return Left("INVALID_OPERATION")
 
 
-@either_do
+@do_either
 def either_do_example(id: int) -> DoEither[str, User, None]:
     user = yield find_user(id).to_either("USER_NOT_FOUND")
     user = yield execute_validation(user)
@@ -181,14 +190,14 @@ def either_do_example(id: int) -> DoEither[str, User, None]:
 
 
 def get_eihter_name() -> Either[str, str]:
-    return Either.right("john")
+    return right("john")
 
 
-@either_do
+@do_either
 def example_with_union() -> DoEither[str, Union[int, str], str]:
     name = yield get_eihter_name()
-    age = yield Right(25)
-    lastname = yield Right("wick")
+    age = yield right(25)
+    lastname = yield right("wick")
     return f"{name} {lastname} with age {age}"
 
 

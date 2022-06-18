@@ -47,11 +47,9 @@ class Stream(Iterable[T], Generic[T]):
     def __iter__(self) -> Iterator[T]:
         return StreamIter(self._elems)
 
-    @property
     def to_list(self) -> List[T]:
         return list(self._elems)
 
-    @property
     def to_set(self) -> Set[T]:
         return set(self._elems)
 
