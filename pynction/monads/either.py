@@ -1,7 +1,7 @@
 import abc
 from typing import Callable, Generator, Generic, TypeVar
 
-L = TypeVar("L")
+L = TypeVar("L", covariant=True)
 L1 = TypeVar("L1")
 R = TypeVar("R", covariant=True)
 R1 = TypeVar("R1")
@@ -13,7 +13,7 @@ class Either(abc.ABC, Generic[L, R]):
         return Right(value)
 
     @staticmethod
-    def left(value: L) -> "Either[L, R]":
+    def left(value: L) -> "Either[L, R]":  # type: ignore
         return Left(value)
 
     @abc.abstractproperty
@@ -30,7 +30,7 @@ class Either(abc.ABC, Generic[L, R]):
 
     @abc.abstractmethod
     def filter_or_else(
-        self, predicate: Callable[[R], bool], leftValue: L
+        self, predicate: Callable[[R], bool], leftValue: L  # type: ignore
     ) -> "Either[L, R]":
         raise NotImplementedError
 
@@ -60,7 +60,7 @@ class Right(Either[L, R]):
         return Right(f(self._value))
 
     def filter_or_else(
-        self, satisfyCondition: Callable[[R], bool], leftValue: L
+        self, satisfyCondition: Callable[[R], bool], leftValue: L  # type: ignore
     ) -> Either[L, R]:
         if satisfyCondition(self._value):
             return self
@@ -91,7 +91,7 @@ class Left(Either[L, R]):
     def map(self, _: Callable[[R], R1]) -> Either[L, R1]:
         return Left(self._value)
 
-    def filter_or_else(self, _: Callable[[R], bool], _1: L) -> Either[L, R]:
+    def filter_or_else(self, _: Callable[[R], bool], _1: L) -> Either[L, R]:  # type: ignore
         return self
 
     def get_or_else_get(self, f: Callable[[L], R]) -> R:

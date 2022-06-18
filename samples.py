@@ -1,4 +1,4 @@
-from typing import Generator, List, Union
+from typing import List, Union
 
 from typing_extensions import Literal, TypedDict
 
@@ -16,6 +16,7 @@ from pynction import (
     stream_of,
     try_of,
 )
+from pynction.monads.maybe import DoMaybe
 
 
 # Maybe examples
@@ -147,7 +148,7 @@ temp1.flat_map(lambda name: get_age().map(lambda surname: f"{name} {surname}"))
 
 
 @do_maybe
-def do_notation_example() -> Generator[Maybe[Union[str, int]], Union[str, int], str]:
+def do_notation_example() -> DoMaybe[Union[str, int], str]:
     name = yield get_name()
     age = yield get_age()
     return f"{name} {age}"
