@@ -12,9 +12,10 @@ from pynction import (
     maybe,
     nothing,
     right,
+    stream,
+    stream_of,
     try_of,
 )
-from pynction.streams.stream import stream, stream_of
 
 
 # Maybe examples
