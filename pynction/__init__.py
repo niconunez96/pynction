@@ -11,7 +11,7 @@ from .monads.maybe import Maybe  # noqa
 from .monads.maybe import do as do_maybe  # noqa
 
 maybe = Maybe.of
-nothing = Maybe.of(None)
+nothing: Maybe = Maybe.of(None)
 
 
 from .monads.try_monad import Try  # noqa

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-from typing import Callable, Generator, Generic, TypeVar
+from typing import Callable, Generator, Generic, Optional, TypeVar
 
 from .either import Either, Left, Right
 
@@ -10,7 +10,7 @@ L = TypeVar("L")
 
 class Maybe(ABC, Generic[T]):
     @staticmethod
-    def of(value: T) -> "Maybe[T]":  # type: ignore
+    def of(value: Optional[T]) -> "Maybe[T]":  # type: ignore
         return Nothing() if not value else Just(value)
 
     @abstractproperty

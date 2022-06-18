@@ -92,7 +92,7 @@ bax = stream_of([""])
 baz = stream("12", "1")
 
 # Stream example
-foo: List[int] = stream(1, 2, 3, 4).to_list
+foo: List[int] = stream(1, 2, 3, 4).to_list()
 bla = (
     stream_of([1, 2, 3, 4])
     .map(lambda a: a + 1)
