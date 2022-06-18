@@ -99,9 +99,55 @@ class Left(Either[L, R]):
 
 
 DoEither = Generator[Either[L, R], R, R1]
+"""
+DoEither[L, R, R1]
+
+This type must be used with the `@do_either` decorator.
+This type just reflects the either value that is processed by the decorator,
+as long as executing a "map" on the R value.
+So the L and R represents the either value that the do_either receives
+and R1 is the value that is returned by the function.
+
+Example usage:
+1. The `@do_either` receives an Either of type `Either[str, User]` and then returns an `Either[str, None]`
+
+```
+@do_either
+def example1(id: int) -> DoEither[str, User, None]:
+    user = yield find_user(id).to_either("USER_NOT_FOUND")
+    user = yield execute_validation(user)
+    yield execute_use_case(user)
+    return None
+```
+"""
 
 
 def do(generator: Callable[..., DoEither[L, R, R1]]) -> Callable[..., Either[L, R1]]:
+    """
+    `@do_either` is a decorator that enables the decoratee function to support `do` notation
+    like Haskell.
+
+    To enable this functionality you must `yield` your either value so that the decorator function
+    can have control over your flow.
+
+    Example usage:
+    1. The `@do_either` receives an Either of type `Either[str, User]` and then returns an `Either[str, None]`
+
+        1.1 If the `@do_either` receives a `left` then the flow is cut exactly in that point
+            returning a Left[str] in this case
+
+        1.2 If the `@do_either` receives a `right` the decorator just return the value
+            inside of it so then your function can use it to perform anything on it
+    ```
+    @do_either
+    def example1(id: int) -> DoEither[str, User, None]:
+        user = yield find_user(id).to_either("USER_NOT_FOUND")
+        user = yield execute_validation(user)
+        yield execute_use_case(user)
+        return None
+    ```
+    """
+
     def wrapper(*args):
         gen = generator(*args)
         either_monad = next(gen)

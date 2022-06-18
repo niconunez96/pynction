@@ -2,8 +2,17 @@ from typing import Generator, List, Union
 
 from typing_extensions import Literal, TypedDict
 
-from pynction import DoEither, Either, do_either, left, right
-from pynction.monads.maybe import Just, Maybe, Nothing, do
+from pynction import (
+    DoEither,
+    Either,
+    Maybe,
+    do_either,
+    do_maybe,
+    left,
+    maybe,
+    nothing,
+    right,
+)
 from pynction.monads.try_monad import Try
 from pynction.streams.stream import stream, stream_of
 
@@ -22,12 +31,12 @@ def sum20(something: Maybe[int]) -> Either[str, int]:
 
 
 print("*** Maybe samples ***")
-print(isEmpty(Nothing()))
-print(isEmpty(Just("something")))
+print(isEmpty(nothing))
+print(isEmpty(maybe("something")))
 
 
-print(sum10(Nothing()))
-print(sum10(Just(10)))
+print(sum10(nothing))
+print(sum10(maybe(10)))
 
 # Either examples
 LESS_THAN_10_LETTERS = Literal["LESS_THAN_10_LETTERS"]
@@ -121,11 +130,11 @@ try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}")
 
 # Do notation maybe
 def get_name() -> Maybe[str]:
-    return Just("nicolas")
+    return maybe("nicolas")
 
 
 def get_age() -> Maybe[int]:
-    return Just(10)
+    return maybe(10)
 
 
 example: Maybe[str]
@@ -136,7 +145,7 @@ temp1.flat_map(lambda name: temp2.map(lambda surname: f"{name} {surname}"))
 temp1.flat_map(lambda name: get_age().map(lambda surname: f"{name} {surname}"))
 
 
-@do
+@do_maybe
 def do_notation_example() -> Generator[Maybe[Union[str, int]], Union[str, int], str]:
     name = yield get_name()
     age = yield get_age()
@@ -157,7 +166,7 @@ class User:
 
 def find_user(id: int) -> Maybe[User]:
     print(f"ID {id}")
-    return Just(User(name="nicolas"))
+    return maybe(User(name="nicolas"))
     # return Nothing()
 
 
