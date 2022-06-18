@@ -12,8 +12,8 @@ from pynction import (
     maybe,
     nothing,
     right,
+    try_of,
 )
-from pynction.monads.try_monad import Try
 from pynction.streams.stream import stream, stream_of
 
 
@@ -116,11 +116,11 @@ def handle_error(e: Exception) -> int:
     return -1
 
 
-try_example = Try.of(lambda: add_10(11)).catch(handle_error).map(lambda a: a + 1)
+try_example = try_of(lambda: add_10(11)).catch(handle_error).map(lambda a: a + 1)
 
-try_example_2 = Try.of(lambda: add_10(11)).map(lambda a: a + 1)
+try_example_2 = try_of(lambda: add_10(11)).map(lambda a: a + 1)
 
-try_example_3 = Try.of(lambda: add_10(9)).map(lambda a: a + 1)
+try_example_3 = try_of(lambda: add_10(9)).map(lambda a: a + 1)
 
 print("*** Try samples ***")
 try_example.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
