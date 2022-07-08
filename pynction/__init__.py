@@ -19,7 +19,13 @@ from .monads.try_monad import Try  # noqa
 try_of = Try.of
 
 
-from .monads.function import Function, Function2, Function3, Function4, Provider  # noqa
+from .functors.function import (  # noqa
+    Function,
+    Function2,
+    Function3,
+    Function4,
+    Provider,
+)
 from .streams.stream import stream, stream_of  # noqa
 
 pynction0 = Provider.decorator
