@@ -19,4 +19,11 @@ from .monads.try_monad import Try  # noqa
 try_of = Try.of
 
 
+from .monads.function import Function, Function2, Function3, Function4, Provider  # noqa
 from .streams.stream import stream, stream_of  # noqa
+
+pynction0 = Provider.decorator
+pynction1 = Function.decorator
+pynction2 = Function2.decorator
+pynction3 = Function3.decorator
+pynction4 = Function4.decorator

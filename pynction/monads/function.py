@@ -1,4 +1,4 @@
-from typing import Callable, Generic, Tuple, TypeVar, Union
+from typing import Callable, Generic, TypeVar, Union
 
 T = TypeVar("T")
 T2 = TypeVar("T2")
@@ -21,6 +21,13 @@ class Provider(Generic[R]):
     def __or__(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Provider[R2]":
         return self.map(f)
 
+    @staticmethod
+    def decorator(decoratee: Callable[[], R]) -> "Provider[R]":
+        def decorator():
+            return decoratee()
+
+        return Provider(decorator)
+
 
 class Function(Generic[T, R]):
     def __init__(self, f: Callable[[T], R]) -> None:
@@ -37,9 +44,12 @@ class Function(Generic[T, R]):
     ) -> "Function[T, R2]":
         return self.map(f)
 
-    @property
-    def curried(self) -> "Provider[Function[T, R]]":
-        return Provider(lambda: self)
+    @staticmethod
+    def decorator(decoratee: Callable[[T], R]) -> "Function[T, R]":
+        def decorator(arg: T):
+            return decoratee(arg)
+
+        return Function(decorator)
 
 
 class Function2(Generic[T, T2, R]):
@@ -62,6 +72,13 @@ class Function2(Generic[T, T2, R]):
     @property
     def curried(self) -> Function[T, Function[T2, R]]:
         return Function(lambda x: Function(lambda y: self._f(x, y)))
+
+    @staticmethod
+    def decorator(decoratee: Callable[[T, T2], R]) -> "Function2[T, T2, R]":
+        def decorator(arg: T, arg2: T2):
+            return decoratee(arg, arg2)
+
+        return Function2(decorator)
 
 
 class Function3(Generic[T, T2, T3, R]):
@@ -86,6 +103,13 @@ class Function3(Generic[T, T2, T3, R]):
         return Function(
             lambda x: Function(lambda y: Function(lambda z: self._f(x, y, z)))
         )
+
+    @staticmethod
+    def decorator(decoratee: Callable[[T, T2, T3], R]) -> "Function3[T, T2, T3, R]":
+        def decorator(arg: T, arg2: T2, arg3: T3):
+            return decoratee(arg, arg2, arg3)
+
+        return Function3(decorator)
 
 
 class Function4(Generic[T, T2, T3, T4, R]):
@@ -113,45 +137,11 @@ class Function4(Generic[T, T2, T3, T4, R]):
             )
         )
 
+    @staticmethod
+    def decorator(
+        decoratee: Callable[[T, T2, T3, T4], R]
+    ) -> "Function4[T, T2, T3, T4, R]":
+        def decorator(arg: T, arg2: T2, arg3: T3, arg4: T4):
+            return decoratee(arg, arg2, arg3, arg4)
 
-def pynction(decoratee: Callable[[T], R]):
-    def decorator(arg: T):
-        return decoratee(arg)
-
-    return Function[T, R](decorator)
-
-
-def pynction2(decoratee: Callable[[T, T2], R]):
-    def decorator(arg: T, arg2: T2):
-        return decoratee(arg, arg2)
-
-    return Function2(decorator)
-
-
-def pynction3(decoratee: Callable[[T, T2, T3], R]):
-    def decorator(arg: T, arg2: T2, arg3: T3):
-        return decoratee(arg, arg2, arg3)
-
-    return Function3(decorator)
-
-
-def pynction4(decoratee: Callable[[T, T2, T3, T4], R]):
-    def decorator(arg: T, arg2: T2, arg3: T3, arg4: T4):
-        return decoratee(arg, arg2, arg3, arg4)
-
-    return Function4(decorator)
-
-
-@pynction
-def foo(a: int) -> Tuple[str, str]:
-    return str(a), ""
-
-
-@pynction2
-def baz(a: str, b: str) -> str:
-    return a
-
-
-bar = foo
-
-b = bar | baz
+        return Function4(decorator)
