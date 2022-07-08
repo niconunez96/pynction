@@ -129,7 +129,8 @@ print(result) # ==> Will be Left("LESS_THAN_10_LETTERS")
 #### Factory methods
 
 1. `maybe(elem: Optional[T]) -> Maybe[T]`
-2. `nothing`: It is a global instance of Nothing
+2. `just(elem: T) -> Just[T]`
+3. `nothing`: It is a global instance of Nothing
 
 #### Maybe api
 
