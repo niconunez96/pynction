@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-from typing import Callable, Generator, Generic, Optional, TypeVar
+from typing import Any, Callable, Generator, Generic, Optional, TypeVar
 
 from .either import Either, Left, Right
 
@@ -32,24 +32,32 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
 
-class Nothing(Maybe[T]):
+class Nothing(Maybe):
+    _instance: Optional["Nothing"] = None
+
     def __str__(self) -> str:
         return "Nothing"
+
+    @classmethod
+    def get_instance(cls) -> "Nothing":
+        if not cls._instance:
+            cls._instance = Nothing()
+        return cls._instance
 
     @property
     def is_empty(self) -> bool:
         return True
 
-    def map(self, _: Callable[[T], V]) -> Maybe[V]:
-        return Nothing()
+    def map(self, _: Callable[[Any], Any]) -> Maybe[Any]:
+        return self.get_instance()
 
-    def flat_map(self, _: Callable[[T], "Maybe[V]"]) -> "Maybe[V]":
-        return Nothing()
+    def flat_map(self, _: Callable[[Any], "Maybe[Any]"]) -> "Maybe[Any]":
+        return self.get_instance()
 
     def get_or_else(self, default: T) -> T:  # type: ignore
         return default
 
-    def to_either(self, error: L) -> Either[L, T]:
+    def to_either(self, error: L) -> Either[L, Any]:
         return Left(error)
 
 
