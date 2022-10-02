@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.0.11 (2022-10-02)
+-------------------
+- PATCH: Fix pypi workflow
+
 0.0.10 (2022-10-02)
 -------------------
 - PATCH: Separate coverage and pypi workflows
