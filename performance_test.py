@@ -2,6 +2,8 @@ from time import time
 
 from pynction import stream_of
 
+# mypy: ignore-errors
+
 
 def timer(func):
     def wrapper(*args, **kwargs):
