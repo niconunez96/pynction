@@ -1,6 +1,20 @@
 Changelog
 =========
 
+0.0.6 (2022-10-02)
+------------------
+- PATCH: Add mypy config (#16)
+- Adjust flake8 confg and import NoReturn type
+- Fix mypy errors
+- Add mypy configuration
+- PATCH: Add semantic pr github action (#15)
+- Update job names
+- Change semantic titles
+- Change semantic titles
+- Enhance gh workflows
+- Separate workflows
+- add semantic pr github action
+
 0.0.1 (2022-03-01)
 ------------------
 - Initial beta release
