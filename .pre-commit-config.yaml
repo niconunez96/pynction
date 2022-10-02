@@ -13,6 +13,7 @@ repos:
       rev: 21.12b0
       hooks:
           - id: black
+            exclude: pynction/version.py
     - repo: https://github.com/pre-commit/mirrors-mypy
       rev: v0.931
       hooks:
@@ -24,9 +25,11 @@ repos:
       hooks:
           - id: flake8
             additional_dependencies: [flake8-typing-imports==1.12.0]
+            exclude: pynction/version.py
     - repo: https://github.com/pycqa/isort
       rev: 5.10.1
       hooks:
           - id: isort
             args: ["--profile", "black", "--filter-files"]
             name: isort (python)
+            exclude: pynction/version.py
