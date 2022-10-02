@@ -30,7 +30,7 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def get_or_raise(self, error: Exception) -> "Maybe[T]":
+    def get_or_raise(self, error: Exception) -> T:
         raise NotImplementedError
 
     @abstractmethod
@@ -92,8 +92,8 @@ class Just(Maybe[T]):
     def get_or_else(self, _: T) -> T:  # type: ignore
         return self._value
 
-    def get_or_raise(self, _: Exception) -> "Maybe[T]":
-        pass
+    def get_or_raise(self, _: Exception) -> T:
+        return self._value
 
     def to_either(self, _: L) -> Either[L, T]:
         return Right(self._value)

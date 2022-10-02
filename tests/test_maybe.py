@@ -36,6 +36,11 @@ class TestJust:
         assert result.is_empty is False
         assert result._value == 6
 
+    def test_it_should_return_element_when_call_get_or_raise(self):
+        foo = maybe(1)
+
+        assert 1 == foo.get_or_raise(Exception())
+
 
 class TestNothing:
     def test_str_should_return_value(self):
@@ -71,6 +76,12 @@ class TestNothing:
         bar = foo.flat_map(lambda a: nothing)
 
         assert bar.is_empty is True
+
+    def test_it_should_raise_exception_when_call_get_or_raise(self):
+        foo = nothing
+
+        with pytest.raises(AttributeError):
+            foo.get_or_raise(AttributeError())
 
 
 # Do notation tests
