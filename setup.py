@@ -2,13 +2,15 @@ from pathlib import Path
 
 import setuptools
 
+from pynction.version import __version__
+
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 
 setuptools.setup(
     name="pynction",
-    version="0.0.4",
+    version=__version__,
     license="MIT",
     author="Nicolas Nunez",
     author_email="nicolas110996@gmail.com",
