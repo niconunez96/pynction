@@ -25,6 +25,7 @@ jobs:
       runs-on: ubuntu-latest
       name: Publish project to pypi
       steps:
+        - uses: actions/checkout@v2
         - name: Set python 3.7
           uses: actions/setup-python@v2
           with:
