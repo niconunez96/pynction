@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-from typing import Any, Callable, Generator, Generic, Optional, TypeVar, cast
+from typing import Any, Callable, Generator, Generic, NoReturn, Optional, TypeVar, cast
 
 from typing_extensions import ParamSpec
 
