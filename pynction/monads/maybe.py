@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod, abstractproperty
-from typing import Any, Callable, Generator, Generic, NoReturn, Optional, TypeVar
+from typing import Any, Callable, Generator, Generic, Optional, TypeVar, cast
+
+from typing_extensions import ParamSpec
 
 from .either import Either, Left, Right
 
@@ -100,17 +102,18 @@ class Just(Maybe[T]):
 
 
 DoMaybe = Generator[Maybe[T], T, V]
+P = ParamSpec("P")
 
 
-def do(generator: Callable[..., DoMaybe[T, V]]) -> Callable[..., Maybe[V]]:
-    def wrapper(*args):
-        gen = generator(*args)
+def do(generator: Callable[P, DoMaybe[T, V]]) -> Callable[P, Maybe[V]]:
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Maybe[V]:
+        gen = generator(*args, **kwargs)
         maybe_monad = next(gen)
         while True:
             try:
                 if type(maybe_monad) == Nothing:
-                    return Nothing.get_instance()
-                maybe_monad = gen.send(maybe_monad._value)
+                    return Nothing()
+                maybe_monad = gen.send(cast(Just, maybe_monad)._value)
             except StopIteration as e:
                 return Just(e.value)
 

@@ -1,5 +1,7 @@
 import abc
-from typing import Callable, Generator, Generic, TypeVar
+from typing import Callable, Generator, Generic, TypeVar, cast
+
+from typing_extensions import ParamSpec
 
 L = TypeVar("L", covariant=True)
 L1 = TypeVar("L1")
@@ -99,6 +101,7 @@ class Left(Either[L, R]):
 
 
 DoEither = Generator[Either[L, R], R, R1]
+P = ParamSpec("P")
 """
 DoEither[L, R, R1]
 
@@ -122,7 +125,7 @@ def example1(id: int) -> DoEither[str, User, None]:
 """
 
 
-def do(generator: Callable[..., DoEither[L, R, R1]]) -> Callable[..., Either[L, R1]]:
+def do(generator: Callable[P, DoEither[L, R, R1]]) -> Callable[P, Either[L, R1]]:
     """
     `@do_either` is a decorator that enables the decoratee function to support `do` notation
     like Haskell.
@@ -148,14 +151,14 @@ def do(generator: Callable[..., DoEither[L, R, R1]]) -> Callable[..., Either[L, 
     ```
     """
 
-    def wrapper(*args):
-        gen = generator(*args)
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Either[L, R1]:
+        gen = generator(*args, **kwargs)
         either_monad = next(gen)
         while True:
             try:
                 if type(either_monad) == Left:
                     return either_monad
-                either_monad = gen.send(either_monad._value)
+                either_monad = gen.send(cast(Right, either_monad)._value)
             except StopIteration as e:
                 return Right(e.value)
 

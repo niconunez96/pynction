@@ -8,7 +8,7 @@ class StreamIter(Iterator[T]):
     def __init__(self, elems: Iterator[T]):
         self.elems = elems
 
-    def __next__(self):
+    def __next__(self) -> T:
         return next(self.elems)
 
 
@@ -28,7 +28,7 @@ class Stream(Iterable[T], Generic[T]):
         return Stream(filter(satisfy_condition, self._elems))
 
     def flat_map(self, f: Callable[[T], Iterable[S]]) -> "Stream[S]":
-        def all_elems():
+        def all_elems() -> Iterable[S]:
             for elem in self._elems:
                 for new_elems in f(elem):
                     yield new_elems
@@ -36,7 +36,7 @@ class Stream(Iterable[T], Generic[T]):
         return Stream(all_elems())
 
     def take_while(self, satisfy_condition: Callable[[T], bool]) -> "Stream[T]":
-        def take():
+        def take() -> Iterable[T]:
             for elem in self._elems:
                 if not satisfy_condition(elem):
                     return

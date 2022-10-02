@@ -23,7 +23,7 @@ class Provider(Generic[R]):
 
     @staticmethod
     def decorator(decoratee: Callable[[], R]) -> "Provider[R]":
-        def decorator():
+        def decorator() -> R:
             return decoratee()
 
         return Provider(decorator)
@@ -46,7 +46,7 @@ class Function(Generic[T, R]):
 
     @staticmethod
     def decorator(decoratee: Callable[[T], R]) -> "Function[T, R]":
-        def decorator(arg: T):
+        def decorator(arg: T) -> R:
             return decoratee(arg)
 
         return Function(decorator)
@@ -75,7 +75,7 @@ class Function2(Generic[T, T2, R]):
 
     @staticmethod
     def decorator(decoratee: Callable[[T, T2], R]) -> "Function2[T, T2, R]":
-        def decorator(arg: T, arg2: T2):
+        def decorator(arg: T, arg2: T2) -> R:
             return decoratee(arg, arg2)
 
         return Function2(decorator)
@@ -106,7 +106,7 @@ class Function3(Generic[T, T2, T3, R]):
 
     @staticmethod
     def decorator(decoratee: Callable[[T, T2, T3], R]) -> "Function3[T, T2, T3, R]":
-        def decorator(arg: T, arg2: T2, arg3: T3):
+        def decorator(arg: T, arg2: T2, arg3: T3) -> R:
             return decoratee(arg, arg2, arg3)
 
         return Function3(decorator)
@@ -141,7 +141,7 @@ class Function4(Generic[T, T2, T3, T4, R]):
     def decorator(
         decoratee: Callable[[T, T2, T3, T4], R]
     ) -> "Function4[T, T2, T3, T4, R]":
-        def decorator(arg: T, arg2: T2, arg3: T3, arg4: T4):
+        def decorator(arg: T, arg2: T2, arg3: T3, arg4: T4) -> R:
             return decoratee(arg, arg2, arg3, arg4)
 
         return Function4(decorator)

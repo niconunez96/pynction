@@ -203,4 +203,5 @@ def example_with_union() -> DoEither[str, Union[int, str], str]:
 
 
 result = either_do_example(1)
+result2 = example_with_union()
 print(result)
