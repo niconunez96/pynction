@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.0.9 (2022-10-02)
+------------------
+- PATCH: Install dependencies before build
+- PATCH: Checkout code when building package
+
 0.0.8 (2022-10-02)
 ------------------
 - PATCH: Add pypi integration (#19)
