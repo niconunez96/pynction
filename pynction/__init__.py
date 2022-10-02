@@ -32,3 +32,5 @@ pynction1 = Function.decorator
 pynction2 = Function2.decorator
 pynction3 = Function3.decorator
 pynction4 = Function4.decorator
+
+from .version import __version__  # noqa
