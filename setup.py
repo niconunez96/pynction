@@ -17,7 +17,6 @@ setuptools.setup(
     include_package_data=True,
     packages=setuptools.find_packages(exclude=["tests"]),
     package_data={"pynction": ["py.typed"]},
-    zip_safe=False,
     url="https://github.com/niconunez96/pynction",
     description="Functional based library to support monads and other functional programming concepts",
     long_description=long_description,
