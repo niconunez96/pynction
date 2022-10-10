@@ -5,12 +5,12 @@ right = Either.right
 left = Either.left
 
 
-from .monads.maybe import DoMaybe, Just, Maybe, Nothing  # noqa
+from .monads.maybe import DoMaybe, Maybe  # noqa
 from .monads.maybe import do as do_maybe  # noqa
 
 maybe = Maybe.of
-just = Just
-nothing = Nothing.get_instance()
+just = Maybe.just
+nothing = Maybe.nothing()
 
 
 from .monads.try_monad import Try  # noqa

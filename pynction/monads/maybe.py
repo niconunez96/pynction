@@ -13,8 +13,16 @@ L = TypeVar("L")
 
 class Maybe(ABC, Generic[T]):
     @staticmethod
-    def of(value: Optional[T]) -> "Maybe[T]":  # type: ignore
+    def of(value: Optional[T]) -> "Maybe[T]":
         return Nothing.get_instance() if not value else Just(value)
+
+    @staticmethod
+    def nothing() -> "Nothing":
+        return Nothing.get_instance()
+
+    @staticmethod
+    def just(value: T) -> "Just[T]":  # type: ignore
+        return Just(value)
 
     @abstractproperty
     def is_empty(self) -> bool:
