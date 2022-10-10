@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.1.0 (2022-10-10)
+------------------
+- MINOR: Make monads dataclasses (#25)
+- Fix isort config file
+- Add examples with pattern matching
+- Make Try monad dataclass
+- Move maybe factory methods to Maybe class7
+- Transform either and maybe into dataclasses
+
 0.0.11 (2022-10-02)
 -------------------
 - PATCH: Fix pypi workflow
