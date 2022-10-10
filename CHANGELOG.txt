@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.1.2 (2022-10-10)
+------------------
+- PATCH: Fix setuptools definition
+
 0.1.1 (2022-10-10)
 ------------------
 - PATCH: Add support for mypy in pypi
