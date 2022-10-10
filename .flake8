@@ -2,3 +2,4 @@
 max-line-length = 120
 min_python_version = 3.7
 exclude = env
+max-complexity = 6
