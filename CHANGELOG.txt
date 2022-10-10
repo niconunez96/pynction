@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.1.1 (2022-10-10)
+------------------
+- PATCH: Add support for mypy in pypi
+
 0.1.0 (2022-10-10)
 ------------------
 - MINOR: Make monads dataclasses (#25)
