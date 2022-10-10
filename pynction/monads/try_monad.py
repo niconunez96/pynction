@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Callable, Generic, TypeVar
 
 from .either import Either, Left, Right
@@ -49,11 +50,9 @@ class Try(ABC, Generic[T]):
         raise NotImplementedError
 
 
+@dataclass(frozen=True)
 class Failure(Try[T]):
     _e: Exception
-
-    def __init__(self, e: Exception):
-        self._e = e
 
     def map(self, _: Callable[[T], S]) -> "Try[S]":
         return Failure(self._e)
@@ -83,11 +82,9 @@ class Failure(Try[T]):
         return Left(self._e)
 
 
+@dataclass(frozen=True)
 class Success(Try[T]):
     _value: T
-
-    def __init__(self, value: T):
-        self._value = value
 
     def map(self, f: Callable[[T], S]) -> "Try[S]":
         try:
