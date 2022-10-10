@@ -1,5 +1,6 @@
 import abc
-from typing import Callable, Generator, Generic, TypeVar, cast
+from dataclasses import dataclass
+from typing import Any, Callable, Generator, Generic, TypeVar, cast
 
 from typing_extensions import ParamSpec
 
@@ -11,11 +12,11 @@ R1 = TypeVar("R1")
 
 class Either(abc.ABC, Generic[L, R]):
     @staticmethod
-    def right(value: R) -> "Either[L, R]":  # type: ignore
+    def right(value: R) -> "Either[Any, R]":  # type: ignore
         return Right(value)
 
     @staticmethod
-    def left(value: L) -> "Either[L, R]":  # type: ignore
+    def left(value: L) -> "Either[L, Any]":  # type: ignore
         return Left(value)
 
     @abc.abstractproperty
@@ -41,11 +42,9 @@ class Either(abc.ABC, Generic[L, R]):
         raise NotImplementedError
 
 
-class Right(Either[L, R]):
+@dataclass(frozen=True)
+class Right(Either[Any, R]):
     _value: R
-
-    def __init__(self, value: R):
-        self._value = value
 
     def __str__(self) -> str:
         return f"Right({self._value})"
@@ -73,11 +72,9 @@ class Right(Either[L, R]):
         return self._value
 
 
-class Left(Either[L, R]):
+@dataclass(frozen=True)
+class Left(Either[L, Any]):
     _value: L
-
-    def __init__(self, value: L):
-        self._value = value
 
     def __str__(self) -> str:
         return f"Left({self._value})"

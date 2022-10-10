@@ -4,6 +4,7 @@ from typing_extensions import Literal, TypedDict
 
 from pynction import (
     DoEither,
+    DoMaybe,
     Either,
     Maybe,
     do_either,
@@ -16,7 +17,6 @@ from pynction import (
     stream_of,
     try_of,
 )
-from pynction.monads.maybe import DoMaybe
 
 
 # Maybe examples
@@ -99,7 +99,7 @@ bla = (
     .map(lambda a: a + 1)
     .filter(lambda n: n > 2)
     .flat_map(lambda n: [n, n * 2])
-    .to_list
+    .to_list()
 )
 print("*** Stream samples ***")
 print(bla)
@@ -205,3 +205,31 @@ def example_with_union() -> DoEither[str, Union[int, str], str]:
 result = either_do_example(1)
 result2 = example_with_union()
 print(result)
+
+
+print("************ Pattern matching python 3.10 *************")
+# baz2 = just(1)
+# match baz2:
+#     case Just(a):
+#         print(a)
+#     case Nothing:
+#         print("NOTHING HERE")
+
+# baz3 = left("MY ERROR")
+# match baz3:
+#     case Right(r):
+#         print(r)
+#     case Left(l):
+#         print(l)
+
+
+# def sample() -> int:
+#     raise Exception("Boom")
+
+
+# baz4 = try_of(sample)
+# match baz4:
+#     case Failure(e):
+#         print(str(e))
+#     case Success(a):
+#         print(a)

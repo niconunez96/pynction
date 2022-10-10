@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
+from dataclasses import dataclass
 from typing import Any, Callable, Generator, Generic, NoReturn, Optional, TypeVar, cast
 
 from typing_extensions import ParamSpec
@@ -12,8 +13,16 @@ L = TypeVar("L")
 
 class Maybe(ABC, Generic[T]):
     @staticmethod
-    def of(value: Optional[T]) -> "Maybe[T]":  # type: ignore
+    def of(value: Optional[T]) -> "Maybe[T]":
         return Nothing.get_instance() if not value else Just(value)
+
+    @staticmethod
+    def nothing() -> "Nothing":
+        return Nothing.get_instance()
+
+    @staticmethod
+    def just(value: T) -> "Just[T]":  # type: ignore
+        return Just(value)
 
     @abstractproperty
     def is_empty(self) -> bool:
@@ -40,6 +49,7 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
 
+@dataclass
 class Nothing(Maybe):
     _instance: Optional["Nothing"] = None
 
@@ -72,11 +82,9 @@ class Nothing(Maybe):
         return Left(error)
 
 
+@dataclass(frozen=True)
 class Just(Maybe[T]):
     _value: T
-
-    def __init__(self, value: T):
-        self._value = value
 
     def __str__(self) -> str:
         return f"Just({self._value})"
