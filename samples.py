@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Tuple, Union
 
 from typing_extensions import Literal, TypedDict
 
@@ -9,6 +9,7 @@ from pynction import (
     Maybe,
     do_either,
     do_maybe,
+    just,
     left,
     maybe,
     nothing,
@@ -17,6 +18,7 @@ from pynction import (
     stream_of,
     try_of,
 )
+from pynction.monads.maybe import DoMaybeN, _
 
 
 # Maybe examples
@@ -77,7 +79,6 @@ def transform_word(word: str) -> Response:
             return {"body": {"error": "contains upper case"}, "status": 400}
         elif error == "GREATER_THAN_100":
             return {"body": {"error": "number greater than 100"}, "status": 400}
-        return {"body": {"error": "unexpected"}, "status": 500}
 
     return result.map(lambda s: Response(body={"data": s}, status=200)).get_or_else_get(
         lambda error: mapError(error)
@@ -148,7 +149,7 @@ temp1.flat_map(lambda name: get_age().map(lambda surname: f"{name} {surname}"))
 
 
 @do_maybe
-def do_notation_example() -> DoMaybe[Union[str, int], str]:
+def do_notation_example() -> DoMaybe[Union[int, str], str]:
     name = yield get_name()
     age = yield get_age()
     return f"{name} {age}"
@@ -212,7 +213,7 @@ print("************ Pattern matching python 3.10 *************")
 # match baz2:
 #     case Just(a):
 #         print(a)
-#     case Nothing:
+#     case Nothing():
 #         print("NOTHING HERE")
 
 # baz3 = left("MY ERROR")
@@ -233,3 +234,25 @@ print("************ Pattern matching python 3.10 *************")
 #         print(str(e))
 #     case Success(a):
 #         print(a)
+
+
+def get_int() -> Maybe[int]:
+    a = just(1)
+    return a
+
+
+def get_str() -> Maybe[str]:
+    return just("bla")
+
+
+@do_maybe
+def issue() -> DoMaybeN[Tuple[int, str, str]]:
+    a = yield from _(get_int())
+    b = yield from _(get_str())
+    c = yield from _(just("something"))
+    return a, b, c
+
+
+foo_issue = issue()
+
+print(foo_issue)

@@ -5,7 +5,7 @@ right = Either.right
 left = Either.left
 
 
-from .monads.maybe import DoMaybe, Maybe  # noqa
+from .monads.maybe import DoMaybe, DoMaybeN, Maybe, _  # noqa
 from .monads.maybe import do as do_maybe  # noqa
 
 maybe = Maybe.of

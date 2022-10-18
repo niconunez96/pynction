@@ -1,8 +1,8 @@
-from typing import Union
+from typing import Tuple, Union
 
 import pytest
 
-from pynction import DoMaybe, do_maybe, maybe, nothing
+from pynction import DoMaybe, DoMaybeN, _, do_maybe, just, maybe, nothing
 
 
 class TestJust:
@@ -132,8 +132,31 @@ def example_with_arguments(x: int, y: int) -> DoMaybe[int, int]:
     return x + y + foo
 
 
+@do_maybe
+def dynamic_typing_returning_nothing() -> DoMaybeN[Tuple[int, str]]:
+    number = yield from _(just(2))
+    str_number = yield from _(nothing)
+    return number, str_number
+
+
+@do_maybe
+def dynamic_typing_with_result() -> DoMaybeN[Tuple[int, str]]:
+    number = yield from _(just(2))
+    str_number = yield from _(just("6"))
+    return number, str_number
+
+
+@do_maybe
+def dynamic_typing_raising_exception() -> DoMaybeN[Tuple[int, str]]:
+    number = yield from _(just(2))  # noqa: F841
+    str_number = yield from _(just("6"))  # noqa: F841
+    raise Exception("Boom")
+    # return number, str_number
+
+
 @pytest.mark.parametrize(
-    "do_notation_func", [example_with_nothing, example_with_nothing_2]
+    "do_notation_func",
+    [example_with_nothing, example_with_nothing_2, dynamic_typing_returning_nothing],
 )
 def test_do_notation_should_return_nothing_when_any_expression_return_a_nothing(
     do_notation_func,
@@ -148,6 +171,7 @@ def test_do_notation_should_return_nothing_when_any_expression_return_a_nothing(
     [
         (example_with_return_value, 3),
         (example_with_return_value_2, "nicolas nunez with age 25"),
+        (dynamic_typing_with_result, (2, "6")),
     ],
 )
 def test_do_notation_should_return_a_just_with_value_calculated(
@@ -159,9 +183,13 @@ def test_do_notation_should_return_a_just_with_value_calculated(
     assert result._value == expected_result
 
 
-def test_do_notation_should_not_catch_unexpected_exceptions():
+@pytest.mark.parametrize(
+    "do_notation_func",
+    [example_with_unexpected_exception, dynamic_typing_raising_exception],
+)
+def test_do_notation_should_not_catch_unexpected_exceptions(do_notation_func):
     with pytest.raises(Exception) as e:
-        example_with_unexpected_exception()
+        do_notation_func()
         assert str(e) == "Unexpected exception"
 
 

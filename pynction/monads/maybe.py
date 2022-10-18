@@ -110,6 +110,14 @@ class Just(Maybe[T]):
 
 
 DoMaybe = Generator[Maybe[T], T, V]
+DoMaybeN = DoMaybe[Any, V]
+
+
+def _(obj: Maybe[T]) -> DoMaybeN[T]:
+    a = yield obj
+    return a
+
+
 P = ParamSpec("P")
 
 
@@ -119,9 +127,9 @@ def do(generator: Callable[P, DoMaybe[T, V]]) -> Callable[P, Maybe[V]]:
         maybe_monad = next(gen)
         while True:
             try:
-                if type(maybe_monad) == Nothing:
-                    return Nothing()
-                maybe_monad = gen.send(cast(Just, maybe_monad)._value)
+                if isinstance(maybe_monad, Nothing):
+                    return Nothing.get_instance()
+                maybe_monad = gen.send(cast(Just[T], maybe_monad)._value)
             except StopIteration as e:
                 return Just(e.value)
 
