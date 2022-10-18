@@ -2,7 +2,9 @@ from typing import Tuple, Union
 
 import pytest
 
-from pynction import DoMaybe, DoMaybeN, _, do_maybe, just, maybe, nothing
+from pynction import DoMaybe, DoMaybeN
+from pynction import _m as _
+from pynction import do_maybe, just, maybe, nothing
 
 
 class TestJust:
@@ -122,7 +124,7 @@ def example_with_return_value_2() -> DoMaybe[Union[int, str], str]:
 def example_with_unexpected_exception() -> DoMaybe[str, str]:
     x = yield maybe("EXAMPLE")  # noqa: F841
     y = yield maybe("EXAMPLE")  # noqa: F841
-    raise Exception("Unexpected exception")
+    raise Exception("Boom")
     # return x + y
 
 
@@ -190,7 +192,7 @@ def test_do_notation_should_return_a_just_with_value_calculated(
 def test_do_notation_should_not_catch_unexpected_exceptions(do_notation_func):
     with pytest.raises(Exception) as e:
         do_notation_func()
-        assert str(e) == "Unexpected exception"
+    assert str(e.value) == "Boom"
 
 
 def test_do_notation_should_pass_arguments():

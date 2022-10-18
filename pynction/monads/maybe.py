@@ -1,3 +1,4 @@
+import functools
 from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
 from typing import Any, Callable, Generator, Generic, NoReturn, Optional, TypeVar, cast
@@ -133,4 +134,5 @@ def do(generator: Callable[P, DoMaybe[T, V]]) -> Callable[P, Maybe[V]]:
             except StopIteration as e:
                 return Just(e.value)
 
+    functools.update_wrapper(wrapper, generator)
     return wrapper

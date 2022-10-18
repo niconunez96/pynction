@@ -1,9 +1,11 @@
-from typing import Union
+from typing import Tuple, Union
 from unittest.mock import Mock
 
 import pytest
+from typing_extensions import Literal
 
-from pynction import DoEither, Either, do_either, left, right
+from pynction import DoEither, Either, _e, do_either, left, right
+from pynction.monads.either import DoEitherN
 
 
 class TestRight:
@@ -82,18 +84,27 @@ class TestLeft:
 
 
 @do_either
-def example_with_nothing() -> DoEither[str, int, int]:
+def example_with_left() -> DoEither[str, int, int]:
     x = yield right(1)
     y = yield left("error!")
     return x + y
 
 
 @do_either
-def example_with_nothing_2() -> DoEither[str, int, int]:
+def example_with_left_2() -> DoEither[str, int, int]:
     v = yield right(5)
     x = yield right(1)
     y = yield left("error!")
     z = yield right(10)
+    return v + x + y + z
+
+
+@do_either
+def dynamic_typing_returning_left() -> DoEitherN[str, int]:
+    v = yield from _e(right(5))
+    x = yield from _e(right(1))
+    y = yield from _e(left("error!"))
+    z = yield from _e(right(10))
     return v + x + y + z
 
 
@@ -116,7 +127,25 @@ def example_with_return_value_2() -> DoEither[str, Union[int, str], str]:
 
 
 @do_either
+def dynamic_typing_returning_value() -> DoEitherN[
+    Literal["error", "ERROR1"], Tuple[int, str]
+]:
+    x = yield from _e(right(2))
+    y = yield from _e(right(6))
+    z = yield from _e(right("something"))
+    return x + y, z
+
+
+@do_either
 def example_with_unexpected_exception() -> DoEither[str, str, str]:
+    x = yield right("EXAMPLE")  # noqa: F841
+    y = yield right("EXAMPLE")  # noqa: F841
+    raise Exception("Unexpected exception")
+    # return x + y
+
+
+@do_either
+def dynamic_typing_with_unexpected_exception() -> DoEitherN[str, str]:
     x = yield right("EXAMPLE")  # noqa: F841
     y = yield right("EXAMPLE")  # noqa: F841
     raise Exception("Unexpected exception")
@@ -130,7 +159,8 @@ def example_with_arguments(x: int, y: int) -> DoEither[str, int, int]:
 
 
 @pytest.mark.parametrize(
-    "do_notation_func", [example_with_nothing, example_with_nothing_2]
+    "do_notation_func",
+    [example_with_left, example_with_left_2, dynamic_typing_returning_left],
 )
 def test_do_notation_should_return_left_when_any_expression_return_a_left(
     do_notation_func,
@@ -146,6 +176,7 @@ def test_do_notation_should_return_left_when_any_expression_return_a_left(
     [
         (example_with_return_value, 3),
         (example_with_return_value_2, "john wick with age 25"),
+        (dynamic_typing_returning_value, (8, "something")),
     ],
 )
 def test_do_notation_should_return_a_right_with_value_calculated(
@@ -157,10 +188,14 @@ def test_do_notation_should_return_a_right_with_value_calculated(
     assert result._value == expected_result
 
 
-def test_do_notation_should_not_catch_unexpected_exceptions():
+@pytest.mark.parametrize(
+    "do_notation_func",
+    [example_with_unexpected_exception, dynamic_typing_with_unexpected_exception],
+)
+def test_do_notation_should_not_catch_unexpected_exceptions(do_notation_func):
     with pytest.raises(Exception) as e:
-        example_with_unexpected_exception()
-        assert str(e) == "Unexpected exception"
+        do_notation_func()
+    assert str(e.value) == "Unexpected exception"
 
 
 def test_do_notation_should_pass_arguments():

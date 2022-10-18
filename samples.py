@@ -4,9 +4,13 @@ from typing_extensions import Literal, TypedDict
 
 from pynction import (
     DoEither,
+    DoEitherN,
     DoMaybe,
+    DoMaybeN,
     Either,
     Maybe,
+    _e,
+    _m,
     do_either,
     do_maybe,
     just,
@@ -18,7 +22,6 @@ from pynction import (
     stream_of,
     try_of,
 )
-from pynction.monads.maybe import DoMaybeN, _
 
 
 # Maybe examples
@@ -131,7 +134,9 @@ try_example_2.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}")
 try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
 
 
-# Do notation maybe
+print("*** Do notation with maybe ***")
+
+
 def get_name() -> Maybe[str]:
     return maybe("nicolas")
 
@@ -158,8 +163,34 @@ def do_notation_example() -> DoMaybe[Union[int, str], str]:
 value = do_notation_example()
 print(value)
 
+# Dynamic typing
 
-# Do notation for either
+
+def get_int() -> Maybe[int]:
+    a = just(1)
+    return a
+
+
+def get_str() -> Maybe[str]:
+    return just("bla")
+
+
+@do_maybe
+def issue() -> DoMaybeN[Tuple[int, str, str]]:
+    a = yield from _m(get_int())
+    b = yield from _m(get_str())
+    c = yield from _m(just("something"))
+    return a, b, c
+
+
+foo_issue = issue()
+
+print(foo_issue)
+
+
+print("*** Do notation with maybe ***")
+
+
 class User:
     name: str
 
@@ -203,9 +234,20 @@ def example_with_union() -> DoEither[str, Union[int, str], str]:
     return f"{name} {lastname} with age {age}"
 
 
+@do_either
+def example_with_union_dynamic() -> DoEitherN[str, Tuple[str, int]]:
+    name = yield from _e(get_eihter_name())
+    age = yield from _e(right(25))
+    lastname = yield from _e(right("wick"))
+    return name + lastname, age
+
+
 result = either_do_example(1)
 result2 = example_with_union()
+result3 = example_with_union_dynamic()
 print(result)
+print(result2)
+print(result3)
 
 
 print("************ Pattern matching python 3.10 *************")
@@ -234,25 +276,3 @@ print("************ Pattern matching python 3.10 *************")
 #         print(str(e))
 #     case Success(a):
 #         print(a)
-
-
-def get_int() -> Maybe[int]:
-    a = just(1)
-    return a
-
-
-def get_str() -> Maybe[str]:
-    return just("bla")
-
-
-@do_maybe
-def issue() -> DoMaybeN[Tuple[int, str, str]]:
-    a = yield from _(get_int())
-    b = yield from _(get_str())
-    c = yield from _(just("something"))
-    return a, b, c
-
-
-foo_issue = issue()
-
-print(foo_issue)
