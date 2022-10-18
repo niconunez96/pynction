@@ -75,7 +75,7 @@ class TestLeft:
         result = example.filter_or_else(filter_function, "filter failed")
 
         filter_function.assert_not_called()
-        assert result._value == "ERROR"
+        assert result._value == "ERROR"  # type: ignore
 
 
 # Do notation tests
@@ -167,4 +167,4 @@ def test_do_notation_should_pass_arguments():
     result = example_with_arguments(1, 2)
 
     assert result.is_right is True
-    assert result._value == 13
+    assert result._value == 13  # type: ignore

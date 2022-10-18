@@ -26,7 +26,7 @@ class TestJust:
 
         result = example.to_either("error")
 
-        assert result._value == "EXAMPLE"
+        assert result._value == "EXAMPLE"  # type: ignore
 
     def test_it_should_return_just_when_apply_flat_map(self):
         foo = maybe(1)
@@ -34,7 +34,7 @@ class TestJust:
         result = foo.flat_map(lambda a: maybe(a + 5))
 
         assert result.is_empty is False
-        assert result._value == 6
+        assert result._value == 6  # type: ignore
 
     def test_it_should_return_element_when_call_get_or_raise(self):
         foo = maybe(1)
@@ -63,7 +63,7 @@ class TestNothing:
 
         result = example.to_either("error")
 
-        assert result._value == "error"
+        assert result._value == "error"  # type: ignore
 
     def test_flat_map_should_return_nothing_when_applied_to_nothing(self):
         foo = nothing
@@ -169,4 +169,4 @@ def test_do_notation_should_pass_arguments():
     result = example_with_arguments(1, 2)
 
     assert result.is_empty is False
-    assert result._value == 13
+    assert result._value == 13  # type: ignore
