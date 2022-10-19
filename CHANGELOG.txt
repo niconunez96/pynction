@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.2.0 (2022-10-19)
+------------------
+- MINOR: Dynamic typing for do decorators (#31)
+- Implement dynamic typing in do either
+- Add dynamic typing for do maybe
+- Fix mypy in tests
+- Update mypy.ini
+
 0.1.3 (2022-10-10)
 ------------------
 - PATCH: Fix setuptools definition
