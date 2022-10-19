@@ -1,11 +1,13 @@
-from .monads.either import DoEither, Either  # noqa
+from .monads.either import DoEither, DoEitherN, Either  # noqa
+from .monads.either import _ as _e  # noqa
 from .monads.either import do as do_either  # noqa
 
 right = Either.right
 left = Either.left
 
 
-from .monads.maybe import DoMaybe, Maybe  # noqa
+from .monads.maybe import DoMaybe, DoMaybeN, Maybe  # noqa
+from .monads.maybe import _ as _m  # noqa
 from .monads.maybe import do as do_maybe  # noqa
 
 maybe = Maybe.of

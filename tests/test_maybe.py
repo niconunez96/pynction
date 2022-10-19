@@ -1,8 +1,10 @@
-from typing import Union
+from typing import Tuple, Union
 
 import pytest
 
-from pynction import DoMaybe, do_maybe, maybe, nothing
+from pynction import DoMaybe, DoMaybeN
+from pynction import _m as _
+from pynction import do_maybe, just, maybe, nothing
 
 
 class TestJust:
@@ -26,7 +28,7 @@ class TestJust:
 
         result = example.to_either("error")
 
-        assert result._value == "EXAMPLE"
+        assert result._value == "EXAMPLE"  # type: ignore
 
     def test_it_should_return_just_when_apply_flat_map(self):
         foo = maybe(1)
@@ -34,7 +36,7 @@ class TestJust:
         result = foo.flat_map(lambda a: maybe(a + 5))
 
         assert result.is_empty is False
-        assert result._value == 6
+        assert result._value == 6  # type: ignore
 
     def test_it_should_return_element_when_call_get_or_raise(self):
         foo = maybe(1)
@@ -63,7 +65,7 @@ class TestNothing:
 
         result = example.to_either("error")
 
-        assert result._value == "error"
+        assert result._value == "error"  # type: ignore
 
     def test_flat_map_should_return_nothing_when_applied_to_nothing(self):
         foo = nothing
@@ -122,7 +124,7 @@ def example_with_return_value_2() -> DoMaybe[Union[int, str], str]:
 def example_with_unexpected_exception() -> DoMaybe[str, str]:
     x = yield maybe("EXAMPLE")  # noqa: F841
     y = yield maybe("EXAMPLE")  # noqa: F841
-    raise Exception("Unexpected exception")
+    raise Exception("Boom")
     # return x + y
 
 
@@ -132,8 +134,31 @@ def example_with_arguments(x: int, y: int) -> DoMaybe[int, int]:
     return x + y + foo
 
 
+@do_maybe
+def dynamic_typing_returning_nothing() -> DoMaybeN[Tuple[int, str]]:
+    number = yield from _(just(2))
+    str_number = yield from _(nothing)
+    return number, str_number
+
+
+@do_maybe
+def dynamic_typing_with_result() -> DoMaybeN[Tuple[int, str]]:
+    number = yield from _(just(2))
+    str_number = yield from _(just("6"))
+    return number, str_number
+
+
+@do_maybe
+def dynamic_typing_raising_exception() -> DoMaybeN[Tuple[int, str]]:
+    number = yield from _(just(2))  # noqa: F841
+    str_number = yield from _(just("6"))  # noqa: F841
+    raise Exception("Boom")
+    # return number, str_number
+
+
 @pytest.mark.parametrize(
-    "do_notation_func", [example_with_nothing, example_with_nothing_2]
+    "do_notation_func",
+    [example_with_nothing, example_with_nothing_2, dynamic_typing_returning_nothing],
 )
 def test_do_notation_should_return_nothing_when_any_expression_return_a_nothing(
     do_notation_func,
@@ -148,6 +173,7 @@ def test_do_notation_should_return_nothing_when_any_expression_return_a_nothing(
     [
         (example_with_return_value, 3),
         (example_with_return_value_2, "nicolas nunez with age 25"),
+        (dynamic_typing_with_result, (2, "6")),
     ],
 )
 def test_do_notation_should_return_a_just_with_value_calculated(
@@ -159,14 +185,18 @@ def test_do_notation_should_return_a_just_with_value_calculated(
     assert result._value == expected_result
 
 
-def test_do_notation_should_not_catch_unexpected_exceptions():
+@pytest.mark.parametrize(
+    "do_notation_func",
+    [example_with_unexpected_exception, dynamic_typing_raising_exception],
+)
+def test_do_notation_should_not_catch_unexpected_exceptions(do_notation_func):
     with pytest.raises(Exception) as e:
-        example_with_unexpected_exception()
-        assert str(e) == "Unexpected exception"
+        do_notation_func()
+    assert str(e.value) == "Boom"
 
 
 def test_do_notation_should_pass_arguments():
     result = example_with_arguments(1, 2)
 
     assert result.is_empty is False
-    assert result._value == 13
+    assert result._value == 13  # type: ignore

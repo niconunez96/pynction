@@ -1,4 +1,5 @@
 import abc
+import functools
 from dataclasses import dataclass
 from typing import Any, Callable, Generator, Generic, TypeVar, cast
 
@@ -97,8 +98,8 @@ class Left(Either[L, Any]):
         return f(self._value)
 
 
-DoEither = Generator[Either[L, R], R, R1]
 P = ParamSpec("P")
+DoEither = Generator[Either[L, R], R, R1]
 """
 DoEither[L, R, R1]
 
@@ -120,6 +121,12 @@ def example1(id: int) -> DoEither[str, User, None]:
     return None
 ```
 """
+DoEitherN = Generator[Either[L, Any], Any, R1]
+
+
+def _(obj: Either[L, R]) -> DoEitherN[L, R]:
+    a = yield obj
+    return a
 
 
 def do(generator: Callable[P, DoEither[L, R, R1]]) -> Callable[P, Either[L, R1]]:
@@ -159,4 +166,5 @@ def do(generator: Callable[P, DoEither[L, R, R1]]) -> Callable[P, Either[L, R1]]
             except StopIteration as e:
                 return Right(e.value)
 
+    functools.update_wrapper(wrapper, generator)
     return wrapper
