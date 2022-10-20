@@ -22,6 +22,7 @@ from pynction import (
     stream_of,
     try_of,
 )
+from pynction.functors.function import Provider
 
 
 # Maybe examples
@@ -276,3 +277,16 @@ print("************ Pattern matching python 3.10 *************")
 #         print(str(e))
 #     case Success(a):
 #         print(a)
+
+print("*** Functor examples ")
+
+# Function composition
+f1 = Provider(lambda: 32)
+
+
+def f2(x: int) -> int:
+    return x + 10
+
+
+f3 = f1.map(f2)
+print(f3())

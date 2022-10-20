@@ -1,4 +1,7 @@
+import functools
 from typing import Callable, Generic, TypeVar, Union
+
+from pynction.functors import Functor
 
 T = TypeVar("T")
 T2 = TypeVar("T2")
@@ -8,7 +11,11 @@ R = TypeVar("R")
 R2 = TypeVar("R2")
 
 
-class Provider(Generic[R]):
+class Provider(Functor[R]):
+    """
+    Class that represents a function without arguments.
+    """
+
     def __init__(self, f: Callable[[], R]) -> None:
         self._f = f
 
@@ -16,16 +23,48 @@ class Provider(Generic[R]):
         return self._f()
 
     def map(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Provider[R2]":
+        """
+        This method implements the `Functor` interface which in this case
+        is used to compose functions.
+
+        Math syntax
+        ```
+        f1() => y
+        f2(y) => z
+        f2(f1()) => z
+        ```
+
+        Pynction syntax
+        ```
+        f1 = Provider(lambda: 32)
+        f2 = lambda a: a + 10
+        f3 = f1.map(f2)
+        f3() # will return => 42
+        ```
+        """
         return Provider(lambda: f(self._f()))
 
     def __or__(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Provider[R2]":
+        """
+        Syntax sugar for `map` method so you can do the following
+        f1 = Provider(lambda: 32)
+        f2 = lambda a: a + 10
+        f3 = f1 | f2
+        f3() # will return => 42
+        """
         return self.map(f)
 
     @staticmethod
-    def decorator(decoratee: Callable[[], R]) -> "Provider[R]":
-        def decorator() -> R:
-            return decoratee()
+    def decorator(decorated: Callable[[], R]) -> "Provider[R]":
+        """
+        Decorator that transform your function without arguments
+        to a `Provider` instance
+        """
 
+        def decorator() -> R:
+            return decorated()
+
+        functools.update_wrapper(decorator, decorated)
         return Provider(decorator)
 
 
