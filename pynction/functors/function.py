@@ -1,4 +1,3 @@
-import functools
 from typing import Callable, Generic, TypeVar, Union
 
 from pynction.functors import Functor
@@ -74,7 +73,6 @@ class Provider(Functor[R]):
         def decorator() -> R:
             return decorated()
 
-        functools.update_wrapper(decorator, decorated)
         return Provider(decorator)
 
 
@@ -143,7 +141,6 @@ class Function(Functor[R], Generic[T, R]):
         def decorator(arg: T) -> R:
             return decorated(arg)
 
-        functools.update_wrapper(decorator, decorated)
         return Function(decorator)
 
 
@@ -232,32 +229,87 @@ class Function2(Functor[R], Generic[T, T2, R]):
 
 
 class Function3(Generic[T, T2, T3, R]):
+    """
+    Class that represents a function with 3 arguments.
+    """
+
     def __init__(self, f: Callable[[T, T2, T3], R]) -> None:
         self._f = f
 
     def __call__(self, arg: T, arg2: T2, arg3: T3) -> R:
+        """
+        This method makes any instance of this class `callable`
+        so you can do the following
+        ```
+        f1 = Function3(lambda a, b, c: a + b + c)
+        f1(2, 2, 10)  # will return => 14
+        ```
+        """
         return self._f(arg, arg2, arg3)
 
     def map(
         self, f: Union[Callable[[R], R2], "Function[R, R2]"]
     ) -> "Function3[T, T2, T3, R2]":
+        """
+        This method implements the `Functor` interface which in this case
+        is used to compose functions.
+
+        Math syntax
+        ```
+        f1(x, y, z) => v
+        f2(v) => w
+        f2(f1(2, 2, 10)) => p
+        ```
+
+        Pynction syntax
+        ```
+        f1 = Function3(lambda a, b, c: a + b + c)
+        f2 = lambda a: a + 10
+        f3 = f1.map(f2)
+        f3(2, 2, 10) # will return => 24
+        ```
+        """
         return Function3(lambda x, y, z: f(self._f(x, y, z)))
 
     def __or__(
         self, f: Union[Callable[[R], R2], "Function[R, R2]"]
     ) -> "Function3[T, T2, T3, R2]":
+        """
+        Syntax sugar for `map` method so you can do the following
+        ```
+        f1 = Function3(lambda a, b, c: a + b + c)
+        f2 = lambda a: a + 10
+        f3 = f1 | f2
+        f3(2, 2, 10) # will return => 24
+        ```
+        """
         return self.map(f)
 
     @property
     def curried(self) -> Function[T, Function[T2, Function[T3, R]]]:
+        """
+        This method transform your function of 3 argument into 3 composed functions
+        of one argument each one.
+        Example
+        ```
+        f1 = Function3(lambda a, b, c: a + b + c)
+        f2 = f1.curried
+        f1(15, 15, 10) == f2(15)(15)(10)
+        ```
+        """
         return Function(
             lambda x: Function(lambda y: Function(lambda z: self._f(x, y, z)))
         )
 
     @staticmethod
-    def decorator(decoratee: Callable[[T, T2, T3], R]) -> "Function3[T, T2, T3, R]":
+    def decorator(decorated: Callable[[T, T2, T3], R]) -> "Function3[T, T2, T3, R]":
+        """
+        Decorator that transforms your function with a single argument
+        to a `Function3` instance
+        """
+
         def decorator(arg: T, arg2: T2, arg3: T3) -> R:
-            return decoratee(arg, arg2, arg3)
+            return decorated(arg, arg2, arg3)
 
         return Function3(decorator)
 
