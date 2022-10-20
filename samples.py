@@ -19,6 +19,7 @@ from pynction import (
     nothing,
     pynction0,
     pynction1,
+    pynction2,
     right,
     stream,
     stream_of,
@@ -292,9 +293,8 @@ def f2(x: int) -> int:
 f3 = f1.map(f2)
 print(f3())
 
+
 # Function composition with function
-
-
 @pynction1
 def f4(a: int) -> int:
     return a + 32
@@ -304,5 +304,19 @@ def f5(a: int) -> int:
     return a + 10
 
 
-f6 = f4.map(f5)
+f6 = f4 | f5
 print(f6(2))
+
+
+# Function composition with function2
+@pynction2
+def f7(a: int, b: int) -> int:
+    return a + b
+
+
+def f8(a: int) -> int:
+    return a + 10
+
+
+f9 = f7.map(f8)
+print(f9(1, 2))
