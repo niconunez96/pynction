@@ -20,6 +20,14 @@ class Provider(Functor[R]):
         self._f = f
 
     def __call__(self) -> R:
+        """
+        This method makes any instance of this class `callable`
+        so you can do the following
+        ```
+        f1 = Provider(lambda: 32)
+        f1()  # will return => 32
+        ```
+        """
         return self._f()
 
     def map(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Provider[R2]":
@@ -47,10 +55,12 @@ class Provider(Functor[R]):
     def __or__(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Provider[R2]":
         """
         Syntax sugar for `map` method so you can do the following
+        ```
         f1 = Provider(lambda: 32)
         f2 = lambda a: a + 10
         f3 = f1 | f2
         f3() # will return => 42
+        ```
         """
         return self.map(f)
 
@@ -68,26 +78,72 @@ class Provider(Functor[R]):
         return Provider(decorator)
 
 
-class Function(Generic[T, R]):
+class Function(Functor[R], Generic[T, R]):
+    """
+    Class that represents a function with a single argument.
+    """
+
     def __init__(self, f: Callable[[T], R]) -> None:
         self._f = f
 
     def __call__(self, arg: T) -> R:
+        """
+        This method makes any instance of this class `callable`
+        so you can do the following
+        ```
+        f1 = Function(lambda a: a + 32)
+        f1(2)  # will return => 34
+        ```
+        """
         return self._f(arg)
 
     def map(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Function[T, R2]":
+        """
+        This method implements the `Functor` interface which in this case
+        is used to compose functions.
+
+        Math syntax
+        ```
+        f1(x) => y
+        f2(y) => z
+        f2(f1(32)) => z
+        ```
+
+        Pynction syntax
+        ```
+        f1 = Function(lambda a: a + 32)
+        f2 = lambda a: a + 10
+        f3 = f1.map(f2)
+        f3(2) # will return => 44
+        ```
+        """
         return Function(lambda x: f(self._f(x)))
 
     def __or__(
         self, f: Union[Callable[[R], R2], "Function[R, R2]"]
     ) -> "Function[T, R2]":
+        """
+        Syntax sugar for `map` method so you can do the following
+        ```
+        f1 = Function(lambda a: a + 32)
+        f2 = lambda a: a + 10
+        f3 = f1 | f2
+        f3(2) # will return => 44
+        ```
+        """
         return self.map(f)
 
     @staticmethod
-    def decorator(decoratee: Callable[[T], R]) -> "Function[T, R]":
-        def decorator(arg: T) -> R:
-            return decoratee(arg)
+    def decorator(decorated: Callable[[T], R]) -> "Function[T, R]":
+        """
+        Decorator that transform your function with a single argument
+        to a `Function` instance
+        """
 
+        def decorator(arg: T) -> R:
+            return decorated(arg)
+
+        functools.update_wrapper(decorator, decorated)
         return Function(decorator)
 
 

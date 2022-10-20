@@ -17,12 +17,13 @@ from pynction import (
     left,
     maybe,
     nothing,
+    pynction0,
+    pynction1,
     right,
     stream,
     stream_of,
     try_of,
 )
-from pynction.functors.function import Provider
 
 
 # Maybe examples
@@ -278,10 +279,10 @@ print("************ Pattern matching python 3.10 *************")
 #     case Success(a):
 #         print(a)
 
-print("*** Functor examples ")
+print("*** Functor examples ***")
 
-# Function composition
-f1 = Provider(lambda: 32)
+# Function composition with provider
+f1 = pynction0(lambda: 32)
 
 
 def f2(x: int) -> int:
@@ -290,3 +291,18 @@ def f2(x: int) -> int:
 
 f3 = f1.map(f2)
 print(f3())
+
+# Function composition with function
+
+
+@pynction1
+def f4(a: int) -> int:
+    return a + 32
+
+
+def f5(a: int) -> int:
+    return a + 10
+
+
+f6 = f4.map(f5)
+print(f6(2))
