@@ -30,14 +30,9 @@ from .functors.function import (  # noqa
 from .streams.stream import stream, stream_of  # noqa
 
 pynction0 = Provider.decorator
-pynction0.__doc__ = Provider.decorator.__doc__
 pynction1 = Function.decorator
-pynction1.__doc__ = Function.decorator.__doc__
 pynction2 = Function2.decorator
-pynction2.__doc__ = Function2.decorator.__doc__
 pynction3 = Function3.decorator
-pynction3.__doc__ = Function3.decorator.__doc__
 pynction4 = Function4.decorator
-pynction4.__doc__ = Function4.decorator.__doc__
 
 from .version import __version__  # noqa
