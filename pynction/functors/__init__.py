@@ -8,4 +8,4 @@ T2 = TypeVar("T2")
 
 class Functor(Generic[T_cov], Protocol):
     def map(self, f: Callable[[T_cov], T2]) -> "Functor[T2]":
-        pass
+        raise NotImplementedError
