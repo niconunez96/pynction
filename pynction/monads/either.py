@@ -138,8 +138,7 @@ DoEither = Generator[Either[L, R], R, R1]
 `DoEither[L, R, R1]`
 
 This type must be used with the `@do_either` decorator.
-This type just reflects the either value that is processed by the decorator,
-as long as executing a "map" on the R value.
+This type just reflects the either value that is processed by the decorator.
 So the L and R represents the either value that the do_either receives
 and R1 is the value that is returned by the function.
 
@@ -159,7 +158,7 @@ def example1(id: int) -> DoEither[str, User, None]:
 
 DoEitherN = DoEither[L, Any, R1]
 """
-`DoEither[L, Any, R1]`
+`DoEitherN[L, R1]`
 
 This type should be used when the function that has the `do_either` decorator provides
 more than one type for `R`. For this type you only need to provide the left type
@@ -174,7 +173,7 @@ Example:
 @do_either
 def example1(id: int) -> DoEitherN[str, User]:
     name = yield from _e(obtain_name())  # mypy will infer "name" is str
-    age = yield from _e(obtain(age))  # mypy will infer that "age" is int
+    age = yield from _e(obtain_age())  # mypy will infer that "age" is int
     return User(name, age)
 ```
 """
@@ -191,7 +190,7 @@ def _(obj: Either[L, R]) -> DoEitherN[L, R]:
     @do_either
     def example1(id: int) -> DoEitherN[str, User]:
         name = yield from _e(obtain_name())  # mypy will infer "name" is str
-        age = yield from _e(obtain(age))  # mypy will infer that "age" is int
+        age = yield from _e(obtain_age())  # mypy will infer that "age" is int
         return User(name, age)
     ```
     """
@@ -222,6 +221,15 @@ def do(generator: Callable[P, DoEither[L, R, R1]]) -> Callable[P, Either[L, R1]]
         user = yield execute_validation(user)
         yield execute_use_case(user)
         return None
+    ```
+
+    Example with dynamic typing
+    ```
+    @do_either
+    def example1(id: int) -> DoEitherN[str, User]:
+        name = yield from _e(obtain_name())  # mypy will infer "name" is str
+        age = yield from _e(obtain_age())  # mypy will infer that "age" is int
+        return User(name, age)
     ```
     """
 
