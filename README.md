@@ -108,4 +108,4 @@ print(result) # ==> Will be Left("LESS_THAN_10_LETTERS")
 
 ## API
 
-Check the [docs](./docs/pynction/index.md)
+Check the [docs](https://pynction.vercel.app/)
