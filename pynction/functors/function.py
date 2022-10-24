@@ -19,14 +19,6 @@ class Provider(Functor[R]):
         self._f = f
 
     def __call__(self) -> R:
-        """
-        This method makes any instance of this class `callable`
-        so you can do the following
-        ```
-        f1 = Provider(lambda: 32)
-        f1()  # will return => 32
-        ```
-        """
         return self._f()
 
     def map(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Provider[R2]":
@@ -85,14 +77,6 @@ class Function(Functor[R], Generic[T, R]):
         self._f = f
 
     def __call__(self, arg: T) -> R:
-        """
-        This method makes any instance of this class `callable`
-        so you can do the following
-        ```
-        f1 = Function(lambda a: a + 32)
-        f1(2)  # will return => 34
-        ```
-        """
         return self._f(arg)
 
     def map(self, f: Union[Callable[[R], R2], "Function[R, R2]"]) -> "Function[T, R2]":
@@ -153,14 +137,6 @@ class Function2(Functor[R], Generic[T, T2, R]):
         self._f = f
 
     def __call__(self, arg: T, arg2: T2) -> R:
-        """
-        This method makes any instance of this class `callable`
-        so you can do the following
-        ```
-        f1 = Function2(lambda a, b: a + b)
-        f1(2, 2)  # will return => 4
-        ```
-        """
         return self._f(arg, arg2)
 
     def map(
@@ -237,14 +213,6 @@ class Function3(Functor[R], Generic[T, T2, T3, R]):
         self._f = f
 
     def __call__(self, arg: T, arg2: T2, arg3: T3) -> R:
-        """
-        This method makes any instance of this class `callable`
-        so you can do the following
-        ```
-        f1 = Function3(lambda a, b, c: a + b + c)
-        f1(2, 2, 10)  # will return => 14
-        ```
-        """
         return self._f(arg, arg2, arg3)
 
     def map(
@@ -323,14 +291,6 @@ class Function4(Functor[R], Generic[T, T2, T3, T4, R]):
         self._f = f
 
     def __call__(self, arg: T, arg2: T2, arg3: T3, arg4: T4) -> R:
-        """
-        This method makes any instance of this class `callable`
-        so you can do the following
-        ```
-        f1 = Function4(lambda a, b, c. d: a + b + c + d)
-        f1(2, 2, 10, 11)  # will return => 25
-        ```
-        """
         return self._f(arg, arg2, arg3, arg4)
 
     def map(
