@@ -3,7 +3,6 @@ Module pynction
 
 Sub-modules
 -----------
-* pynction.functors
-* pynction.monads
-* pynction.streams
-* pynction.version
+* [pynction.functors](./functors/index.md)
+* [pynction.monads](./monads/index.md)
+* [pynction.streams](./streams/index.md)

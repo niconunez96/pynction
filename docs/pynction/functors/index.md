@@ -1,15 +1,13 @@
-Module pynction.functors
-========================
+# Module pynction.functors
 
-Sub-modules
------------
-* pynction.functors.function
+## Sub-modules
 
-Classes
--------
+- [pynction.functors.function](./function.md)
+
+## Classes
 
 `Functor(*args, **kwargs)`
-:   Abstract base class for generic types.
+: Abstract base class for generic types.
 
     A generic type is typically declared by inheriting from
     this class parameterized with one or more type variables.

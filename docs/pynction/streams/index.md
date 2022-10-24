@@ -3,4 +3,4 @@ Module pynction.streams
 
 Sub-modules
 -----------
-* pynction.streams.stream
+* [pynction.streams.stream](./stream.md)
