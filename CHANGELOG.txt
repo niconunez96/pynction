@@ -1,6 +1,27 @@
 Changelog
 =========
 
+0.2.1 (2022-10-23)
+------------------
+- Add API doc link
+- PATCH: Use html docs instead of md
+- PATCH: Add docstrings and API documentation (#33)
+- Remove default doc
+- Add links to docs
+- Add docs
+- Fix performance test
+- Add docstring for stream
+- Add docstring for try monad
+- Adjust coverage config
+- Add docstring for Maybe monad
+- Remove unnecessary doc
+- Add either docstring
+- Add docstring for Function4 class
+- Add docstring for Function3 class
+- Add docstring for Function2 class
+- Add docstring for Function class
+- Create functor protocol and add docstrings for provider class
+
 0.2.0 (2022-10-19)
 ------------------
 - MINOR: Dynamic typing for do decorators (#31)
