@@ -46,7 +46,8 @@ class Maybe(ABC, Generic[T]):
     @abstractproperty
     def is_empty(self) -> bool:
         """
-        Returns True if it is a `Nothing` instance, if not it returns False.
+        * Returns `True` if it's a `Nothing` instance
+        * Returns `False` it it's a `Just` instance
         """
         raise NotImplementedError
 
@@ -54,8 +55,10 @@ class Maybe(ABC, Generic[T]):
     def map(self, f: Callable[[T], V]) -> "Maybe[V]":
         """
         If it is a `Just` instance, this method applies the `f` function over the value
-        and returns `Nothing` if the result of the operation is None else it returns the result
-        wrapped in a `Just` instance.
+        and
+        * Returns `Nothing` if the result of the operation is None, else
+        * Returns the result wrapped in a `Just` instance.
+
         For `Nothing` instances the `f` function is ignored.
 
         Example:
@@ -86,8 +89,8 @@ class Maybe(ABC, Generic[T]):
     @abstractmethod
     def get_or_else(self, default: T) -> T:  # type: ignore
         """
-        * If it's a `Just` instance the value returned is the one contained by it.
-        * If it's a `Nothing` instance the value returned is the one provided with the `default` argument
+        * Returns the value if it's a `Just` instance.
+        * Returns `default` if the instance is `Nothing`.
         """
         raise NotImplementedError
 
@@ -95,15 +98,15 @@ class Maybe(ABC, Generic[T]):
     def get_or_raise(self, error: Exception) -> T:
         """
         * Returns the value if it's a `Just` instance.
-        * Raise `error` if the instance is `Nothing`
+        * Raise `error` if the instance is `Nothing`.
         """
         raise NotImplementedError
 
     @abstractmethod
     def to_either(self, error: L) -> Either[L, T]:
         """
-        * If it's a `Nothing` instance, it returns a `Left` with value `error`
-        * If it's a `Just` instance, it returns a `Right` with the same value of `Just`
+        * Returns `Left` with value `error` if it's a `Nothing` instance.
+        * Returns `Right` with the same value of `Just` instance.
 
         Example
         ```
