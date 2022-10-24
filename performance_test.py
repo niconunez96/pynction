@@ -53,7 +53,7 @@ def pynction_way(elem_quantity):
         .map(lambda a: a * 2)
         .flat_map(lambda a: [a + 1, a + 2])
         .take_while(lambda a: a < 1000)
-        .to_list
+        .to_list()
     )
     print("Pynction result: ", len(result))
 

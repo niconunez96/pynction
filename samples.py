@@ -17,6 +17,9 @@ from pynction import (
     left,
     maybe,
     nothing,
+    pynction0,
+    pynction1,
+    pynction2,
     right,
     stream,
     stream_of,
@@ -276,3 +279,44 @@ print("************ Pattern matching python 3.10 *************")
 #         print(str(e))
 #     case Success(a):
 #         print(a)
+
+print("*** Functor examples ***")
+
+# Function composition with provider
+f1 = pynction0(lambda: 32)
+
+
+def f2(x: int) -> int:
+    return x + 10
+
+
+f3 = f1.map(f2)
+print(f3())
+
+
+# Function composition with function
+@pynction1
+def f4(a: int) -> int:
+    return a + 32
+
+
+def f5(a: int) -> int:
+    return a + 10
+
+
+f6 = f4 | f5
+print(f6(2))
+
+
+# Function composition with function2
+@pynction2
+def f7(a: int, b: int) -> int:
+    return a + b
+
+
+def f8(a: int) -> int:
+    return a + 10
+
+
+f9 = f7.map(f8)
+print(f9(1, 2))
