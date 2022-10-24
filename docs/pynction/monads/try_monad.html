@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pynction.monads.try_monad API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pynction.monads.try_monad</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Callable, Generic, TypeVar
+
+from .either import Either, Left, Right
+
+T = TypeVar(&#34;T&#34;)
+S = TypeVar(&#34;S&#34;)
+
+
+class Try(ABC, Generic[T]):
+    &#34;&#34;&#34;
+    Try monad is the representation of the `try - except` statement.
+    You can operate with function that raise exception in a functional way
+    &#34;&#34;&#34;
+
+    @staticmethod
+    def of(f: Callable[[], T]) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        Factory method that creates a `Success` if the function returns
+        a value and returns a `Failure` if the function raises some exception.
+        &#34;&#34;&#34;
+        try:
+            result = f()
+            return Success(result)
+        except Exception as e:
+            return Failure(e)
+
+    @abstractmethod
+    def map(self, f: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
+        &#34;&#34;&#34;
+        If it is a `Success` instance, this method applies the `f` function over the value
+        and:
+        * Returns `Failure` if the operation raise an Exception, else
+        * Returns the result wrapped in a `Success` instance.
+
+        For `Failure` instances the `f` function is ignored.
+
+        Example:
+        ```
+        try_of(lambda: 15).map(lambda a: a + 1)  # Returns Success(16)
+
+        def boom():
+            raise Exception
+        try_of(boom).map(lambda a: a + 1)  # Returns Failure(Exception)
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def flat_map(self, f: Callable[[T], &#34;Try[S]&#34;]) -&gt; &#34;Try[S]&#34;:
+        &#34;&#34;&#34;
+        If it is a `Success` instance, this method applies the `f` function over the value
+        and returns the `Try` instance returned by `f`.
+        For `Failure` instances the `f` function is ignored.
+
+        The difference with map is that the `f` function returns another `Try[V]` instead of plain `V`
+
+        Example:
+        ```
+        try_of(lambda: 1).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Success(2)
+
+        def boom():
+            raise Exception
+        try_of(boom).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Failure(Exception)
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_or_else_get(self, default: Callable[[Exception], T]) -&gt; T:
+        &#34;&#34;&#34;
+        * Returns value if it&#39;s a `Success` instance
+        * Returns result of `default` if it&#39;s a `Failure` instance
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def on(
+        self,
+        on_success: Callable[[T], None] = None,
+        on_failure: Callable[[Exception], None] = None,
+    ) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        Applies:
+        * `on_success` if it&#39;s a `Success` instance
+        * `on_failure` if it&#39;s a `Failure` instance
+
+        Both functions should not return anything, this method should be used
+        for running &#34;impure&#34; operations over `Try` instance.
+
+        Example
+        ```
+        try_of(lambda: 1).on(on_success=lambda a: print(a))  # prints 1
+
+        def boom():
+            raise Exception(&#34;BOOM&#34;)
+        try_of(boom).on(on_failure=lambda err: print(str(err)))  # prints &#34;BOOM&#34;
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def catch(self, f: Callable[[Exception], T]) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        If it is a `Failure` instance, this method applies the `f` function over the exception
+        and:
+        * Returns the result wrapped in a `Success` instance, else
+        * Returns `Failure` again if `f` raises an Exception.
+
+        For `Success` instances the `f` function is ignored.
+
+        Example:
+        ```
+        try_of(lambda: 15).catch(lambda a: a + 1)  # Returns Success(15)
+
+        def boom() -&gt; int:
+            raise Exception
+        try_of(boom).catch(lambda err: 1)  # Returns Success(1)
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def and_finally(self, f: Callable[[], None]) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        This methods always applies the function `f`.
+        It should be executed at the end of the `Try`.
+
+        Example
+        ```
+        # Regular try catch
+        try:
+            db.open_session()
+            db.insert(user)
+        except:
+            db.rollback()
+        finally:
+            db.close_session()
+
+        # Try monad
+        def insert(user: User) -&gt; None:
+            db.open_session()
+            db.insert(user)
+
+        (
+            try_of(lambda: insert(user))
+                .catch(lambda err: db.rollback())
+                .and_finally(lambda: db.close_session())
+        )
+        ```
+        &#34;&#34;&#34;
+        f()
+        return self
+
+    @abstractmethod
+    def to_either(self) -&gt; Either[Exception, T]:
+        &#34;&#34;&#34;
+        * Returns a `Right` if it&#39;s a `Success` instance
+        * Returns a `Left` if it&#39;s a `Failure` instance
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+@dataclass(frozen=True)
+class Failure(Try[T]):
+    _e: Exception
+
+    def map(self, _: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
+        return Failure(self._e)
+
+    def flat_map(self, _: Callable[[T], &#34;Try[S]&#34;]) -&gt; &#34;Try[S]&#34;:
+        return Failure(self._e)
+
+    def get_or_else_get(self, default: Callable[[Exception], T]) -&gt; T:
+        return default(self._e)
+
+    def on(
+        self,
+        _: Callable[[T], None] = None,
+        on_failure: Callable[[Exception], None] = None,
+    ) -&gt; &#34;Try[T]&#34;:
+        if on_failure:
+            on_failure(self._e)
+        return self
+
+    def catch(self, f: Callable[[Exception], T]) -&gt; &#34;Try[T]&#34;:
+        try:
+            return Success(f(self._e))
+        except Exception as e:
+            return Failure(e)
+
+    def to_either(self) -&gt; Either[Exception, T]:
+        return Left(self._e)
+
+
+@dataclass(frozen=True)
+class Success(Try[T]):
+    _value: T
+
+    def map(self, f: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
+        try:
+            return Success(f(self._value))
+        except Exception as e:
+            return Failure(e)
+
+    def flat_map(self, f: Callable[[T], &#34;Try[S]&#34;]) -&gt; &#34;Try[S]&#34;:
+        try:
+            return f(self._value)
+        except Exception as e:
+            return Failure(e)
+
+    def get_or_else_get(self, _: Callable[[Exception], T]) -&gt; T:
+        return self._value
+
+    def on(
+        self,
+        on_success: Callable[[T], None] = None,
+        _: Callable[[Exception], None] = None,
+    ) -&gt; &#34;Try[T]&#34;:
+        if on_success:
+            on_success(self._value)
+        return self
+
+    def catch(self, _: Callable[[Exception], T]) -&gt; &#34;Try[T]&#34;:
+        return self
+
+    def to_either(self) -&gt; Either[Exception, T]:
+        return Right(self._value)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pynction.monads.try_monad.Failure"><code class="flex name class">
+<span>class <span class="ident">Failure</span></span>
+<span>(</span><span>_e: Exception)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Failure(<em>args, </em>*kwds)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Failure(Try[T]):
+    _e: Exception
+
+    def map(self, _: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
+        return Failure(self._e)
+
+    def flat_map(self, _: Callable[[T], &#34;Try[S]&#34;]) -&gt; &#34;Try[S]&#34;:
+        return Failure(self._e)
+
+    def get_or_else_get(self, default: Callable[[Exception], T]) -&gt; T:
+        return default(self._e)
+
+    def on(
+        self,
+        _: Callable[[T], None] = None,
+        on_failure: Callable[[Exception], None] = None,
+    ) -&gt; &#34;Try[T]&#34;:
+        if on_failure:
+            on_failure(self._e)
+        return self
+
+    def catch(self, f: Callable[[Exception], T]) -&gt; &#34;Try[T]&#34;:
+        try:
+            return Success(f(self._e))
+        except Exception as e:
+            return Failure(e)
+
+    def to_either(self) -&gt; Either[Exception, T]:
+        return Left(self._e)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></li>
+<li>abc.ABC</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynction.monads.try_monad.Try.and_finally" href="#pynction.monads.try_monad.Try.and_finally">and_finally</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.catch" href="#pynction.monads.try_monad.Try.catch">catch</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.flat_map" href="#pynction.monads.try_monad.Try.flat_map">flat_map</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.get_or_else_get" href="#pynction.monads.try_monad.Try.get_or_else_get">get_or_else_get</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.map" href="#pynction.monads.try_monad.Try.map">map</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.of" href="#pynction.monads.try_monad.Try.of">of</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.on" href="#pynction.monads.try_monad.Try.on">on</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.to_either" href="#pynction.monads.try_monad.Try.to_either">to_either</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynction.monads.try_monad.Success"><code class="flex name class">
+<span>class <span class="ident">Success</span></span>
+<span>(</span><span>_value: ~T)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Success(<em>args, </em>*kwds)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Success(Try[T]):
+    _value: T
+
+    def map(self, f: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
+        try:
+            return Success(f(self._value))
+        except Exception as e:
+            return Failure(e)
+
+    def flat_map(self, f: Callable[[T], &#34;Try[S]&#34;]) -&gt; &#34;Try[S]&#34;:
+        try:
+            return f(self._value)
+        except Exception as e:
+            return Failure(e)
+
+    def get_or_else_get(self, _: Callable[[Exception], T]) -&gt; T:
+        return self._value
+
+    def on(
+        self,
+        on_success: Callable[[T], None] = None,
+        _: Callable[[Exception], None] = None,
+    ) -&gt; &#34;Try[T]&#34;:
+        if on_success:
+            on_success(self._value)
+        return self
+
+    def catch(self, _: Callable[[Exception], T]) -&gt; &#34;Try[T]&#34;:
+        return self
+
+    def to_either(self) -&gt; Either[Exception, T]:
+        return Right(self._value)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></li>
+<li>abc.ABC</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynction.monads.try_monad.Try.and_finally" href="#pynction.monads.try_monad.Try.and_finally">and_finally</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.catch" href="#pynction.monads.try_monad.Try.catch">catch</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.flat_map" href="#pynction.monads.try_monad.Try.flat_map">flat_map</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.get_or_else_get" href="#pynction.monads.try_monad.Try.get_or_else_get">get_or_else_get</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.map" href="#pynction.monads.try_monad.Try.map">map</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.of" href="#pynction.monads.try_monad.Try.of">of</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.on" href="#pynction.monads.try_monad.Try.on">on</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.to_either" href="#pynction.monads.try_monad.Try.to_either">to_either</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynction.monads.try_monad.Try"><code class="flex name class">
+<span>class <span class="ident">Try</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Try monad is the representation of the <code>try - except</code> statement.
+You can operate with function that raise exception in a functional way</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Try(ABC, Generic[T]):
+    &#34;&#34;&#34;
+    Try monad is the representation of the `try - except` statement.
+    You can operate with function that raise exception in a functional way
+    &#34;&#34;&#34;
+
+    @staticmethod
+    def of(f: Callable[[], T]) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        Factory method that creates a `Success` if the function returns
+        a value and returns a `Failure` if the function raises some exception.
+        &#34;&#34;&#34;
+        try:
+            result = f()
+            return Success(result)
+        except Exception as e:
+            return Failure(e)
+
+    @abstractmethod
+    def map(self, f: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
+        &#34;&#34;&#34;
+        If it is a `Success` instance, this method applies the `f` function over the value
+        and:
+        * Returns `Failure` if the operation raise an Exception, else
+        * Returns the result wrapped in a `Success` instance.
+
+        For `Failure` instances the `f` function is ignored.
+
+        Example:
+        ```
+        try_of(lambda: 15).map(lambda a: a + 1)  # Returns Success(16)
+
+        def boom():
+            raise Exception
+        try_of(boom).map(lambda a: a + 1)  # Returns Failure(Exception)
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def flat_map(self, f: Callable[[T], &#34;Try[S]&#34;]) -&gt; &#34;Try[S]&#34;:
+        &#34;&#34;&#34;
+        If it is a `Success` instance, this method applies the `f` function over the value
+        and returns the `Try` instance returned by `f`.
+        For `Failure` instances the `f` function is ignored.
+
+        The difference with map is that the `f` function returns another `Try[V]` instead of plain `V`
+
+        Example:
+        ```
+        try_of(lambda: 1).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Success(2)
+
+        def boom():
+            raise Exception
+        try_of(boom).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Failure(Exception)
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_or_else_get(self, default: Callable[[Exception], T]) -&gt; T:
+        &#34;&#34;&#34;
+        * Returns value if it&#39;s a `Success` instance
+        * Returns result of `default` if it&#39;s a `Failure` instance
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def on(
+        self,
+        on_success: Callable[[T], None] = None,
+        on_failure: Callable[[Exception], None] = None,
+    ) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        Applies:
+        * `on_success` if it&#39;s a `Success` instance
+        * `on_failure` if it&#39;s a `Failure` instance
+
+        Both functions should not return anything, this method should be used
+        for running &#34;impure&#34; operations over `Try` instance.
+
+        Example
+        ```
+        try_of(lambda: 1).on(on_success=lambda a: print(a))  # prints 1
+
+        def boom():
+            raise Exception(&#34;BOOM&#34;)
+        try_of(boom).on(on_failure=lambda err: print(str(err)))  # prints &#34;BOOM&#34;
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def catch(self, f: Callable[[Exception], T]) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        If it is a `Failure` instance, this method applies the `f` function over the exception
+        and:
+        * Returns the result wrapped in a `Success` instance, else
+        * Returns `Failure` again if `f` raises an Exception.
+
+        For `Success` instances the `f` function is ignored.
+
+        Example:
+        ```
+        try_of(lambda: 15).catch(lambda a: a + 1)  # Returns Success(15)
+
+        def boom() -&gt; int:
+            raise Exception
+        try_of(boom).catch(lambda err: 1)  # Returns Success(1)
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def and_finally(self, f: Callable[[], None]) -&gt; &#34;Try[T]&#34;:
+        &#34;&#34;&#34;
+        This methods always applies the function `f`.
+        It should be executed at the end of the `Try`.
+
+        Example
+        ```
+        # Regular try catch
+        try:
+            db.open_session()
+            db.insert(user)
+        except:
+            db.rollback()
+        finally:
+            db.close_session()
+
+        # Try monad
+        def insert(user: User) -&gt; None:
+            db.open_session()
+            db.insert(user)
+
+        (
+            try_of(lambda: insert(user))
+                .catch(lambda err: db.rollback())
+                .and_finally(lambda: db.close_session())
+        )
+        ```
+        &#34;&#34;&#34;
+        f()
+        return self
+
+    @abstractmethod
+    def to_either(self) -&gt; Either[Exception, T]:
+        &#34;&#34;&#34;
+        * Returns a `Right` if it&#39;s a `Success` instance
+        * Returns a `Left` if it&#39;s a `Failure` instance
+        &#34;&#34;&#34;
+        raise NotImplementedError</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></li>
+<li><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="pynction.monads.try_monad.Try.of"><code class="name flex">
+<span>def <span class="ident">of</span></span>(<span>f: Callable[[], ~T]) ‑> <a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[~T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Factory method that creates a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> if the function returns
+a value and returns a <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> if the function raises some exception.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def of(f: Callable[[], T]) -&gt; &#34;Try[T]&#34;:
+    &#34;&#34;&#34;
+    Factory method that creates a `Success` if the function returns
+    a value and returns a `Failure` if the function raises some exception.
+    &#34;&#34;&#34;
+    try:
+        result = f()
+        return Success(result)
+    except Exception as e:
+        return Failure(e)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pynction.monads.try_monad.Try.and_finally"><code class="name flex">
+<span>def <span class="ident">and_finally</span></span>(<span>self, f: Callable[[], None]) ‑> <a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[~T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This methods always applies the function <code>f</code>.
+It should be executed at the end of the <code><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></code>.</p>
+<p>Example</p>
+<pre><code># Regular try catch
+try:
+    db.open_session()
+    db.insert(user)
+except:
+    db.rollback()
+finally:
+    db.close_session()
+
+# Try monad
+def insert(user: User) -&gt; None:
+    db.open_session()
+    db.insert(user)
+
+(
+    try_of(lambda: insert(user))
+        .catch(lambda err: db.rollback())
+        .and_finally(lambda: db.close_session())
+)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def and_finally(self, f: Callable[[], None]) -&gt; &#34;Try[T]&#34;:
+    &#34;&#34;&#34;
+    This methods always applies the function `f`.
+    It should be executed at the end of the `Try`.
+
+    Example
+    ```
+    # Regular try catch
+    try:
+        db.open_session()
+        db.insert(user)
+    except:
+        db.rollback()
+    finally:
+        db.close_session()
+
+    # Try monad
+    def insert(user: User) -&gt; None:
+        db.open_session()
+        db.insert(user)
+
+    (
+        try_of(lambda: insert(user))
+            .catch(lambda err: db.rollback())
+            .and_finally(lambda: db.close_session())
+    )
+    ```
+    &#34;&#34;&#34;
+    f()
+    return self</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.try_monad.Try.catch"><code class="name flex">
+<span>def <span class="ident">catch</span></span>(<span>self, f: Callable[[Exception], ~T]) ‑> <a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[~T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If it is a <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> instance, this method applies the <code>f</code> function over the exception
+and:
+* Returns the result wrapped in a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instance, else
+* Returns <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> again if <code>f</code> raises an Exception.</p>
+<p>For <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instances the <code>f</code> function is ignored.</p>
+<p>Example:</p>
+<pre><code>try_of(lambda: 15).catch(lambda a: a + 1)  # Returns Success(15)
+
+def boom() -&gt; int:
+    raise Exception
+try_of(boom).catch(lambda err: 1)  # Returns Success(1)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def catch(self, f: Callable[[Exception], T]) -&gt; &#34;Try[T]&#34;:
+    &#34;&#34;&#34;
+    If it is a `Failure` instance, this method applies the `f` function over the exception
+    and:
+    * Returns the result wrapped in a `Success` instance, else
+    * Returns `Failure` again if `f` raises an Exception.
+
+    For `Success` instances the `f` function is ignored.
+
+    Example:
+    ```
+    try_of(lambda: 15).catch(lambda a: a + 1)  # Returns Success(15)
+
+    def boom() -&gt; int:
+        raise Exception
+    try_of(boom).catch(lambda err: 1)  # Returns Success(1)
+    ```
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.try_monad.Try.flat_map"><code class="name flex">
+<span>def <span class="ident">flat_map</span></span>(<span>self, f: Callable[[~T], ForwardRef('<a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[S]')]) ‑> <a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[~S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If it is a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instance, this method applies the <code>f</code> function over the value
+and returns the <code><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></code> instance returned by <code>f</code>.
+For <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> instances the <code>f</code> function is ignored.</p>
+<p>The difference with map is that the <code>f</code> function returns another <code><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[V]</code> instead of plain <code>V</code></p>
+<p>Example:</p>
+<pre><code>try_of(lambda: 1).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Success(2)
+
+def boom():
+    raise Exception
+try_of(boom).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Failure(Exception)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def flat_map(self, f: Callable[[T], &#34;Try[S]&#34;]) -&gt; &#34;Try[S]&#34;:
+    &#34;&#34;&#34;
+    If it is a `Success` instance, this method applies the `f` function over the value
+    and returns the `Try` instance returned by `f`.
+    For `Failure` instances the `f` function is ignored.
+
+    The difference with map is that the `f` function returns another `Try[V]` instead of plain `V`
+
+    Example:
+    ```
+    try_of(lambda: 1).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Success(2)
+
+    def boom():
+        raise Exception
+    try_of(boom).flat_map(lambda a: try_of(lambda a: a + 1))  # Returns Failure(Exception)
+    ```
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.try_monad.Try.get_or_else_get"><code class="name flex">
+<span>def <span class="ident">get_or_else_get</span></span>(<span>self, default: Callable[[Exception], ~T]) ‑> ~T</span>
+</code></dt>
+<dd>
+<div class="desc"><ul>
+<li>Returns value if it's a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instance</li>
+<li>Returns result of <code>default</code> if it's a <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> instance</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_or_else_get(self, default: Callable[[Exception], T]) -&gt; T:
+    &#34;&#34;&#34;
+    * Returns value if it&#39;s a `Success` instance
+    * Returns result of `default` if it&#39;s a `Failure` instance
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.try_monad.Try.map"><code class="name flex">
+<span>def <span class="ident">map</span></span>(<span>self, f: Callable[[~T], ~S]) ‑> <a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[~S]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If it is a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instance, this method applies the <code>f</code> function over the value
+and:
+* Returns <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> if the operation raise an Exception, else
+* Returns the result wrapped in a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instance.</p>
+<p>For <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> instances the <code>f</code> function is ignored.</p>
+<p>Example:</p>
+<pre><code>try_of(lambda: 15).map(lambda a: a + 1)  # Returns Success(16)
+
+def boom():
+    raise Exception
+try_of(boom).map(lambda a: a + 1)  # Returns Failure(Exception)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def map(self, f: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
+    &#34;&#34;&#34;
+    If it is a `Success` instance, this method applies the `f` function over the value
+    and:
+    * Returns `Failure` if the operation raise an Exception, else
+    * Returns the result wrapped in a `Success` instance.
+
+    For `Failure` instances the `f` function is ignored.
+
+    Example:
+    ```
+    try_of(lambda: 15).map(lambda a: a + 1)  # Returns Success(16)
+
+    def boom():
+        raise Exception
+    try_of(boom).map(lambda a: a + 1)  # Returns Failure(Exception)
+    ```
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.try_monad.Try.on"><code class="name flex">
+<span>def <span class="ident">on</span></span>(<span>self, on_success: Callable[[~T], None] = None, on_failure: Callable[[Exception], None] = None) ‑> <a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a>[~T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Applies:
+* <code>on_success</code> if it's a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instance
+* <code>on_failure</code> if it's a <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> instance</p>
+<p>Both functions should not return anything, this method should be used
+for running "impure" operations over <code><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></code> instance.</p>
+<p>Example</p>
+<pre><code>try_of(lambda: 1).on(on_success=lambda a: print(a))  # prints 1
+
+def boom():
+    raise Exception(&quot;BOOM&quot;)
+try_of(boom).on(on_failure=lambda err: print(str(err)))  # prints &quot;BOOM&quot;
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def on(
+    self,
+    on_success: Callable[[T], None] = None,
+    on_failure: Callable[[Exception], None] = None,
+) -&gt; &#34;Try[T]&#34;:
+    &#34;&#34;&#34;
+    Applies:
+    * `on_success` if it&#39;s a `Success` instance
+    * `on_failure` if it&#39;s a `Failure` instance
+
+    Both functions should not return anything, this method should be used
+    for running &#34;impure&#34; operations over `Try` instance.
+
+    Example
+    ```
+    try_of(lambda: 1).on(on_success=lambda a: print(a))  # prints 1
+
+    def boom():
+        raise Exception(&#34;BOOM&#34;)
+    try_of(boom).on(on_failure=lambda err: print(str(err)))  # prints &#34;BOOM&#34;
+    ```
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.try_monad.Try.to_either"><code class="name flex">
+<span>def <span class="ident">to_either</span></span>(<span>self) ‑> <a title="pynction.monads.either.Either" href="either.html#pynction.monads.either.Either">Either</a>[Exception, ~T]</span>
+</code></dt>
+<dd>
+<div class="desc"><ul>
+<li>Returns a <code>Right</code> if it's a <code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code> instance</li>
+<li>Returns a <code>Left</code> if it's a <code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code> instance</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def to_either(self) -&gt; Either[Exception, T]:
+    &#34;&#34;&#34;
+    * Returns a `Right` if it&#39;s a `Success` instance
+    * Returns a `Left` if it&#39;s a `Failure` instance
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pynction.monads" href="index.html">pynction.monads</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pynction.monads.try_monad.Failure" href="#pynction.monads.try_monad.Failure">Failure</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pynction.monads.try_monad.Success" href="#pynction.monads.try_monad.Success">Success</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pynction.monads.try_monad.Try" href="#pynction.monads.try_monad.Try">Try</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynction.monads.try_monad.Try.and_finally" href="#pynction.monads.try_monad.Try.and_finally">and_finally</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.catch" href="#pynction.monads.try_monad.Try.catch">catch</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.flat_map" href="#pynction.monads.try_monad.Try.flat_map">flat_map</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.get_or_else_get" href="#pynction.monads.try_monad.Try.get_or_else_get">get_or_else_get</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.map" href="#pynction.monads.try_monad.Try.map">map</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.of" href="#pynction.monads.try_monad.Try.of">of</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.on" href="#pynction.monads.try_monad.Try.on">on</a></code></li>
+<li><code><a title="pynction.monads.try_monad.Try.to_either" href="#pynction.monads.try_monad.Try.to_either">to_either</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
