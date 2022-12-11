@@ -1,8 +1,8 @@
 name: continuous_integration
 on:
   pull_request:
-    branches-ignore:
-      - "invoke-release-main-*"
+    branches:
+      - '!invoke-release-main-**'
 jobs:
   mypy_validation:
     name: MyPy validation 🤖

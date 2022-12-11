@@ -5,8 +5,8 @@ on:
       - opened
       - edited
       - synchronize
-    branches-ignore:
-      - "invoke-release-main-*"
+    branches:
+      - '!invoke-release-main-**'
 jobs:
   pr_lint:
     name: Ensure semantic PR (PATCH, MINOR, MAJOR) 🗒️
