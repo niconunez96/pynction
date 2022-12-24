@@ -3,7 +3,7 @@ coverage==6.3.2
 flake8==4.0.1
 invoke-release==4.6.0
 isort==5.10.1
-mypy==0.931
+mypy==0.991
 pdoc3==0.10.0
 pre-commit==2.17.0
 pytest==7.0.1
