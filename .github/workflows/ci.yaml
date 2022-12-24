@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - '!invoke-release-main-**'
+      - '*'
 jobs:
   mypy_validation:
     name: MyPy validation 🤖

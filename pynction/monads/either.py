@@ -82,7 +82,7 @@ class Right(Either[Any, R]):
     _value: R
 
     def __str__(self) -> str:
-        return f"Right({self._value})"
+        return f"Right[{self._value}]"
 
     @property
     def is_left(self) -> bool:
@@ -112,7 +112,7 @@ class Left(Either[L, Any]):
     _value: L
 
     def __str__(self) -> str:
-        return f"Left({self._value})"
+        return f"Left[{self._value}]"
 
     @property
     def is_left(self) -> bool:

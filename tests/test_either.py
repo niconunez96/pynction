@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import Any, Callable, Tuple, Union
 from unittest.mock import Mock
 
 import pytest
@@ -10,7 +10,7 @@ from pynction.monads.either import DoEitherN
 
 class TestRight:
     def test_str_should_return_value(self):
-        assert str(right(1)) == "Right(1)"
+        assert str(right(1)) == "Right[1]"
 
     def test_it_should_return_true_when_ask_if_is_right(self):
         assert right(1).is_right is True
@@ -46,7 +46,7 @@ class TestRight:
 
 class TestLeft:
     def test_str_should_return_value(self):
-        assert str(left("ERROR")) == "Left(ERROR)"
+        assert str(left("ERROR")) == "Left[ERROR]"
 
     def test_it_should_return_true_when_ask_if_is_left(self):
         assert left("ERROR").is_left is True
@@ -77,7 +77,7 @@ class TestLeft:
         result = example.filter_or_else(filter_function, "filter failed")
 
         filter_function.assert_not_called()
-        assert result._value == "ERROR"  # type: ignore
+        assert str(result) == "Left[ERROR]"
 
 
 # Do notation tests
@@ -163,12 +163,12 @@ def example_with_arguments(x: int, y: int) -> DoEither[str, int, int]:
     [example_with_left, example_with_left_2, dynamic_typing_returning_left],
 )
 def test_do_notation_should_return_left_when_any_expression_return_a_left(
-    do_notation_func,
+    do_notation_func: Callable[[], Either[Any, Any]],
 ):
     result = do_notation_func()
 
     assert result.is_left is True
-    assert result._value == "error!"
+    assert str(result) == "Left[error!]"
 
 
 @pytest.mark.parametrize(
@@ -180,12 +180,12 @@ def test_do_notation_should_return_left_when_any_expression_return_a_left(
     ],
 )
 def test_do_notation_should_return_a_right_with_value_calculated(
-    do_notation_func, expected_result
+    do_notation_func: Callable[[], Either[Any, Any]], expected_result
 ):
     result = do_notation_func()
 
     assert result.is_right is True
-    assert result._value == expected_result
+    assert str(result) == f"Right[{expected_result}]"
 
 
 @pytest.mark.parametrize(
@@ -202,4 +202,4 @@ def test_do_notation_should_pass_arguments():
     result = example_with_arguments(1, 2)
 
     assert result.is_right is True
-    assert result._value == 13  # type: ignore
+    assert str(result) == "Right[13]"

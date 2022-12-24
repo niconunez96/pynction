@@ -9,7 +9,7 @@ from pynction import do_maybe, just, maybe, nothing
 
 class TestJust:
     def test_str_should_return_value(self):
-        assert str(maybe(1)) == "Just(1)"
+        assert str(maybe(1)) == "Just[1]"
 
     def test_it_should_transform_content_of_just(self):
         example = maybe("EXAMPLE")
@@ -28,7 +28,7 @@ class TestJust:
 
         result = example.to_either("error")
 
-        assert result._value == "EXAMPLE"  # type: ignore
+        assert str(result) == "Right[EXAMPLE]"
 
     def test_it_should_return_just_when_apply_flat_map(self):
         foo = maybe(1)
@@ -36,12 +36,19 @@ class TestJust:
         result = foo.flat_map(lambda a: maybe(a + 5))
 
         assert result.is_empty is False
-        assert result._value == 6  # type: ignore
+        assert str(result) == "Just[6]"
 
     def test_it_should_return_element_when_call_get_or_raise(self):
         foo = maybe(1)
 
         assert 1 == foo.get_or_raise(Exception())
+
+    def test_it_should_return_nothing_when_map_function_returns_none(self):
+        foo = maybe(1)
+
+        result = foo.map(lambda a: None)
+
+        assert result.is_empty is True
 
 
 class TestNothing:

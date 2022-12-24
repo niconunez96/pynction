@@ -118,7 +118,7 @@ class Maybe(ABC, Generic[T]):
 
 
 @dataclass
-class Nothing(Maybe):
+class Nothing(Maybe[Any]):
     _instance: Optional["Nothing"] = None
 
     def __str__(self) -> str:
@@ -155,14 +155,17 @@ class Just(Maybe[T]):
     _value: T
 
     def __str__(self) -> str:
-        return f"Just({self._value})"
+        return f"Just[{self._value}]"
 
     @property
     def is_empty(self) -> bool:
         return False
 
-    def map(self, f: Callable[[T], V]) -> Maybe[V]:
-        return Just(f(self._value))
+    def map(self, f: Callable[[T], Optional[V]]) -> Maybe[V]:
+        result = f(self._value)
+        if not result:
+            return Nothing.get_instance()
+        return Just(result)
 
     def flat_map(self, f: Callable[[T], "Maybe[V]"]) -> "Maybe[V]":
         return f(self._value)

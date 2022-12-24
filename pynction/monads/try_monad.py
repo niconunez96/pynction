@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, TypeVar
 
 from .either import Either, Left, Right
 
@@ -162,7 +162,7 @@ class Try(ABC, Generic[T]):
 
 
 @dataclass(frozen=True)
-class Failure(Try[T]):
+class Failure(Try[Any]):
     _e: Exception
 
     def map(self, _: Callable[[T], S]) -> "Try[S]":
