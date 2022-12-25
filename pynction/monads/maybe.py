@@ -70,6 +70,19 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
+    def filter(self, satisfyCondition: Callable[[T], bool]) -> "Maybe[T]":
+        """
+        Returns Just(value) if this is a Just and the value satisfies the given predicate.
+
+        Example:
+        ```
+        just(1).filter(lambda a: a == 1)  # Returns a Just(2)
+        just(1).filter(lambda a: a > 1)  # Returns Nothing
+        ```
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def flat_map(self, f: Callable[[T], "Maybe[V]"]) -> "Maybe[V]":
         """
         If it is a `Just` instance, this method applies the `f` function over the value
@@ -137,8 +150,11 @@ class Nothing(Maybe[Any]):
     def map(self, _: Callable[[Any], Any]) -> Maybe[Any]:
         return self.get_instance()
 
-    def flat_map(self, _: Callable[[Any], "Maybe[Any]"]) -> "Maybe[Any]":
-        return self.get_instance()
+    def filter(self, _: Callable[[Any], bool]) -> Maybe[Any]:
+        return self
+
+    def flat_map(self, _: Callable[[Any], Maybe[Any]]) -> Maybe[Any]:
+        return self
 
     def get_or_else(self, default: T) -> T:  # type: ignore
         return default
@@ -167,10 +183,15 @@ class Just(Maybe[T]):
             return Nothing.get_instance()
         return Just(result)
 
-    def flat_map(self, f: Callable[[T], "Maybe[V]"]) -> "Maybe[V]":
+    def filter(self, satisfyCondition: Callable[[T], bool]) -> Maybe[T]:
+        if satisfyCondition(self._value):
+            return self
+        return Nothing.get_instance()
+
+    def flat_map(self, f: Callable[[T], Maybe[V]]) -> Maybe[V]:
         return f(self._value)
 
-    def get_or_else(self, _: T) -> T:  # type: ignore
+    def get_or_else(self, _: Any) -> T:
         return self._value
 
     def get_or_raise(self, _: Exception) -> T:

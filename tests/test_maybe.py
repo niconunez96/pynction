@@ -50,6 +50,20 @@ class TestJust:
 
         assert result.is_empty is True
 
+    def test_it_should_return_same_value_when_just_pass_condition(self):
+        foo = maybe(1)
+
+        result = foo.filter(lambda n: n == 1)
+
+        assert str(result) == "Just[1]"
+
+    def test_it_should_return_nothing_when_value_do_not_pass_condition(self):
+        foo = maybe(5)
+
+        result = foo.filter(lambda n: n > 10)
+
+        assert str(result) == "Nothing"
+
 
 class TestNothing:
     def test_str_should_return_value(self):
@@ -91,6 +105,13 @@ class TestNothing:
 
         with pytest.raises(AttributeError):
             foo.get_or_raise(AttributeError())
+
+    def test_it_should_return_nothing_when_apply_filter_condition(self):
+        foo = nothing
+
+        result = foo.filter(lambda n: n > 2)
+
+        assert str(result) == "Nothing"
 
 
 # Do notation tests
