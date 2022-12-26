@@ -142,7 +142,7 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def run(self, f: Callable[[], None]) -> None:
+    def on_just(self, f: Callable[[], None]) -> None:
         """
         Runs `f` when self instance is a Just
 
@@ -153,6 +153,32 @@ class Maybe(ABC, Generic[T]):
         ```
         """
         raise NotImplementedError
+
+    def run(
+        self,
+        on_just: Callable[[], None] = None,
+        on_empty: Callable[[], None] = None,
+    ) -> None:
+        """
+        Runs `on_just` when self instance is a Just
+        Runs `on_empty` when self instance is Nothing
+
+        Example
+        ```
+        just(1).run(
+            on_just=lambda: print("Hello"),
+            on_empty=lambda: print("Empty"),
+        )  # Prints "Hello"
+        nothing.run(
+            on_just=lambda: print("Hello"),
+            on_empty=lambda: print("Empty"),
+        )  # Prints "Empty"
+        ```
+        """
+        if on_empty:
+            self.on_empty(on_empty)
+        if on_just:
+            self.on_just(on_just)
 
 
 @dataclass
@@ -193,7 +219,7 @@ class Nothing(Maybe[Any]):
     def on_empty(self, f: Callable[[], None]) -> None:
         f()
 
-    def run(self, _: Callable[[], None]) -> None:
+    def on_just(self, _: Callable[[], None]) -> None:
         return
 
 
@@ -234,7 +260,7 @@ class Just(Maybe[T]):
     def on_empty(self, f: Callable[[], None]) -> None:
         return
 
-    def run(self, f: Callable[[], None]) -> None:
+    def on_just(self, f: Callable[[], None]) -> None:
         f()
 
 
