@@ -113,7 +113,7 @@ class TestNothing:
 
         result = example.to_either("error")
 
-        assert result._value == "error"  # type: ignore
+        assert str(result) == "Left[error]"
 
     def test_flat_map_should_return_nothing_when_applied_to_nothing(self):
         foo = nothing
@@ -263,7 +263,7 @@ def test_do_notation_should_return_a_just_with_value_calculated(
     result = do_notation_func()
 
     assert result.is_empty is False
-    assert result._value == expected_result
+    assert str(result) == f"Just[{expected_result}]"
 
 
 @pytest.mark.parametrize(
@@ -280,4 +280,4 @@ def test_do_notation_should_pass_arguments():
     result = example_with_arguments(1, 2)
 
     assert result.is_empty is False
-    assert result._value == 13  # type: ignore
+    assert str(result) == "Just[13]"
