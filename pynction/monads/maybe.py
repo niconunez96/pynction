@@ -129,6 +129,19 @@ class Maybe(ABC, Generic[T]):
         """
         raise NotImplementedError
 
+    @abstractmethod
+    def on_empty(self, f: Callable[[], None]) -> None:
+        """
+        Runs `f` when self instance is Nothing
+
+        Example
+        ```
+        just(1).on_empty(lambda: print("Hello"))  # Doesn't print
+        nothing.on_empty(lambda: print("Hello"))  # Prints "Hello"
+        ```
+        """
+        raise NotImplementedError
+
 
 @dataclass
 class Nothing(Maybe[Any]):
@@ -165,6 +178,9 @@ class Nothing(Maybe[Any]):
     def to_either(self, error: L) -> Either[L, Any]:
         return Left(error)
 
+    def on_empty(self, f: Callable[[], None]) -> None:
+        f()
+
 
 @dataclass(frozen=True)
 class Just(Maybe[T]):
@@ -199,6 +215,9 @@ class Just(Maybe[T]):
 
     def to_either(self, _: L) -> Either[L, T]:
         return Right(self._value)
+
+    def on_empty(self, f: Callable[[], None]) -> None:
+        return
 
 
 DoMaybe = Generator[Maybe[T], T, V]

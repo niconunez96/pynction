@@ -1,4 +1,5 @@
 from typing import Tuple, Union
+from unittest.mock import Mock
 
 import pytest
 
@@ -64,6 +65,14 @@ class TestJust:
 
         assert str(result) == "Nothing"
 
+    def test_it_should_not_execute_function_when_call_on_empty(self):
+        mock_function = Mock()
+        foo = maybe(5)
+
+        foo.on_empty(mock_function)
+
+        mock_function.assert_not_called()
+
 
 class TestNothing:
     def test_str_should_return_value(self):
@@ -112,6 +121,14 @@ class TestNothing:
         result = foo.filter(lambda n: n > 2)
 
         assert str(result) == "Nothing"
+
+    def test_it_should_execute_function_when_call_on_empty(self):
+        mock_function = Mock()
+        foo = nothing
+
+        foo.on_empty(mock_function)
+
+        mock_function.assert_called_once()
 
 
 # Do notation tests
