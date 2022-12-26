@@ -1,6 +1,24 @@
 Changelog
 =========
 
+0.3.0 (2022-12-26)
+------------------
+- MINOR: Add helper methods to maybe (#37)
+- Send coverage on PR
+- Fix encapsulation on maybe tests
+- Rename run method to on_just and create run method to pass both functions
+- Add run method for maybe monad
+- Reword docstrings
+- Add on empty method for maybe monad
+- Add filter method in maybe monad
+- PATCH: Fix map function in just monad (#36)
+- Fix tests
+- Fix ci pipeline
+- Upgrade mypy and fix errors
+- Fix map function in Just monad
+- PATCH: Omit continuous integration and pr lint on invoke branches (#35)
+- Omit continuous integration on invoke branches
+
 0.2.1 (2022-10-23)
 ------------------
 - Add API doc link
