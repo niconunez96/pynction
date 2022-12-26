@@ -54,7 +54,7 @@ class Maybe(ABC, Generic[T]):
     @abstractmethod
     def map(self, f: Callable[[T], V]) -> "Maybe[V]":
         """
-        If it is a `Just` instance, this method applies the `f` function over the value
+        For `Just` instances, this method applies the `f` function over the value
         and
         * Returns `Nothing` if the result of the operation is None, else
         * Returns the result wrapped in a `Just` instance.
@@ -85,11 +85,10 @@ class Maybe(ABC, Generic[T]):
     @abstractmethod
     def flat_map(self, f: Callable[[T], "Maybe[V]"]) -> "Maybe[V]":
         """
-        If it is a `Just` instance, this method applies the `f` function over the value
-        and returns the `Maybe` instance returned by `f`.
-        For `Nothing` instances the `f` function is ignored.
+        For `Just` instances, this method applies the `f` function over the value.
+        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`.
 
-        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`
+        For `Nothing` instances the `f` function is ignored.
 
         Example:
         ```
