@@ -1,5 +1,9 @@
 name: send_coverage
 on:
+  pull_request:
+    branches:
+      - '!invoke-release-main-**'
+      - '*'
   push:
     branches:
       - main

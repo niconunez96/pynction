@@ -1,4 +1,5 @@
 from typing import Tuple, Union
+from unittest.mock import Mock
 
 import pytest
 
@@ -50,6 +51,46 @@ class TestJust:
 
         assert result.is_empty is True
 
+    def test_it_should_return_same_value_when_just_pass_condition(self):
+        foo = maybe(1)
+
+        result = foo.filter(lambda n: n == 1)
+
+        assert str(result) == "Just[1]"
+
+    def test_it_should_return_nothing_when_value_do_not_pass_condition(self):
+        foo = maybe(5)
+
+        result = foo.filter(lambda n: n > 10)
+
+        assert str(result) == "Nothing"
+
+    def test_it_should_not_execute_function_when_call_on_empty(self):
+        mock_function = Mock()
+        foo = maybe(5)
+
+        foo.on_empty(mock_function)
+
+        mock_function.assert_not_called()
+
+    def test_it_should_execute_function_when_call_run(self):
+        mock_function = Mock()
+        foo = maybe(5)
+
+        foo.on_just(mock_function)
+
+        mock_function.assert_called_once()
+
+    def test_it_should_execute_on_just_when_call_run(self):
+        mock_on_just_function = Mock()
+        mock_on_empty_function = Mock()
+        foo = maybe(5)
+
+        foo.run(on_just=mock_on_just_function, on_empty=mock_on_empty_function)
+
+        mock_on_just_function.assert_called_once()
+        mock_on_empty_function.assert_not_called()
+
 
 class TestNothing:
     def test_str_should_return_value(self):
@@ -72,7 +113,7 @@ class TestNothing:
 
         result = example.to_either("error")
 
-        assert result._value == "error"  # type: ignore
+        assert str(result) == "Left[error]"
 
     def test_flat_map_should_return_nothing_when_applied_to_nothing(self):
         foo = nothing
@@ -91,6 +132,39 @@ class TestNothing:
 
         with pytest.raises(AttributeError):
             foo.get_or_raise(AttributeError())
+
+    def test_it_should_return_nothing_when_apply_filter_condition(self):
+        foo = nothing
+
+        result = foo.filter(lambda n: n > 2)
+
+        assert str(result) == "Nothing"
+
+    def test_it_should_execute_function_when_call_on_empty(self):
+        mock_function = Mock()
+        foo = nothing
+
+        foo.on_empty(mock_function)
+
+        mock_function.assert_called_once()
+
+    def test_it_should_not_execute_function_when_call_run(self):
+        mock_function = Mock()
+        foo = nothing
+
+        foo.on_just(mock_function)
+
+        mock_function.assert_not_called()
+
+    def test_it_should_execute_on_just_when_call_run(self):
+        mock_on_just_function = Mock()
+        mock_on_empty_function = Mock()
+        foo = nothing
+
+        foo.run(on_just=mock_on_just_function, on_empty=mock_on_empty_function)
+
+        mock_on_empty_function.assert_called_once()
+        mock_on_just_function.assert_not_called()
 
 
 # Do notation tests
@@ -189,7 +263,7 @@ def test_do_notation_should_return_a_just_with_value_calculated(
     result = do_notation_func()
 
     assert result.is_empty is False
-    assert result._value == expected_result
+    assert str(result) == f"Just[{expected_result}]"
 
 
 @pytest.mark.parametrize(
@@ -206,4 +280,4 @@ def test_do_notation_should_pass_arguments():
     result = example_with_arguments(1, 2)
 
     assert result.is_empty is False
-    assert result._value == 13  # type: ignore
+    assert str(result) == "Just[13]"

@@ -54,7 +54,7 @@ class Maybe(ABC, Generic[T]):
     @abstractmethod
     def map(self, f: Callable[[T], V]) -> "Maybe[V]":
         """
-        If it is a `Just` instance, this method applies the `f` function over the value
+        For `Just` instances, this method applies the `f` function over the value
         and
         * Returns `Nothing` if the result of the operation is None, else
         * Returns the result wrapped in a `Just` instance.
@@ -70,13 +70,25 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
+    def filter(self, satisfyCondition: Callable[[T], bool]) -> "Maybe[T]":
+        """
+        Returns Just(value) if this is a Just and the value satisfies the given predicate.
+
+        Example:
+        ```
+        just(1).filter(lambda a: a == 1)  # Returns a Just(2)
+        just(1).filter(lambda a: a > 1)  # Returns Nothing
+        ```
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def flat_map(self, f: Callable[[T], "Maybe[V]"]) -> "Maybe[V]":
         """
-        If it is a `Just` instance, this method applies the `f` function over the value
-        and returns the `Maybe` instance returned by `f`.
-        For `Nothing` instances the `f` function is ignored.
+        For `Just` instances, this method applies the `f` function over the value.
+        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`.
 
-        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`
+        For `Nothing` instances the `f` function is ignored.
 
         Example:
         ```
@@ -116,6 +128,58 @@ class Maybe(ABC, Generic[T]):
         """
         raise NotImplementedError
 
+    @abstractmethod
+    def on_empty(self, f: Callable[[], None]) -> None:
+        """
+        Runs `f` when self instance is Nothing
+
+        Example
+        ```
+        just(1).on_empty(lambda: print("Hello"))  # Doesn't print
+        nothing.on_empty(lambda: print("Hello"))  # Prints "Hello"
+        ```
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def on_just(self, f: Callable[[], None]) -> None:
+        """
+        Runs `f` when self instance is a Just
+
+        Example
+        ```
+        just(1).on_empty(lambda: print("Hello"))  # Prints "Hello"
+        nothing.on_empty(lambda: print("Hello"))  # Doesn't print
+        ```
+        """
+        raise NotImplementedError
+
+    def run(
+        self,
+        on_just: Callable[[], None] = None,
+        on_empty: Callable[[], None] = None,
+    ) -> None:
+        """
+        Runs `on_just` when self instance is a Just
+        Runs `on_empty` when self instance is Nothing
+
+        Example
+        ```
+        just(1).run(
+            on_just=lambda: print("Hello"),
+            on_empty=lambda: print("Empty"),
+        )  # Prints "Hello"
+        nothing.run(
+            on_just=lambda: print("Hello"),
+            on_empty=lambda: print("Empty"),
+        )  # Prints "Empty"
+        ```
+        """
+        if on_empty:
+            self.on_empty(on_empty)
+        if on_just:
+            self.on_just(on_just)
+
 
 @dataclass
 class Nothing(Maybe[Any]):
@@ -137,8 +201,11 @@ class Nothing(Maybe[Any]):
     def map(self, _: Callable[[Any], Any]) -> Maybe[Any]:
         return self.get_instance()
 
-    def flat_map(self, _: Callable[[Any], "Maybe[Any]"]) -> "Maybe[Any]":
-        return self.get_instance()
+    def filter(self, _: Callable[[Any], bool]) -> Maybe[Any]:
+        return self
+
+    def flat_map(self, _: Callable[[Any], Maybe[Any]]) -> Maybe[Any]:
+        return self
 
     def get_or_else(self, default: T) -> T:  # type: ignore
         return default
@@ -148,6 +215,12 @@ class Nothing(Maybe[Any]):
 
     def to_either(self, error: L) -> Either[L, Any]:
         return Left(error)
+
+    def on_empty(self, f: Callable[[], None]) -> None:
+        f()
+
+    def on_just(self, _: Callable[[], None]) -> None:
+        return
 
 
 @dataclass(frozen=True)
@@ -167,10 +240,15 @@ class Just(Maybe[T]):
             return Nothing.get_instance()
         return Just(result)
 
-    def flat_map(self, f: Callable[[T], "Maybe[V]"]) -> "Maybe[V]":
+    def filter(self, satisfyCondition: Callable[[T], bool]) -> Maybe[T]:
+        if satisfyCondition(self._value):
+            return self
+        return Nothing.get_instance()
+
+    def flat_map(self, f: Callable[[T], Maybe[V]]) -> Maybe[V]:
         return f(self._value)
 
-    def get_or_else(self, _: T) -> T:  # type: ignore
+    def get_or_else(self, _: Any) -> T:
         return self._value
 
     def get_or_raise(self, _: Exception) -> T:
@@ -178,6 +256,12 @@ class Just(Maybe[T]):
 
     def to_either(self, _: L) -> Either[L, T]:
         return Right(self._value)
+
+    def on_empty(self, f: Callable[[], None]) -> None:
+        return
+
+    def on_just(self, f: Callable[[], None]) -> None:
+        f()
 
 
 DoMaybe = Generator[Maybe[T], T, V]
