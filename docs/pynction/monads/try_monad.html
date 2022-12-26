@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python">from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, TypeVar
 
 from .either import Either, Left, Right
 
@@ -190,7 +190,7 @@ class Try(ABC, Generic[T]):
 
 
 @dataclass(frozen=True)
-class Failure(Try[T]):
+class Failure(Try[Any]):
     _e: Exception
 
     def map(self, _: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:
@@ -275,7 +275,7 @@ class Success(Try[T]):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Failure(Try[T]):
+<pre><code class="python">class Failure(Try[Any]):
     _e: Exception
 
     def map(self, _: Callable[[T], S]) -&gt; &#34;Try[S]&#34;:

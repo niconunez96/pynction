@@ -82,7 +82,7 @@ class Maybe(ABC, Generic[T]):
     @abstractmethod
     def map(self, f: Callable[[T], V]) -&gt; &#34;Maybe[V]&#34;:
         &#34;&#34;&#34;
-        If it is a `Just` instance, this method applies the `f` function over the value
+        For `Just` instances, this method applies the `f` function over the value
         and
         * Returns `Nothing` if the result of the operation is None, else
         * Returns the result wrapped in a `Just` instance.
@@ -98,13 +98,25 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
+    def filter(self, satisfyCondition: Callable[[T], bool]) -&gt; &#34;Maybe[T]&#34;:
+        &#34;&#34;&#34;
+        Returns Just(value) if this is a Just and the value satisfies the given predicate.
+
+        Example:
+        ```
+        just(1).filter(lambda a: a == 1)  # Returns a Just(2)
+        just(1).filter(lambda a: a &gt; 1)  # Returns Nothing
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
     def flat_map(self, f: Callable[[T], &#34;Maybe[V]&#34;]) -&gt; &#34;Maybe[V]&#34;:
         &#34;&#34;&#34;
-        If it is a `Just` instance, this method applies the `f` function over the value
-        and returns the `Maybe` instance returned by `f`.
-        For `Nothing` instances the `f` function is ignored.
+        For `Just` instances, this method applies the `f` function over the value.
+        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`.
 
-        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`
+        For `Nothing` instances the `f` function is ignored.
 
         Example:
         ```
@@ -144,9 +156,61 @@ class Maybe(ABC, Generic[T]):
         &#34;&#34;&#34;
         raise NotImplementedError
 
+    @abstractmethod
+    def on_empty(self, f: Callable[[], None]) -&gt; None:
+        &#34;&#34;&#34;
+        Runs `f` when self instance is Nothing
+
+        Example
+        ```
+        just(1).on_empty(lambda: print(&#34;Hello&#34;))  # Doesn&#39;t print
+        nothing.on_empty(lambda: print(&#34;Hello&#34;))  # Prints &#34;Hello&#34;
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def on_just(self, f: Callable[[], None]) -&gt; None:
+        &#34;&#34;&#34;
+        Runs `f` when self instance is a Just
+
+        Example
+        ```
+        just(1).on_empty(lambda: print(&#34;Hello&#34;))  # Prints &#34;Hello&#34;
+        nothing.on_empty(lambda: print(&#34;Hello&#34;))  # Doesn&#39;t print
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def run(
+        self,
+        on_just: Callable[[], None] = None,
+        on_empty: Callable[[], None] = None,
+    ) -&gt; None:
+        &#34;&#34;&#34;
+        Runs `on_just` when self instance is a Just
+        Runs `on_empty` when self instance is Nothing
+
+        Example
+        ```
+        just(1).run(
+            on_just=lambda: print(&#34;Hello&#34;),
+            on_empty=lambda: print(&#34;Empty&#34;),
+        )  # Prints &#34;Hello&#34;
+        nothing.run(
+            on_just=lambda: print(&#34;Hello&#34;),
+            on_empty=lambda: print(&#34;Empty&#34;),
+        )  # Prints &#34;Empty&#34;
+        ```
+        &#34;&#34;&#34;
+        if on_empty:
+            self.on_empty(on_empty)
+        if on_just:
+            self.on_just(on_just)
+
 
 @dataclass
-class Nothing(Maybe):
+class Nothing(Maybe[Any]):
     _instance: Optional[&#34;Nothing&#34;] = None
 
     def __str__(self) -&gt; str:
@@ -165,8 +229,11 @@ class Nothing(Maybe):
     def map(self, _: Callable[[Any], Any]) -&gt; Maybe[Any]:
         return self.get_instance()
 
-    def flat_map(self, _: Callable[[Any], &#34;Maybe[Any]&#34;]) -&gt; &#34;Maybe[Any]&#34;:
-        return self.get_instance()
+    def filter(self, _: Callable[[Any], bool]) -&gt; Maybe[Any]:
+        return self
+
+    def flat_map(self, _: Callable[[Any], Maybe[Any]]) -&gt; Maybe[Any]:
+        return self
 
     def get_or_else(self, default: T) -&gt; T:  # type: ignore
         return default
@@ -177,25 +244,39 @@ class Nothing(Maybe):
     def to_either(self, error: L) -&gt; Either[L, Any]:
         return Left(error)
 
+    def on_empty(self, f: Callable[[], None]) -&gt; None:
+        f()
+
+    def on_just(self, _: Callable[[], None]) -&gt; None:
+        return
+
 
 @dataclass(frozen=True)
 class Just(Maybe[T]):
     _value: T
 
     def __str__(self) -&gt; str:
-        return f&#34;Just({self._value})&#34;
+        return f&#34;Just[{self._value}]&#34;
 
     @property
     def is_empty(self) -&gt; bool:
         return False
 
-    def map(self, f: Callable[[T], V]) -&gt; Maybe[V]:
-        return Just(f(self._value))
+    def map(self, f: Callable[[T], Optional[V]]) -&gt; Maybe[V]:
+        result = f(self._value)
+        if not result:
+            return Nothing.get_instance()
+        return Just(result)
 
-    def flat_map(self, f: Callable[[T], &#34;Maybe[V]&#34;]) -&gt; &#34;Maybe[V]&#34;:
+    def filter(self, satisfyCondition: Callable[[T], bool]) -&gt; Maybe[T]:
+        if satisfyCondition(self._value):
+            return self
+        return Nothing.get_instance()
+
+    def flat_map(self, f: Callable[[T], Maybe[V]]) -&gt; Maybe[V]:
         return f(self._value)
 
-    def get_or_else(self, _: T) -&gt; T:  # type: ignore
+    def get_or_else(self, _: Any) -&gt; T:
         return self._value
 
     def get_or_raise(self, _: Exception) -&gt; T:
@@ -203,6 +284,12 @@ class Just(Maybe[T]):
 
     def to_either(self, _: L) -&gt; Either[L, T]:
         return Right(self._value)
+
+    def on_empty(self, f: Callable[[], None]) -&gt; None:
+        return
+
+    def on_just(self, f: Callable[[], None]) -&gt; None:
+        f()
 
 
 DoMaybe = Generator[Maybe[T], T, V]
@@ -456,26 +543,40 @@ def example1(id: int) -&gt; DoMaybeN[str]:
     _value: T
 
     def __str__(self) -&gt; str:
-        return f&#34;Just({self._value})&#34;
+        return f&#34;Just[{self._value}]&#34;
 
     @property
     def is_empty(self) -&gt; bool:
         return False
 
-    def map(self, f: Callable[[T], V]) -&gt; Maybe[V]:
-        return Just(f(self._value))
+    def map(self, f: Callable[[T], Optional[V]]) -&gt; Maybe[V]:
+        result = f(self._value)
+        if not result:
+            return Nothing.get_instance()
+        return Just(result)
 
-    def flat_map(self, f: Callable[[T], &#34;Maybe[V]&#34;]) -&gt; &#34;Maybe[V]&#34;:
+    def filter(self, satisfyCondition: Callable[[T], bool]) -&gt; Maybe[T]:
+        if satisfyCondition(self._value):
+            return self
+        return Nothing.get_instance()
+
+    def flat_map(self, f: Callable[[T], Maybe[V]]) -&gt; Maybe[V]:
         return f(self._value)
 
-    def get_or_else(self, _: T) -&gt; T:  # type: ignore
+    def get_or_else(self, _: Any) -&gt; T:
         return self._value
 
     def get_or_raise(self, _: Exception) -&gt; T:
         return self._value
 
     def to_either(self, _: L) -&gt; Either[L, T]:
-        return Right(self._value)</code></pre>
+        return Right(self._value)
+
+    def on_empty(self, f: Callable[[], None]) -&gt; None:
+        return
+
+    def on_just(self, f: Callable[[], None]) -&gt; None:
+        f()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -487,6 +588,7 @@ def example1(id: int) -&gt; DoMaybeN[str]:
 <ul class="hlist">
 <li><code><b><a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a></b></code>:
 <ul class="hlist">
+<li><code><a title="pynction.monads.maybe.Maybe.filter" href="#pynction.monads.maybe.Maybe.filter">filter</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.flat_map" href="#pynction.monads.maybe.Maybe.flat_map">flat_map</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.get_or_else" href="#pynction.monads.maybe.Maybe.get_or_else">get_or_else</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.get_or_raise" href="#pynction.monads.maybe.Maybe.get_or_raise">get_or_raise</a></code></li>
@@ -495,6 +597,9 @@ def example1(id: int) -&gt; DoMaybeN[str]:
 <li><code><a title="pynction.monads.maybe.Maybe.map" href="#pynction.monads.maybe.Maybe.map">map</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.nothing" href="#pynction.monads.maybe.Maybe.nothing">nothing</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.of" href="#pynction.monads.maybe.Maybe.of">of</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.on_empty" href="#pynction.monads.maybe.Maybe.on_empty">on_empty</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.on_just" href="#pynction.monads.maybe.Maybe.on_just">on_just</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.run" href="#pynction.monads.maybe.Maybe.run">run</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.to_either" href="#pynction.monads.maybe.Maybe.to_either">to_either</a></code></li>
 </ul>
 </li>
@@ -555,7 +660,7 @@ a useful and expressive API.</p>
     @abstractmethod
     def map(self, f: Callable[[T], V]) -&gt; &#34;Maybe[V]&#34;:
         &#34;&#34;&#34;
-        If it is a `Just` instance, this method applies the `f` function over the value
+        For `Just` instances, this method applies the `f` function over the value
         and
         * Returns `Nothing` if the result of the operation is None, else
         * Returns the result wrapped in a `Just` instance.
@@ -571,13 +676,25 @@ a useful and expressive API.</p>
         raise NotImplementedError
 
     @abstractmethod
+    def filter(self, satisfyCondition: Callable[[T], bool]) -&gt; &#34;Maybe[T]&#34;:
+        &#34;&#34;&#34;
+        Returns Just(value) if this is a Just and the value satisfies the given predicate.
+
+        Example:
+        ```
+        just(1).filter(lambda a: a == 1)  # Returns a Just(2)
+        just(1).filter(lambda a: a &gt; 1)  # Returns Nothing
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
     def flat_map(self, f: Callable[[T], &#34;Maybe[V]&#34;]) -&gt; &#34;Maybe[V]&#34;:
         &#34;&#34;&#34;
-        If it is a `Just` instance, this method applies the `f` function over the value
-        and returns the `Maybe` instance returned by `f`.
-        For `Nothing` instances the `f` function is ignored.
+        For `Just` instances, this method applies the `f` function over the value.
+        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`.
 
-        The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`
+        For `Nothing` instances the `f` function is ignored.
 
         Example:
         ```
@@ -615,7 +732,59 @@ a useful and expressive API.</p>
         nothing.to_either(&#34;ERROR&#34;)  # returns a Left(&#34;ERROR&#34;)
         ```
         &#34;&#34;&#34;
-        raise NotImplementedError</code></pre>
+        raise NotImplementedError
+
+    @abstractmethod
+    def on_empty(self, f: Callable[[], None]) -&gt; None:
+        &#34;&#34;&#34;
+        Runs `f` when self instance is Nothing
+
+        Example
+        ```
+        just(1).on_empty(lambda: print(&#34;Hello&#34;))  # Doesn&#39;t print
+        nothing.on_empty(lambda: print(&#34;Hello&#34;))  # Prints &#34;Hello&#34;
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def on_just(self, f: Callable[[], None]) -&gt; None:
+        &#34;&#34;&#34;
+        Runs `f` when self instance is a Just
+
+        Example
+        ```
+        just(1).on_empty(lambda: print(&#34;Hello&#34;))  # Prints &#34;Hello&#34;
+        nothing.on_empty(lambda: print(&#34;Hello&#34;))  # Doesn&#39;t print
+        ```
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def run(
+        self,
+        on_just: Callable[[], None] = None,
+        on_empty: Callable[[], None] = None,
+    ) -&gt; None:
+        &#34;&#34;&#34;
+        Runs `on_just` when self instance is a Just
+        Runs `on_empty` when self instance is Nothing
+
+        Example
+        ```
+        just(1).run(
+            on_just=lambda: print(&#34;Hello&#34;),
+            on_empty=lambda: print(&#34;Empty&#34;),
+        )  # Prints &#34;Hello&#34;
+        nothing.run(
+            on_just=lambda: print(&#34;Hello&#34;),
+            on_empty=lambda: print(&#34;Empty&#34;),
+        )  # Prints &#34;Empty&#34;
+        ```
+        &#34;&#34;&#34;
+        if on_empty:
+            self.on_empty(on_empty)
+        if on_just:
+            self.on_just(on_just)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -707,14 +876,40 @@ def is_empty(self) -&gt; bool:
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="pynction.monads.maybe.Maybe.filter"><code class="name flex">
+<span>def <span class="ident">filter</span></span>(<span>self, satisfyCondition: Callable[[+T], bool]) ‑> <a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a>[+T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns Just(value) if this is a Just and the value satisfies the given predicate.</p>
+<p>Example:</p>
+<pre><code>just(1).filter(lambda a: a == 1)  # Returns a Just(2)
+just(1).filter(lambda a: a &gt; 1)  # Returns Nothing
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def filter(self, satisfyCondition: Callable[[T], bool]) -&gt; &#34;Maybe[T]&#34;:
+    &#34;&#34;&#34;
+    Returns Just(value) if this is a Just and the value satisfies the given predicate.
+
+    Example:
+    ```
+    just(1).filter(lambda a: a == 1)  # Returns a Just(2)
+    just(1).filter(lambda a: a &gt; 1)  # Returns Nothing
+    ```
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
 <dt id="pynction.monads.maybe.Maybe.flat_map"><code class="name flex">
 <span>def <span class="ident">flat_map</span></span>(<span>self, f: Callable[[+T], ForwardRef('<a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a>[V]')]) ‑> <a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a>[+V]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>If it is a <code><a title="pynction.monads.maybe.Just" href="#pynction.monads.maybe.Just">Just</a></code> instance, this method applies the <code>f</code> function over the value
-and returns the <code><a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a></code> instance returned by <code>f</code>.
-For <code><a title="pynction.monads.maybe.Nothing" href="#pynction.monads.maybe.Nothing">Nothing</a></code> instances the <code>f</code> function is ignored.</p>
-<p>The difference with map is that the <code>f</code> function returns another <code><a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a>[V]</code> instead of plain <code>V</code></p>
+<div class="desc"><p>For <code><a title="pynction.monads.maybe.Just" href="#pynction.monads.maybe.Just">Just</a></code> instances, this method applies the <code>f</code> function over the value.
+The difference with map is that the <code>f</code> function returns another <code><a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a>[V]</code> instead of plain <code>V</code>.</p>
+<p>For <code><a title="pynction.monads.maybe.Nothing" href="#pynction.monads.maybe.Nothing">Nothing</a></code> instances the <code>f</code> function is ignored.</p>
 <p>Example:</p>
 <pre><code>just(1).flat_map(lambda a: Just(a + 1))  # Returns a Just(2)
 nothing.flat_map(lambda a: Just(a + 1))  # Returns Nothing
@@ -726,11 +921,10 @@ nothing.flat_map(lambda a: Just(a + 1))  # Returns Nothing
 <pre><code class="python">@abstractmethod
 def flat_map(self, f: Callable[[T], &#34;Maybe[V]&#34;]) -&gt; &#34;Maybe[V]&#34;:
     &#34;&#34;&#34;
-    If it is a `Just` instance, this method applies the `f` function over the value
-    and returns the `Maybe` instance returned by `f`.
-    For `Nothing` instances the `f` function is ignored.
+    For `Just` instances, this method applies the `f` function over the value.
+    The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`.
 
-    The difference with map is that the `f` function returns another `Maybe[V]` instead of plain `V`
+    For `Nothing` instances the `f` function is ignored.
 
     Example:
     ```
@@ -787,7 +981,7 @@ def get_or_raise(self, error: Exception) -&gt; T:
 <span>def <span class="ident">map</span></span>(<span>self, f: Callable[[+T], +V]) ‑> <a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a>[+V]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>If it is a <code><a title="pynction.monads.maybe.Just" href="#pynction.monads.maybe.Just">Just</a></code> instance, this method applies the <code>f</code> function over the value
+<div class="desc"><p>For <code><a title="pynction.monads.maybe.Just" href="#pynction.monads.maybe.Just">Just</a></code> instances, this method applies the <code>f</code> function over the value
 and
 * Returns <code><a title="pynction.monads.maybe.Nothing" href="#pynction.monads.maybe.Nothing">Nothing</a></code> if the result of the operation is None, else
 * Returns the result wrapped in a <code><a title="pynction.monads.maybe.Just" href="#pynction.monads.maybe.Just">Just</a></code> instance.</p>
@@ -803,7 +997,7 @@ nothing.map(lambda a: a + 1)  # Returns Nothing
 <pre><code class="python">@abstractmethod
 def map(self, f: Callable[[T], V]) -&gt; &#34;Maybe[V]&#34;:
     &#34;&#34;&#34;
-    If it is a `Just` instance, this method applies the `f` function over the value
+    For `Just` instances, this method applies the `f` function over the value
     and
     * Returns `Nothing` if the result of the operation is None, else
     * Returns the result wrapped in a `Just` instance.
@@ -817,6 +1011,107 @@ def map(self, f: Callable[[T], V]) -&gt; &#34;Maybe[V]&#34;:
     ```
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.maybe.Maybe.on_empty"><code class="name flex">
+<span>def <span class="ident">on_empty</span></span>(<span>self, f: Callable[[], None]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Runs <code>f</code> when self instance is Nothing</p>
+<p>Example</p>
+<pre><code>just(1).on_empty(lambda: print(&quot;Hello&quot;))  # Doesn't print
+nothing.on_empty(lambda: print(&quot;Hello&quot;))  # Prints &quot;Hello&quot;
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def on_empty(self, f: Callable[[], None]) -&gt; None:
+    &#34;&#34;&#34;
+    Runs `f` when self instance is Nothing
+
+    Example
+    ```
+    just(1).on_empty(lambda: print(&#34;Hello&#34;))  # Doesn&#39;t print
+    nothing.on_empty(lambda: print(&#34;Hello&#34;))  # Prints &#34;Hello&#34;
+    ```
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.maybe.Maybe.on_just"><code class="name flex">
+<span>def <span class="ident">on_just</span></span>(<span>self, f: Callable[[], None]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Runs <code>f</code> when self instance is a Just</p>
+<p>Example</p>
+<pre><code>just(1).on_empty(lambda: print(&quot;Hello&quot;))  # Prints &quot;Hello&quot;
+nothing.on_empty(lambda: print(&quot;Hello&quot;))  # Doesn't print
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def on_just(self, f: Callable[[], None]) -&gt; None:
+    &#34;&#34;&#34;
+    Runs `f` when self instance is a Just
+
+    Example
+    ```
+    just(1).on_empty(lambda: print(&#34;Hello&#34;))  # Prints &#34;Hello&#34;
+    nothing.on_empty(lambda: print(&#34;Hello&#34;))  # Doesn&#39;t print
+    ```
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynction.monads.maybe.Maybe.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self, on_just: Callable[[], None] = None, on_empty: Callable[[], None] = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Runs <code>on_just</code> when self instance is a Just
+Runs <code>on_empty</code> when self instance is Nothing</p>
+<p>Example</p>
+<pre><code>just(1).run(
+    on_just=lambda: print(&quot;Hello&quot;),
+    on_empty=lambda: print(&quot;Empty&quot;),
+)  # Prints &quot;Hello&quot;
+nothing.run(
+    on_just=lambda: print(&quot;Hello&quot;),
+    on_empty=lambda: print(&quot;Empty&quot;),
+)  # Prints &quot;Empty&quot;
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(
+    self,
+    on_just: Callable[[], None] = None,
+    on_empty: Callable[[], None] = None,
+) -&gt; None:
+    &#34;&#34;&#34;
+    Runs `on_just` when self instance is a Just
+    Runs `on_empty` when self instance is Nothing
+
+    Example
+    ```
+    just(1).run(
+        on_just=lambda: print(&#34;Hello&#34;),
+        on_empty=lambda: print(&#34;Empty&#34;),
+    )  # Prints &#34;Hello&#34;
+    nothing.run(
+        on_just=lambda: print(&#34;Hello&#34;),
+        on_empty=lambda: print(&#34;Empty&#34;),
+    )  # Prints &#34;Empty&#34;
+    ```
+    &#34;&#34;&#34;
+    if on_empty:
+        self.on_empty(on_empty)
+    if on_just:
+        self.on_just(on_just)</code></pre>
 </details>
 </dd>
 <dt id="pynction.monads.maybe.Maybe.to_either"><code class="name flex">
@@ -861,7 +1156,7 @@ def to_either(self, error: L) -&gt; Either[L, T]:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Nothing(Maybe):
+<pre><code class="python">class Nothing(Maybe[Any]):
     _instance: Optional[&#34;Nothing&#34;] = None
 
     def __str__(self) -&gt; str:
@@ -880,8 +1175,11 @@ def to_either(self, error: L) -&gt; Either[L, T]:
     def map(self, _: Callable[[Any], Any]) -&gt; Maybe[Any]:
         return self.get_instance()
 
-    def flat_map(self, _: Callable[[Any], &#34;Maybe[Any]&#34;]) -&gt; &#34;Maybe[Any]&#34;:
-        return self.get_instance()
+    def filter(self, _: Callable[[Any], bool]) -&gt; Maybe[Any]:
+        return self
+
+    def flat_map(self, _: Callable[[Any], Maybe[Any]]) -&gt; Maybe[Any]:
+        return self
 
     def get_or_else(self, default: T) -&gt; T:  # type: ignore
         return default
@@ -890,7 +1188,13 @@ def to_either(self, error: L) -&gt; Either[L, T]:
         raise error
 
     def to_either(self, error: L) -&gt; Either[L, Any]:
-        return Left(error)</code></pre>
+        return Left(error)
+
+    def on_empty(self, f: Callable[[], None]) -&gt; None:
+        f()
+
+    def on_just(self, _: Callable[[], None]) -&gt; None:
+        return</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -921,6 +1225,7 @@ def get_instance(cls) -&gt; &#34;Nothing&#34;:
 <ul class="hlist">
 <li><code><b><a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a></b></code>:
 <ul class="hlist">
+<li><code><a title="pynction.monads.maybe.Maybe.filter" href="#pynction.monads.maybe.Maybe.filter">filter</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.flat_map" href="#pynction.monads.maybe.Maybe.flat_map">flat_map</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.get_or_else" href="#pynction.monads.maybe.Maybe.get_or_else">get_or_else</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.get_or_raise" href="#pynction.monads.maybe.Maybe.get_or_raise">get_or_raise</a></code></li>
@@ -929,6 +1234,9 @@ def get_instance(cls) -&gt; &#34;Nothing&#34;:
 <li><code><a title="pynction.monads.maybe.Maybe.map" href="#pynction.monads.maybe.Maybe.map">map</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.nothing" href="#pynction.monads.maybe.Maybe.nothing">nothing</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.of" href="#pynction.monads.maybe.Maybe.of">of</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.on_empty" href="#pynction.monads.maybe.Maybe.on_empty">on_empty</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.on_just" href="#pynction.monads.maybe.Maybe.on_just">on_just</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.run" href="#pynction.monads.maybe.Maybe.run">run</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.to_either" href="#pynction.monads.maybe.Maybe.to_either">to_either</a></code></li>
 </ul>
 </li>
@@ -967,6 +1275,7 @@ def get_instance(cls) -&gt; &#34;Nothing&#34;:
 <li>
 <h4><code><a title="pynction.monads.maybe.Maybe" href="#pynction.monads.maybe.Maybe">Maybe</a></code></h4>
 <ul class="two-column">
+<li><code><a title="pynction.monads.maybe.Maybe.filter" href="#pynction.monads.maybe.Maybe.filter">filter</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.flat_map" href="#pynction.monads.maybe.Maybe.flat_map">flat_map</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.get_or_else" href="#pynction.monads.maybe.Maybe.get_or_else">get_or_else</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.get_or_raise" href="#pynction.monads.maybe.Maybe.get_or_raise">get_or_raise</a></code></li>
@@ -975,6 +1284,9 @@ def get_instance(cls) -&gt; &#34;Nothing&#34;:
 <li><code><a title="pynction.monads.maybe.Maybe.map" href="#pynction.monads.maybe.Maybe.map">map</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.nothing" href="#pynction.monads.maybe.Maybe.nothing">nothing</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.of" href="#pynction.monads.maybe.Maybe.of">of</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.on_empty" href="#pynction.monads.maybe.Maybe.on_empty">on_empty</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.on_just" href="#pynction.monads.maybe.Maybe.on_just">on_just</a></code></li>
+<li><code><a title="pynction.monads.maybe.Maybe.run" href="#pynction.monads.maybe.Maybe.run">run</a></code></li>
 <li><code><a title="pynction.monads.maybe.Maybe.to_either" href="#pynction.monads.maybe.Maybe.to_either">to_either</a></code></li>
 </ul>
 </li>
