@@ -1,7 +1,10 @@
 # Pynction 🐍
 
+[![](https://img.shields.io/pypi/v/pynction.svg?maxAge=3600)](https://pypi.org/project/pynction/)
+
 [![continuous_integration](https://github.com/niconunez96/pynction/actions/workflows/ci.yaml/badge.svg)](https://github.com/niconunez96/pynction/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/niconunez96/pynction/branch/main/graph/badge.svg?token=YI2ZOWV29E)](https://codecov.io/gh/niconunez96/pynction)
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Functional based library to support haskell monads like Either, Maybe in a scala fashion style. The library also contains Try monad inspired from vavr and a Stream class which is pretty similar to scala and java stream API
 
