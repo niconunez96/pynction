@@ -73,6 +73,14 @@ class TestJust:
 
         mock_function.assert_not_called()
 
+    def test_it_should_execute_function_when_call_run(self):
+        mock_function = Mock()
+        foo = maybe(5)
+
+        foo.run(mock_function)
+
+        mock_function.assert_called_once()
+
 
 class TestNothing:
     def test_str_should_return_value(self):
@@ -129,6 +137,14 @@ class TestNothing:
         foo.on_empty(mock_function)
 
         mock_function.assert_called_once()
+
+    def test_it_should_not_execute_function_when_call_run(self):
+        mock_function = Mock()
+        foo = nothing
+
+        foo.run(mock_function)
+
+        mock_function.assert_not_called()
 
 
 # Do notation tests
