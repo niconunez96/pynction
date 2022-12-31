@@ -18,7 +18,9 @@ class TestStream:
         ],
     )
     def test_it_should_create_stream_from_iterator(
-        self, iterator_example, expected_value
+        self,
+        iterator_example,
+        expected_value,
     ):
         example_stream = stream_of(iterator_example)
 

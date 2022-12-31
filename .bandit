@@ -1,0 +1,2 @@
+[bandit]
+exclude = /tests,samples.py,performance_test.py,/env,/venv

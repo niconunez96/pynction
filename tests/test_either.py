@@ -29,7 +29,7 @@ class TestRight:
         example = right(20)
 
         result = example.filter_or_else(lambda a: a > 10, "ERROR").get_or_else_get(
-            lambda _: 0
+            lambda _: 0,
         )
 
         assert result == 20
@@ -38,7 +38,7 @@ class TestRight:
         example = right(20)
 
         result = example.filter_or_else(lambda a: a < 10, "ERROR").get_or_else_get(
-            lambda _: 0
+            lambda _: 0,
         )
 
         assert result == 0
@@ -128,7 +128,8 @@ def example_with_return_value_2() -> DoEither[str, Union[int, str], str]:
 
 @do_either
 def dynamic_typing_returning_value() -> DoEitherN[
-    Literal["error", "ERROR1"], Tuple[int, str]
+    Literal["error", "ERROR1"],
+    Tuple[int, str],
 ]:
     x = yield from _e(right(2))
     y = yield from _e(right(6))
@@ -180,7 +181,8 @@ def test_do_notation_should_return_left_when_any_expression_return_a_left(
     ],
 )
 def test_do_notation_should_return_a_right_with_value_calculated(
-    do_notation_func: Callable[[], Either[Any, Any]], expected_result
+    do_notation_func: Callable[[], Either[Any, Any]],
+    expected_result,
 ):
     result = do_notation_func()
 

@@ -57,7 +57,9 @@ class Either(abc.ABC, Generic[L, R]):
 
     @abc.abstractmethod
     def filter_or_else(
-        self, predicate: Callable[[R], bool], left_value: L  # type: ignore
+        self,
+        predicate: Callable[[R], bool],
+        left_value: L,  # type: ignore
     ) -> "Either[L, R]":
         """
         Evaluate the `predicate` over the right value, if the result is
@@ -96,12 +98,14 @@ class Right(Either[Any, R]):
         return Right(f(self._value))
 
     def filter_or_else(
-        self, satisfyCondition: Callable[[R], bool], leftValue: L  # type: ignore
+        self,
+        satisfy_condition: Callable[[R], bool],
+        left_value: L,  # type: ignore
     ) -> Either[L, R]:
-        if satisfyCondition(self._value):
+        if satisfy_condition(self._value):
             return self
         else:
-            return Left(leftValue)
+            return Left(left_value)
 
     def get_or_else_get(self, _: Callable[[L], R]) -> R:
         return self._value

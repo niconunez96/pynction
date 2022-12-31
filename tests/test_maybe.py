@@ -258,7 +258,8 @@ def test_do_notation_should_return_nothing_when_any_expression_return_a_nothing(
     ],
 )
 def test_do_notation_should_return_a_just_with_value_calculated(
-    do_notation_func, expected_result
+    do_notation_func,
+    expected_result,
 ):
     result = do_notation_func()
 

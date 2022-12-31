@@ -33,7 +33,7 @@ def pythonic_way(elem_quantity):
 @timer
 def python_itertools_way(elem_quantity):
     temp = filter(lambda x: x % 2 == 0, range(elem_quantity))
-    temp2 = map(lambda a: a * 2, temp)
+    temp2 = map(lambda a: a * 2, temp)  # noqa
     temp3 = []
     for n in temp2:
         temp3.extend([n + 1, n + 2])
@@ -42,7 +42,7 @@ def python_itertools_way(elem_quantity):
         if n > 1000:
             break
         result.append(n)
-    print("Itetools result: ", len(result))
+    print("Itertools result: ", len(result))
 
 
 @timer
