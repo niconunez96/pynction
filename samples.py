@@ -28,7 +28,7 @@ from pynction import (
 
 
 # Maybe examples
-def isEmpty(something: Maybe[str]) -> bool:
+def is_empty(something: Maybe[str]) -> bool:
     return something.map(lambda s: s.upper()).is_empty
 
 
@@ -41,8 +41,8 @@ def sum20(something: Maybe[int]) -> Either[str, int]:
 
 
 print("*** Maybe samples ***")
-print(isEmpty(nothing))
-print(isEmpty(maybe("something")))
+print(is_empty(nothing))
+print(is_empty(maybe("something")))
 
 
 print(sum10(nothing))
@@ -63,7 +63,8 @@ class Response(TypedDict):
 
 
 def make_upper_case_first_n_letters(
-    word: str, number: int
+    word: str,
+    number: int,
 ) -> Either[Literal[Error, NumberError], str]:
     if len(word) < 10:
         return left("LESS_THAN_10_LETTERS")
@@ -78,7 +79,7 @@ def make_upper_case_first_n_letters(
 def transform_word(word: str) -> Response:
     result = make_upper_case_first_n_letters(word, 10)
 
-    def mapError(error: Literal[Error, NumberError]) -> Response:
+    def map_error(error: Literal[Error, NumberError]) -> Response:
         if error == "LESS_THAN_10_LETTERS":
             return {"body": {"error": "less than 10"}, "status": 400}
         elif error == "CONTAINS_UPPERCASE_LETTERS":
@@ -87,7 +88,7 @@ def transform_word(word: str) -> Response:
             return {"body": {"error": "number greater than 100"}, "status": 400}
 
     return result.map(lambda s: Response(body={"data": s}, status=200)).get_or_else_get(
-        lambda error: mapError(error)
+        lambda error: map_error(error),
     )
 
 
@@ -225,13 +226,13 @@ def either_do_example(id: int) -> DoEither[str, User, None]:
     return None
 
 
-def get_eihter_name() -> Either[str, str]:
+def get_either_name() -> Either[str, str]:
     return right("john")
 
 
 @do_either
 def example_with_union() -> DoEither[str, Union[int, str], str]:
-    name = yield get_eihter_name()
+    name = yield get_either_name()
     age = yield right(25)
     lastname = yield right("wick")
     return f"{name} {lastname} with age {age}"
@@ -239,7 +240,7 @@ def example_with_union() -> DoEither[str, Union[int, str], str]:
 
 @do_either
 def example_with_union_dynamic() -> DoEitherN[str, Tuple[str, int]]:
-    name = yield from _e(get_eihter_name())
+    name = yield from _e(get_either_name())
     age = yield from _e(right(25))
     lastname = yield from _e(right("wick"))
     return name + lastname, age

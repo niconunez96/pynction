@@ -102,7 +102,8 @@ class Function(Functor[R], Generic[T, R]):
         return Function(lambda x: f(self._f(x)))
 
     def __or__(
-        self, f: Union[Callable[[R], R2], "Function[R, R2]"]
+        self,
+        f: Union[Callable[[R], R2], "Function[R, R2]"],
     ) -> "Function[T, R2]":
         """
         Syntax sugar for `map` method so you can do the following
@@ -140,7 +141,8 @@ class Function2(Functor[R], Generic[T, T2, R]):
         return self._f(arg, arg2)
 
     def map(
-        self, f: Union[Callable[[R], R2], "Function[R, R2]"]
+        self,
+        f: Union[Callable[[R], R2], "Function[R, R2]"],
     ) -> "Function2[T, T2, R2]":
         """
         This method implements the `Functor` interface which in this case
@@ -164,7 +166,8 @@ class Function2(Functor[R], Generic[T, T2, R]):
         return Function2(lambda x, y: f(self._f(x, y)))
 
     def __or__(
-        self, f: Union[Callable[[R], R2], "Function[R, R2]"]
+        self,
+        f: Union[Callable[[R], R2], "Function[R, R2]"],
     ) -> "Function2[T, T2, R2]":
         """
         Syntax sugar for `map` method so you can do the following
@@ -216,7 +219,8 @@ class Function3(Functor[R], Generic[T, T2, T3, R]):
         return self._f(arg, arg2, arg3)
 
     def map(
-        self, f: Union[Callable[[R], R2], "Function[R, R2]"]
+        self,
+        f: Union[Callable[[R], R2], "Function[R, R2]"],
     ) -> "Function3[T, T2, T3, R2]":
         """
         This method implements the `Functor` interface which in this case
@@ -240,7 +244,8 @@ class Function3(Functor[R], Generic[T, T2, T3, R]):
         return Function3(lambda x, y, z: f(self._f(x, y, z)))
 
     def __or__(
-        self, f: Union[Callable[[R], R2], "Function[R, R2]"]
+        self,
+        f: Union[Callable[[R], R2], "Function[R, R2]"],
     ) -> "Function3[T, T2, T3, R2]":
         """
         Syntax sugar for `map` method so you can do the following
@@ -266,7 +271,7 @@ class Function3(Functor[R], Generic[T, T2, T3, R]):
         ```
         """
         return Function(
-            lambda x: Function(lambda y: Function(lambda z: self._f(x, y, z)))
+            lambda x: Function(lambda y: Function(lambda z: self._f(x, y, z))),
         )
 
     @staticmethod
@@ -294,7 +299,8 @@ class Function4(Functor[R], Generic[T, T2, T3, T4, R]):
         return self._f(arg, arg2, arg3, arg4)
 
     def map(
-        self, f: Union[Callable[[R], R2], "Function[R, R2]"]
+        self,
+        f: Union[Callable[[R], R2], "Function[R, R2]"],
     ) -> "Function4[T, T2, T3, T4, R2]":
         """
         This method implements the `Functor` interface which in this case
@@ -318,7 +324,8 @@ class Function4(Functor[R], Generic[T, T2, T3, T4, R]):
         return Function4(lambda x, y, z, q: f(self._f(x, y, z, q)))
 
     def __or__(
-        self, f: Union[Callable[[R], R2], "Function[R, R2]"]
+        self,
+        f: Union[Callable[[R], R2], "Function[R, R2]"],
     ) -> "Function4[T, T2, T3, T4, R2]":
         """
         Syntax sugar for `map` method so you can do the following
@@ -345,13 +352,13 @@ class Function4(Functor[R], Generic[T, T2, T3, T4, R]):
         """
         return Function(
             lambda x: Function(
-                lambda y: Function(lambda z: Function(lambda q: self._f(x, y, z, q)))
-            )
+                lambda y: Function(lambda z: Function(lambda q: self._f(x, y, z, q))),
+            ),
         )
 
     @staticmethod
     def decorator(
-        decorated: Callable[[T, T2, T3, T4], R]
+        decorated: Callable[[T, T2, T3, T4], R],
     ) -> "Function4[T, T2, T3, T4, R]":
         """
         Decorator that transforms your function with a single argument

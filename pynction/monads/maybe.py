@@ -5,7 +5,7 @@ from typing import Any, Callable, Generator, Generic, NoReturn, Optional, TypeVa
 
 from typing_extensions import ParamSpec
 
-from .either import Either, Left, Right
+from pynction.monads.either import Either, Left, Right
 
 T = TypeVar("T", covariant=True)
 V = TypeVar("V", covariant=True)
@@ -70,7 +70,7 @@ class Maybe(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def filter(self, satisfyCondition: Callable[[T], bool]) -> "Maybe[T]":
+    def filter(self, satisfy_condition: Callable[[T], bool]) -> "Maybe[T]":
         """
         Returns Just(value) if this is a Just and the value satisfies the given predicate.
 
@@ -240,8 +240,8 @@ class Just(Maybe[T]):
             return Nothing.get_instance()
         return Just(result)
 
-    def filter(self, satisfyCondition: Callable[[T], bool]) -> Maybe[T]:
-        if satisfyCondition(self._value):
+    def filter(self, satisfy_condition: Callable[[T], bool]) -> Maybe[T]:
+        if satisfy_condition(self._value):
             return self
         return Nothing.get_instance()
 
