@@ -1,50 +1,40 @@
 name: continuous_integration
 on:
+  push:
+    branches:
+      - "main"
   pull_request:
     branches:
-      - '!invoke-release-main-**'
-      - '*'
+      - "!invoke-release-main-**"
+      - "*"
 jobs:
   mypy_validation:
     name: MyPy validation 🤖
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Select python version
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.7"
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run mypy
-        run: mypy .
+    uses: ./.github/workflows/python_job.yaml
+    with:
+      command: mypy .
+      python_version: "3.7"
   flake8_validation:
     name: Flake8 validation 💅
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Select python version
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.7"
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run flake8
-        run: flake8
+    uses: ./.github/workflows/python_job.yaml
+    with:
+      command: flake8
+      python_version: "3.7"
   test:
-    runs-on: ubuntu-latest
+    name: Python tests 🧪
     needs: [mypy_validation, flake8_validation]
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
-    name: Check tests for Python ${{ matrix.python-version }} 🧪
-    steps:
-      - uses: actions/checkout@v2
-      - name: Select python version
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run tests
-        run: pytest tests
+        python_version: ["3.7", "3.8", "3.9", "3.10"]
+    uses: ./.github/workflows/python_job.yaml
+    with:
+      command: pytest tests
+      python_version: ${{ matrix.python_version }}
+  send_coverage:
+    name: Send test coverage
+    needs: [test]
+    uses: ./.github/workflows/python_job.yaml
+    with:
+      command: coverage run -m pytest tests && coverage xml
+      python_version: "3.7"
+      send_coverage: true

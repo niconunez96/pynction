@@ -1,0 +1,31 @@
+on:
+  workflow_call:
+    inputs:
+      command:
+        required: true
+        type: string
+      python_version:
+        required: true
+        type: string
+      send_coverage:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  python_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Select python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python_version }}
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run python command
+        run: ${{ inputs.command }}
+      - name: Send coverage
+        if: inputs.send_coverage == true
+        uses: codecov/codecov-action@v2
