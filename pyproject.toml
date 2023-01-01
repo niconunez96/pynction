@@ -52,6 +52,10 @@ disallow_untyped_defs = false
 disallow_incomplete_defs = false
 check_untyped_defs = true
 
+[tool.isort]
+profile = "black"
+py_version = 37
+extend_skip = ["env"]
 
 [build-system]
 requires = ["poetry-core"]

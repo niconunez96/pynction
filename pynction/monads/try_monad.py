@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Callable, Generic, TypeVar
 
-from .either import Either, Left, Right
+from pynction.monads.either import Either, Left, Right
 
 T = TypeVar("T")
 S = TypeVar("S")
