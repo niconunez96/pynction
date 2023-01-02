@@ -1,6 +1,8 @@
 Changelog
 =========
 
+<!--next-version-placeholder-->
+
 0.3.0 (2022-12-26)
 ------------------
 - MINOR: Add helper methods to maybe (#37)
