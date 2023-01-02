@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.2 (2023-01-02)
+### Fix
+* Use admin token to push to main branch ([#49](https://github.com/niconunez96/pynction/issues/49)) ([`fe46f5b`](https://github.com/niconunez96/pynction/commit/fe46f5b7b82df4192421d48b7a3e858108a41e2f))
+* Fix readme ([#48](https://github.com/niconunez96/pynction/issues/48)) ([`91a94b0`](https://github.com/niconunez96/pynction/commit/91a94b09549406e562cafff97148eeaf0d0c6795))
+
 ## 0.3.1 (2023-01-02)
 
 ### Fix
