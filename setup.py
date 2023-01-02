@@ -2,7 +2,7 @@ from pathlib import Path
 
 import setuptools
 
-from pynction.version import __version__
+from pynction import __version__
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
