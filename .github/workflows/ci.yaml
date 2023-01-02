@@ -31,7 +31,7 @@ jobs:
       command: pytest tests
       python_version: ${{ matrix.python_version }}
   send_coverage:
-    name: Send test coverage
+    name: Send test coverage 😎
     needs: [test]
     uses: ./.github/workflows/python_job.yaml
     with:
