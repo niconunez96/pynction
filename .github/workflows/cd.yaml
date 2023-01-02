@@ -1,23 +1,15 @@
 name: continuous_deployment
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - "main"
 jobs:
   publish_pypi:
       runs-on: ubuntu-latest
       name: Publish project to pypi
       steps:
-        - uses: actions/checkout@v2
-        - name: Set python 3.7
-          uses: actions/setup-python@v2
+        - uses: relekang/python-semantic-release@master
           with:
-            python-version: "3.7"
-        - name: Install dependencies
-          run: pip install -r requirements.txt
-        - name: Build dist
-          run: python setup.py sdist
-        - name: Publish package on tag creation
-          uses: pypa/gh-action-pypi-publish@release/v1
-          with:
-            password: ${{ secrets.PYPI_API_TOKEN }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            repository_username: __token__
+            repository_password: ${{ secrets.PYPI_API_TOKEN }}
