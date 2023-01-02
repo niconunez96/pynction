@@ -1,16 +1,19 @@
 name: continuous_deployment
 on:
-  push:
-    branches:
-      - "main"
+  workflow_run:
+    workflows: ["continuous_integration"]
+    branches: [main]
+    types:
+      - completed
 jobs:
   publish_pypi:
-      runs-on: ubuntu-latest
-      name: Publish project to pypi
-      steps:
-        - uses: actions/checkout@v2
-        - uses: relekang/python-semantic-release@master
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            repository_username: __token__
-            repository_password: ${{ secrets.PYPI_API_TOKEN }}
+    runs-on: ubuntu-latest
+    name: Publish project to pypi
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: relekang/python-semantic-release@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository_username: __token__
+          repository_password: ${{ secrets.PYPI_API_TOKEN }}
