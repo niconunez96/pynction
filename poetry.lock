@@ -417,39 +417,6 @@ files = [
 ]
 
 [[package]]
-name = "invoke"
-version = "0.22.1"
-description = "Pythonic task execution"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "invoke-0.22.1-py2-none-any.whl", hash = "sha256:357f0661c1d84f9f113e6164705d92eb00b35cd704c31e82efbf0f012f25e40c"},
-    {file = "invoke-0.22.1-py3-none-any.whl", hash = "sha256:39020b07218c87747e85dd422510f02a8d1282c71952942324c67d9eeaae8e62"},
-    {file = "invoke-0.22.1.tar.gz", hash = "sha256:621181a0efae67b3dadec583cf2c6b5096136635bf6a326c481c73db412b36fc"},
-]
-
-[[package]]
-name = "invoke-release"
-version = "4.6.0"
-description = "Reusable Invoke-based command-line release tasks for libraries and services"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "invoke-release-4.6.0.tar.gz", hash = "sha256:9bf6a401f61a70b4797a40ed8239b3ebeac732f7e025bdf8c411c9522ecf75ab"},
-    {file = "invoke_release-4.6.0-py2.py3-none-any.whl", hash = "sha256:54478629bdf1ce6c6e81cd9518f1f4710e9deb6de3afc3f6582bb481669c1074"},
-]
-
-[package.dependencies]
-invoke = ">=0.22.0,<0.23.0"
-six = ">=1.11.0,<1.12.0"
-wheel = ">=0.31.1,<0.32.0"
-
-[package.extras]
-testing = ["pytest"]
-
-[[package]]
 name = "isort"
 version = "5.10.1"
 description = "A Python utility / library to sort Python imports."
@@ -903,18 +870,6 @@ testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8 (<5)", "flake8-202
 testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
 
 [[package]]
-name = "six"
-version = "1.11.0"
-description = "Python 2 and 3 compatibility utilities"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "six-1.11.0-py2.py3-none-any.whl", hash = "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"},
-    {file = "six-1.11.0.tar.gz", hash = "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"},
-]
-
-[[package]]
 name = "smmap"
 version = "5.0.0"
 description = "A pure Python implementation of a sliding window memory map manager"
@@ -1047,23 +1002,6 @@ docs = ["proselint (>=0.10.2)", "sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sp
 testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "packaging (>=20.0)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)"]
 
 [[package]]
-name = "wheel"
-version = "0.31.1"
-description = "A built-package format for Python."
-category = "dev"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-files = [
-    {file = "wheel-0.31.1-py2.py3-none-any.whl", hash = "sha256:80044e51ec5bbf6c894ba0bc48d26a8c20a9ba629f4ca19ea26ecfcf87685f5f"},
-    {file = "wheel-0.31.1.tar.gz", hash = "sha256:0a2e54558a0628f2145d2fc822137e322412115173e8a2ddbe1c9024338ae83c"},
-]
-
-[package.extras]
-faster-signatures = ["ed25519ll"]
-signatures = ["keyring", "keyrings.alt", "pyxdg"]
-test = ["pytest (>=3.0.0)", "pytest-cov"]
-
-[[package]]
 name = "zipp"
 version = "3.11.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
@@ -1082,4 +1020,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "48c74500e1b5736730365ba644cd9519b9986ceb4c2c9c5448a8f22b56df18ae"
+content-hash = "1f2534538ce2dc223cc942727e0a2897c54b7cc496af7e4aed5d518eeb8af2b5"
