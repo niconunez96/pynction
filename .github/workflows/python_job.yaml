@@ -18,10 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Select python version
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.python_version }}
-          cache: "pip"
       - name: Select poetry
         uses: abatilo/actions-poetry@v2
         with:
