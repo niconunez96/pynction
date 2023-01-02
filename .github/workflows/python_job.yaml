@@ -50,4 +50,6 @@ jobs:
           ${{ inputs.command }}
       - name: Send coverage
         if: inputs.send_coverage == true
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
