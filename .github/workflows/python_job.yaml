@@ -33,19 +33,20 @@ jobs:
         with:
           version: 1.3.1
           virtualenvs-create: true
+          virtualenvs-in-project: true
           installer-parallel: true
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.local/virtualenvs/.venv
+          path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
       - name: Run python command
         run: |
-          source ~/.local/virtualenvs/.venv/bin/activate
+          source .venv/bin/activate
           ${{ inputs.command }}
       - name: Send coverage
         if: inputs.send_coverage == true
