@@ -8,6 +8,7 @@ jobs:
       runs-on: ubuntu-latest
       name: Publish project to pypi
       steps:
+        - uses: actions/checkout@v2
         - uses: relekang/python-semantic-release@master
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
