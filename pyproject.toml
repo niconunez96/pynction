@@ -2,9 +2,22 @@
 name = "pynction"
 version = "0.3.0"
 description = "Functional based library to support monads and other functional programming concepts"
-authors = ["niconunez96 <nicolas110996@gmail.com>"]
+authors = ["Nicolas Nuñez <nicolas110996@gmail.com>"]
+maintainers = ["Nicolas Nuñez <nicolas110996@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+]
+repository = "https://github.com/niconunez96/pynction"
+documentation = "https://pynction.vercel.app/"
+packages = [
+    { include = "pynction" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
