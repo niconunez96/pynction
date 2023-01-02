@@ -18,14 +18,38 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Select python version
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.python_version }}
-          cache: "pip"
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.local
+          key: poetry-0 # increment to reset cache
+      - name: Install Poetry
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.3.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
       - name: Run python command
-        run: ${{ inputs.command }}
+        run: |
+          source .venv/bin/activate
+          ${{ inputs.command }}
       - name: Send coverage
         if: inputs.send_coverage == true
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
