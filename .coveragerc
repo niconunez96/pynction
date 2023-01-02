@@ -20,3 +20,6 @@ exclude_lines =
 omit =
     tests/*
     performance_test.py
+    .venv/*
+    env/*
+    venv/*
