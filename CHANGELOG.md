@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## 0.3.1 (2023-01-02)
+
+### Fix
+
+- CHANGELOG.md
+
 ## 0.3.0 (2022-12-26)
 
 - MINOR: Add helper methods to maybe (#37)
