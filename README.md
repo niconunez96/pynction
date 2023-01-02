@@ -29,7 +29,7 @@ foo = (
     .map(lambda a: a + 1)
     .filter(lambda n: n % 2 == 0)
     .flat_map(lambda n: [n, n * 2])
-    .to_list
+    .to_list()
 )
 
 # foo => [2, 4, 4, 8]
@@ -37,7 +37,7 @@ foo = (
 bar = (
     stream("example", "e", "something")
     .take_while(lambda s: s.startswith("e"))
-    .to_list
+    .to_list()
 )
 
 # bar => ["example", "e"]
