@@ -1,7 +1,8 @@
 import abc
 import functools
 from dataclasses import dataclass
-from typing import Any, Callable, Generator, Generic, TypeVar, cast
+from inspect import signature
+from typing import Any, Callable, Generator, Generic, TypeVar, Union, cast
 
 from typing_extensions import ParamSpec
 
@@ -78,6 +79,55 @@ class Either(abc.ABC, Generic[L, R]):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def recover(
+        self, recovery_handler: Union[Callable[[L], R], Callable[[], R]]
+    ) -> "Either[L, R]":
+        """
+        Calls `f` if the projected Either is a Left, or returns this if Right.
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def on_right(self, consumer: Callable[[R], None]) -> "Either[L, R]":
+        """
+        Calls `f` if the projected Either is a Right.
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def on_left(self, consumer: Callable[[L], None]) -> "Either[L, R]":
+        """
+        Calls `f` if the projected Either is a Left.
+        """
+        raise NotImplementedError
+
+    def run(
+        self,
+        on_right: Callable[[R], None] = None,
+        on_left: Callable[[L], None] = None,
+    ) -> None:
+        """
+        Runs `on_right` when self instance is a Right
+        Runs `on_left` when self instance is a Left
+
+        Example
+        ```python
+        right(1).run(
+            on_just=lambda value: print(f"Hello {value}"),
+            on_empty=lambda error: print(f"Error: {error}"),
+        )  # Prints "Hello 1"
+        left("boom!").run(
+            on_just=lambda value: print(f"Hello {value}"),
+            on_empty=lambda error: print(f"Error: {error}"),
+        )  # Prints "Error: boom!"
+        ```
+        """
+        if on_right:
+            self.on_right(on_right)
+        if on_left:
+            self.on_left(on_left)
+
 
 @dataclass(frozen=True)
 class Right(Either[Any, R]):
@@ -110,6 +160,16 @@ class Right(Either[Any, R]):
     def get_or_else_get(self, _: Callable[[L], R]) -> R:
         return self._value
 
+    def recover(self, _: Union[Callable[[L], R], Callable[[], R]]) -> Either[L, R]:
+        return self
+
+    def on_right(self, consumer: Callable[[R], None]) -> Either[L, R]:
+        consumer(self._value)
+        return self
+
+    def on_left(self, _: Callable[[L], None]) -> Either[L, R]:
+        return self
+
 
 @dataclass(frozen=True)
 class Left(Either[L, Any]):
@@ -134,6 +194,20 @@ class Left(Either[L, Any]):
 
     def get_or_else_get(self, f: Callable[[L], R]) -> R:
         return f(self._value)
+
+    def recover(
+        self, recovery_handler: Union[Callable[[L], R], Callable[[], R]]
+    ) -> Either[L, R]:
+        if len(signature(recovery_handler).parameters) == 0:
+            return Either.right(cast(Callable[[], R], recovery_handler)())
+        return Either.right(cast(Callable[[L], R], recovery_handler)(self._value))
+
+    def on_right(self, _: Callable[[R], None]) -> Either[L, R]:
+        return self
+
+    def on_left(self, consumer: Callable[[L], None]) -> Either[L, R]:
+        consumer(self._value)
+        return self
 
 
 P = ParamSpec("P")

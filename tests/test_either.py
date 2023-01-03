@@ -43,6 +43,37 @@ class TestRight:
 
         assert result == 0
 
+    def test_it_should_return_the_same_right_value_when_try_to_recover(self):
+        example: Either[str, int] = right(20)
+
+        result = example.recover(lambda: 10)
+
+        assert str(result) == "Right[20]"
+
+    def test_it_should_run_provided_function_when_call_on_right(self):
+        on_right_function = Mock()
+        example: Either[str, int] = right(20)
+
+        example.on_right(on_right_function)
+
+        on_right_function.assert_called_once()
+
+    def test_it_should_run_provided_function_when_call_run(self):
+        on_right_function = Mock()
+        example: Either[str, int] = right(20)
+
+        example.run(on_right=on_right_function)
+
+        on_right_function.assert_called_once()
+
+    def test_it_should_not_run_provided_function_when_call_on_left(self):
+        on_right_function = Mock()
+        example: Either[str, int] = right(20)
+
+        example.on_left(on_right_function)
+
+        on_right_function.assert_not_called()
+
 
 class TestLeft:
     def test_str_should_return_value(self):
@@ -78,6 +109,44 @@ class TestLeft:
 
         filter_function.assert_not_called()
         assert str(result) == "Left[ERROR]"
+
+    def test_it_should_return_function_value_when_try_to_recover(self):
+        example: Either[str, int] = left("boom!")
+
+        result = example.recover(lambda: 20)
+
+        assert str(result) == "Right[20]"
+
+    def test_it_should_return_function_value_using_error_when_try_to_recover(self):
+        example: Either[str, int] = left("boom!")
+
+        result = example.recover(lambda error: 10 if error == "boom!" else -1)
+
+        assert str(result) == "Right[10]"
+
+    def test_it_should_run_provided_function_when_call_on_left(self):
+        on_left_function = Mock()
+        example: Either[str, int] = left("boom!")
+
+        example.on_left(on_left_function)
+
+        on_left_function.assert_called_once()
+
+    def test_it_should_run_provided_function_when_call_run(self):
+        on_left_function = Mock()
+        example: Either[str, int] = left("boom!")
+
+        example.run(on_left=on_left_function)
+
+        on_left_function.assert_called_once()
+
+    def test_it_should_not_run_provided_function_when_call_on_right(self):
+        on_left_function = Mock()
+        example: Either[str, int] = left("boom!")
+
+        example.on_right(on_left_function)
+
+        on_left_function.assert_not_called()
 
 
 # Do notation tests
