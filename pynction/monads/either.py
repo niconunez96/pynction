@@ -85,21 +85,21 @@ class Either(abc.ABC, Generic[L, R]):
         recovery_handler: Union[Callable[[L], R], Callable[[], R]],
     ) -> "Either[L, R]":
         """
-        Calls `f` if the projected Either is a Left, or returns this if Right.
+        Calls `recovery_handler` if the projected Either is a Left, or returns this if Right.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def on_right(self, consumer: Callable[[R], None]) -> "Either[L, R]":
         """
-        Calls `f` if the projected Either is a Right.
+        Calls `consumer` if the projected Either is a Right.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def on_left(self, consumer: Callable[[L], None]) -> "Either[L, R]":
         """
-        Calls `f` if the projected Either is a Left.
+        Calls `consumer` if the projected Either is a Left.
         """
         raise NotImplementedError
 
@@ -115,12 +115,12 @@ class Either(abc.ABC, Generic[L, R]):
         Example
         ```python
         right(1).run(
-            on_just=lambda value: print(f"Hello {value}"),
-            on_empty=lambda error: print(f"Error: {error}"),
+            on_right=lambda value: print(f"Hello {value}"),
+            on_left=lambda error: print(f"Error: {error}"),
         )  # Prints "Hello 1"
         left("boom!").run(
-            on_just=lambda value: print(f"Hello {value}"),
-            on_empty=lambda error: print(f"Error: {error}"),
+            on_right=lambda value: print(f"Hello {value}"),
+            on_left=lambda error: print(f"Error: {error}"),
         )  # Prints "Error: boom!"
         ```
         """

@@ -60,11 +60,16 @@ class TestRight:
 
     def test_it_should_run_provided_function_when_call_run(self):
         on_right_function = Mock()
+        on_left_function = Mock()
         example: Either[str, int] = right(20)
 
-        example.run(on_right=on_right_function)
+        example.run(
+            on_right=on_right_function,
+            on_left=on_left_function,
+        )
 
         on_right_function.assert_called_once_with(20)
+        on_left_function.assert_not_called()
 
     def test_it_should_not_run_provided_function_when_call_on_left(self):
         on_right_function = Mock()
@@ -134,11 +139,16 @@ class TestLeft:
 
     def test_it_should_run_provided_function_when_call_run(self):
         on_left_function = Mock()
+        on_right_function = Mock()
         example: Either[str, int] = left("boom!")
 
-        example.run(on_left=on_left_function)
+        example.run(
+            on_left=on_left_function,
+            on_right=on_right_function,
+        )
 
         on_left_function.assert_called_once_with("boom!")
+        on_right_function.assert_not_called()
 
     def test_it_should_not_run_provided_function_when_call_on_right(self):
         on_left_function = Mock()
