@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2023-01-04)
+### Feature
+* Add either methods ([#50](https://github.com/niconunez96/pynction/issues/50)) ([`6f3e8be`](https://github.com/niconunez96/pynction/commit/6f3e8bea99c21b0a72ed864d51b95a659049b0c0))
+
 ## v0.3.2 (2023-01-02)
 ### Fix
 * Use admin token to push to main branch ([#49](https://github.com/niconunez96/pynction/issues/49)) ([`fe46f5b`](https://github.com/niconunez96/pynction/commit/fe46f5b7b82df4192421d48b7a3e858108a41e2f))

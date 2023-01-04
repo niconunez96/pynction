@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pynction"
-version = "0.3.2"
+version = "0.4.0"
 description = "Functional based library to support monads and other functional programming concepts"
 authors = ["Nicolas Nuñez <nicolas110996@gmail.com>"]
 maintainers = ["Nicolas Nuñez <nicolas110996@gmail.com>"]
