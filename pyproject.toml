@@ -19,12 +19,36 @@ packages = [
     { include = "pynction" }
 ]
 
+[tool.semantic_release]
+version_source = "tag"
+commit_version_number = true
+version_variable = [
+    "pynction/__init__.py:__version__",
+]
+version_toml = [
+    "pyproject.toml:tool.poetry.version"
+]
+branch = "main"
+upload_to_release = true
+upload_to_pypi = true
+build_command = "pip install poetry && poetry build"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+##################
+## Dependencies ##
+##################
+
 [tool.poetry.dependencies]
 python = "^3.7"
 
 [tool.poetry.group.dev.dependencies]
 black = "22.12.0"
 flake8 = "5.0.4"
+flake8-pyproject = "^1.2.2"
 flake8-commas = "2.1.0"
 flake8-comprehensions = "3.10.1"
 flake8-debugger = "4.1.2"
@@ -44,19 +68,17 @@ python-semantic-release = "^7.32.2"
 pdoc3 = "0.10.0"
 pre-commit = "2.17.0"
 
-[tool.semantic_release]
-version_source = "tag"
-commit_version_number = true
-version_variable = [
-    "pynction/__init__.py:__version__",
-]
-version_toml = [
-    "pyproject.toml:tool.poetry.version"
-]
-branch = "main"
-upload_to_release = true
-upload_to_pypi = true
-build_command = "pip install poetry && poetry build"
+##########################
+## Linters & Formatting ##
+##########################
+
+[tool.flake8]
+max-line-length = 120
+min_python_version = "3.7"
+exclude = ["env", ".venv", "venv"]
+max-complexity = 6
+# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+extend-ignore = ["E203"]
 
 [tool.mypy]
 python_version = 3.7
@@ -82,6 +104,10 @@ check_untyped_defs = true
 profile = "black"
 py_version = 37
 extend_skip = ["env", ".venv", "venv"]
+
+#############
+## Testing ##
+#############
 
 [tool.pytest.ini_options]
 minversion = "7.0.1"
@@ -113,7 +139,3 @@ omit =[
     "env/*",
     "venv/*",
 ]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

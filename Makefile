@@ -6,6 +6,8 @@ setup:  ## Initialize project dev dependencies
 	curl -sSL https://install.python-poetry.org | python3 -
 	poetry install
 	pre-commit install
+installdeps:  ## Install poetry dependencies
+	poetry install
 lockdeps:  ## Update poetry.lock
 	poetry lock
 format:  ## Format python files

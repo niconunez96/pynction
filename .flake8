@@ -1,7 +1,0 @@
-[flake8]
-max-line-length = 120
-min_python_version = 3.7
-exclude = env,.venv,venv
-max-complexity = 6
-# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
-extend-ignore = E203
