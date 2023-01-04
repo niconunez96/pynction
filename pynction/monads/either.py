@@ -81,7 +81,8 @@ class Either(abc.ABC, Generic[L, R]):
 
     @abc.abstractmethod
     def recover(
-        self, recovery_handler: Union[Callable[[L], R], Callable[[], R]]
+        self,
+        recovery_handler: Union[Callable[[L], R], Callable[[], R]],
     ) -> "Either[L, R]":
         """
         Calls `f` if the projected Either is a Left, or returns this if Right.
@@ -196,7 +197,8 @@ class Left(Either[L, Any]):
         return f(self._value)
 
     def recover(
-        self, recovery_handler: Union[Callable[[L], R], Callable[[], R]]
+        self,
+        recovery_handler: Union[Callable[[L], R], Callable[[], R]],
     ) -> Either[L, R]:
         if len(signature(recovery_handler).parameters) == 0:
             return Either.right(cast(Callable[[], R], recovery_handler)())

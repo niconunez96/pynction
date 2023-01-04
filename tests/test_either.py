@@ -64,7 +64,7 @@ class TestRight:
 
         example.run(on_right=on_right_function)
 
-        on_right_function.assert_called_once()
+        on_right_function.assert_called_once_with(20)
 
     def test_it_should_not_run_provided_function_when_call_on_left(self):
         on_right_function = Mock()
@@ -138,7 +138,7 @@ class TestLeft:
 
         example.run(on_left=on_left_function)
 
-        on_left_function.assert_called_once()
+        on_left_function.assert_called_once_with("boom!")
 
     def test_it_should_not_run_provided_function_when_call_on_right(self):
         on_left_function = Mock()
