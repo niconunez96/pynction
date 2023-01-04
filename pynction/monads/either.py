@@ -49,7 +49,7 @@ class Either(abc.ABC, Generic[L, R]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def map(self, f: Callable[[R], R1]) -> "Either[L, R1]":
+    def map(self, mapper: Callable[[R], R1]) -> "Either[L, R1]":
         """
         Applies `f` over the right value. If the instance is a `Left`
         the function `f` is ignored.
@@ -71,7 +71,7 @@ class Either(abc.ABC, Generic[L, R]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_or_else_get(self, f: Callable[[L], R]) -> R:
+    def get_or_else_get(self, provider: Callable[[L], R]) -> R:
         """
         It returns the right value if the instance is `Right`
         but if the instance is a `Left` it applies the `f` function and return
@@ -145,8 +145,8 @@ class Right(Either[Any, R]):
     def is_right(self) -> bool:
         return True
 
-    def map(self, f: Callable[[R], R1]) -> Either[L, R1]:
-        return Right(f(self._value))
+    def map(self, mapper: Callable[[R], R1]) -> Either[L, R1]:
+        return Right(mapper(self._value))
 
     def filter_or_else(
         self,
@@ -193,8 +193,8 @@ class Left(Either[L, Any]):
     def filter_or_else(self, _: Callable[[R], bool], _1: L) -> Either[L, R]:  # type: ignore
         return self
 
-    def get_or_else_get(self, f: Callable[[L], R]) -> R:
-        return f(self._value)
+    def get_or_else_get(self, provider: Callable[[L], R]) -> R:
+        return provider(self._value)
 
     def recover(
         self,
