@@ -13,6 +13,9 @@ lockdeps:  ## Update poetry.lock
 format:  ## Format python files
 	poetry run black .
 	poetry run isort .
+check-format:  ## Check isort and black format
+	poetry run black --check .
+	poetry run isort -c .
 test:  ## Run tests
 	poetry run pytest
 coverage:  ## Run coverage report
