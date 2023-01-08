@@ -74,6 +74,13 @@ class TestStream:
 
         assert less_than_ten.to_list() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+    def test_it_should_return_all_elements_when_all_elements_satisfies_condition(self):
+        example_stream = stream_of(range(1, 11))
+
+        less_than_ten = example_stream.take_while(lambda x: x < 30)
+
+        assert less_than_ten.to_list() == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
     def test_it_should_convert_elements_to_set(self):
         example_stream = stream(1, 1, 1, 1, 1, 1, 1, 2, 2, 2)
 
