@@ -11,6 +11,16 @@ class TestSuccess:
 
         assert result == 2
 
+    def test_map_should_return_failure_when_function_raises_exception(self):
+        def explode() -> int:
+            raise Exception("Boom!")
+
+        example = try_of(lambda: 1)
+
+        result = example.map(lambda value: explode())
+
+        assert str(result) == "Failure[Exception('Boom!')]"
+
     def test_it_should_return_value_when_ask_get_or_else_get(self):
         example = try_of(lambda: 1)
 
@@ -51,8 +61,39 @@ class TestSuccess:
 
         assert result.is_right is True
 
+    def test_flat_map_should_return_success_with_new_value(
+        self,
+    ):
+        example = try_of(lambda: 1)
+
+        result = example.flat_map(lambda value: try_of(lambda: value + 50))
+
+        assert str(result) == "Success[51]"
+
+    def test_flat_map_should_return_failure_when_function_provided_throw_exception(
+        self,
+    ):
+        example = try_of(lambda: 1)
+
+        def explode():
+            raise ValueError("Boom")
+
+        result = example.flat_map(lambda value: try_of(explode))
+
+        assert str(result) == "Failure[ValueError('Boom')]"
+
 
 class TestFailure:
+    def test_flat_map_should_return_failure_when_applied_to_failure(self):
+        def explode() -> int:
+            raise ValueError("Boom")
+
+        example = try_of(explode)
+
+        result = example.flat_map(lambda value: try_of(lambda: value + 100))
+
+        assert str(result) == "Failure[ValueError('Boom')]"
+
     def test_it_should_return_default_value_provided(self):
         def f():
             raise Exception("Boom")
@@ -78,7 +119,20 @@ class TestFailure:
         on_failure.assert_called_once_with(error)
         on_success.assert_not_called()
 
-    def test_it_should_execute_catch_statement(self):
+    def test_it_should_return_success_after_recover_from_exception(self):
+        def f() -> int:
+            raise Exception("Boom")
+
+        def recover() -> int:
+            raise ValueError("🤯")
+
+        example = try_of(f)
+
+        result = example.catch(lambda exc: recover())
+
+        assert str(result) == "Failure[ValueError('🤯')]"
+
+    def test_it_should_return_failure_if_recover_function_raise_exception(self):
         def f():
             raise Exception("Boom")
 

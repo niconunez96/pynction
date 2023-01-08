@@ -81,15 +81,23 @@ class TestJust:
 
         mock_function.assert_called_once()
 
-    def test_it_should_execute_on_just_when_call_run(self):
-        mock_on_just_function = Mock()
+    def test_it_should_not_execute_on_empty_when_call_run(self):
+        mock_on_just_function = None
         mock_on_empty_function = Mock()
         foo = maybe(5)
 
         foo.run(on_just=mock_on_just_function, on_empty=mock_on_empty_function)
 
-        mock_on_just_function.assert_called_once()
         mock_on_empty_function.assert_not_called()
+
+    def test_it_should_execute_on_just_when_call_run(self):
+        mock_on_just_function = Mock()
+        mock_on_empty_function = None
+        foo = maybe(5)
+
+        foo.run(on_just=mock_on_just_function, on_empty=mock_on_empty_function)
+
+        mock_on_just_function.assert_called_once()
 
 
 class TestNothing:

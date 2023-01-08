@@ -139,7 +139,7 @@ class TestLeft:
 
     def test_it_should_run_provided_function_when_call_run(self):
         on_left_function = Mock()
-        on_right_function = Mock()
+        on_right_function = None
         example: Either[str, int] = left("boom!")
 
         example.run(
@@ -148,6 +148,17 @@ class TestLeft:
         )
 
         on_left_function.assert_called_once_with("boom!")
+
+    def test_it_should_not_call_on_right_function_when_call_run(self):
+        on_left_function = None
+        on_right_function = Mock()
+        example: Either[str, int] = left("boom!")
+
+        example.run(
+            on_left=on_left_function,
+            on_right=on_right_function,
+        )
+
         on_right_function.assert_not_called()
 
     def test_it_should_not_run_provided_function_when_call_on_right(self):
