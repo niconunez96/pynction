@@ -11,6 +11,16 @@ class TestSuccess:
 
         assert result == 2
 
+    def test_map_should_return_failure_when_function_throws_exception(self):
+        def explode() -> int:
+            raise Exception("Boom!")
+
+        example = try_of(lambda: 1)
+
+        result = example.map(lambda value: explode())
+
+        assert str(result) == "Failure[Exception('Boom!')]"
+
     def test_it_should_return_value_when_ask_get_or_else_get(self):
         example = try_of(lambda: 1)
 
