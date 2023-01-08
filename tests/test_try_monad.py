@@ -51,8 +51,39 @@ class TestSuccess:
 
         assert result.is_right is True
 
+    def test_flat_map_should_return_success_with_new_value(
+        self,
+    ):
+        example = try_of(lambda: 1)
+
+        result = example.flat_map(lambda value: try_of(lambda: value + 50))
+
+        assert str(result) == "Success[51]"
+
+    def test_flat_map_should_return_failure_when_function_provided_throw_exception(
+        self,
+    ):
+        example = try_of(lambda: 1)
+
+        def explode():
+            raise ValueError("Boom")
+
+        result = example.flat_map(lambda value: try_of(explode))
+
+        assert str(result) == "Failure[ValueError('Boom')]"
+
 
 class TestFailure:
+    def test_flat_map_should_return_failure_when_applied_to_failure(self):
+        def explode() -> int:
+            raise ValueError("Boom")
+
+        example = try_of(explode)
+
+        result = example.flat_map(lambda value: try_of(lambda: value + 100))
+
+        assert str(result) == "Failure[ValueError('Boom')]"
+
     def test_it_should_return_default_value_provided(self):
         def f():
             raise Exception("Boom")

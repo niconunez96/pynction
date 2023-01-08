@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from pynction.monads.either import Either, Left, Right
 
@@ -162,8 +162,11 @@ class Try(ABC, Generic[T]):
 
 
 @dataclass(frozen=True)
-class Failure(Try[Any]):
+class Failure(Try[T]):
     _e: Exception
+
+    def __str__(self) -> str:
+        return f"Failure[{self._e.__class__.__name__}('{self._e}')]"
 
     def map(self, _: Callable[[T], S]) -> "Try[S]":
         return Failure(self._e)
@@ -196,6 +199,9 @@ class Failure(Try[Any]):
 @dataclass(frozen=True)
 class Success(Try[T]):
     _value: T
+
+    def __str__(self) -> str:
+        return f"Success[{self._value}]"
 
     def map(self, f: Callable[[T], S]) -> "Try[S]":
         try:
