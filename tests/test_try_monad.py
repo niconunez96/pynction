@@ -11,7 +11,7 @@ class TestSuccess:
 
         assert result == 2
 
-    def test_map_should_return_failure_when_function_throws_exception(self):
+    def test_map_should_return_failure_when_function_raises_exception(self):
         def explode() -> int:
             raise Exception("Boom!")
 
@@ -119,7 +119,20 @@ class TestFailure:
         on_failure.assert_called_once_with(error)
         on_success.assert_not_called()
 
-    def test_it_should_execute_catch_statement(self):
+    def test_it_should_return_success_after_recover_from_exception(self):
+        def f() -> int:
+            raise Exception("Boom")
+
+        def recover() -> int:
+            raise ValueError("🤯")
+
+        example = try_of(f)
+
+        result = example.catch(lambda exc: recover())
+
+        assert str(result) == "Failure[ValueError('🤯')]"
+
+    def test_it_should_return_failure_if_recover_function_raise_exception(self):
         def f():
             raise Exception("Boom")
 
