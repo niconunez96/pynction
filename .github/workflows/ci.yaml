@@ -28,13 +28,13 @@ jobs:
         python_version: ["3.7", "3.8", "3.9", "3.10"]
     uses: ./.github/workflows/python_job.yaml
     with:
-      command: pytest tests
+      command: make test
       python_version: ${{ matrix.python_version }}
   send_coverage:
     name: Send test coverage 😎
     needs: [test]
     uses: ./.github/workflows/python_job.yaml
     with:
-      command: coverage run -m pytest tests && coverage xml
+      command: make coverage-xml
       python_version: "3.7"
       send_coverage: true

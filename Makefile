@@ -18,3 +18,6 @@ test:  ## Run tests
 coverage:  ## Run coverage report
 	poetry run coverage run
 	poetry run coverage report
+coverage-xml:  ## Run coverage report
+	poetry run coverage run
+	poetry run coverage xml
