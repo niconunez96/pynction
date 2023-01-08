@@ -22,4 +22,5 @@ jobs:
             chore
             docs
             ci
+            refactor
           requireScope: false
