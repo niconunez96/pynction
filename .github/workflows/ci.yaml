@@ -8,6 +8,12 @@ on:
       - "!invoke-release-main-**"
       - "*"
 jobs:
+  code_format_validation:
+    name: Code format validation (isort, black) 💅
+    uses: ./.github/workflows/python_job.yaml
+    with:
+      command: make check-format
+      python_version: "3.7"
   mypy_validation:
     name: MyPy validation 🤖
     uses: ./.github/workflows/python_job.yaml
@@ -15,7 +21,7 @@ jobs:
       command: mypy .
       python_version: "3.7"
   flake8_validation:
-    name: Flake8 validation 💅
+    name: Flake8 validation 🐍
     uses: ./.github/workflows/python_job.yaml
     with:
       command: flake8
@@ -28,13 +34,13 @@ jobs:
         python_version: ["3.7", "3.8", "3.9", "3.10"]
     uses: ./.github/workflows/python_job.yaml
     with:
-      command: pytest tests
+      command: make test
       python_version: ${{ matrix.python_version }}
   send_coverage:
     name: Send test coverage 😎
     needs: [test]
     uses: ./.github/workflows/python_job.yaml
     with:
-      command: coverage run -m pytest tests && coverage xml
+      command: make coverage-xml
       python_version: "3.7"
       send_coverage: true

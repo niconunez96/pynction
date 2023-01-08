@@ -19,31 +19,6 @@ packages = [
     { include = "pynction" }
 ]
 
-[tool.poetry.dependencies]
-python = "^3.7"
-
-[tool.poetry.group.dev.dependencies]
-black = "22.12.0"
-flake8 = "5.0.4"
-flake8-commas = "2.1.0"
-flake8-comprehensions = "3.10.1"
-flake8-debugger = "4.1.2"
-flake8-isort = "4.2.0"
-flake8-string-format = "0.3.0"
-flake8-bandit = "4.1.1"
-isort = "5.10.1"
-mypy = "0.991"
-pep8-naming = "0.13.3"
-
-[tool.poetry.group.test.dependencies]
-coverage = "6.3.2"
-pytest = "7.0.1"
-
-[tool.poetry.group.tooling.dependencies]
-python-semantic-release = "^7.32.2"
-pdoc3 = "0.10.0"
-pre-commit = "2.17.0"
-
 [tool.semantic_release]
 version_source = "tag"
 commit_version_number = true
@@ -57,6 +32,53 @@ branch = "main"
 upload_to_release = true
 upload_to_pypi = true
 build_command = "pip install poetry && poetry build"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+##################
+## Dependencies ##
+##################
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.group.dev.dependencies]
+black = "22.12.0"
+flake8 = "5.0.4"
+flake8-pyproject = "^1.2.2"
+flake8-commas = "2.1.0"
+flake8-comprehensions = "3.10.1"
+flake8-debugger = "4.1.2"
+flake8-isort = "4.2.0"
+flake8-string-format = "0.3.0"
+flake8-bandit = "4.1.1"
+isort = "5.10.1"
+mypy = "0.991"
+pep8-naming = "0.13.3"
+
+[tool.poetry.group.test.dependencies]
+coverage = {extras = ["toml"], version = "^7.0.3"}
+pytest = "7.0.1"
+
+[tool.poetry.group.tooling.dependencies]
+python-semantic-release = "^7.32.2"
+pdoc3 = "0.10.0"
+pre-commit = "2.17.0"
+
+##########################
+## Linters & Formatting ##
+##########################
+
+[tool.flake8]
+max-line-length = 120
+min_python_version = "3.7"
+exclude = ["env", ".venv", "venv"]
+max-complexity = 6
+# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+extend-ignore = ["E203"]
 
 [tool.mypy]
 python_version = 3.7
@@ -81,8 +103,39 @@ check_untyped_defs = true
 [tool.isort]
 profile = "black"
 py_version = 37
-extend_skip = ["env"]
+extend_skip = ["env", ".venv", "venv"]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+#############
+## Testing ##
+#############
+
+[tool.pytest.ini_options]
+minversion = "7.0.1"
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest"
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_lines =[
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+omit =[
+    "tests/*",
+    "performance_test.py",
+    ".venv/*",
+    "env/*",
+    "venv/*",
+]
