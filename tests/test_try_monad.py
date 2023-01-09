@@ -7,11 +7,18 @@ class TestSuccess:
     def test_it_should_transform_content_of_success(self):
         example = try_of(lambda: 1)
 
+        result = example.map(lambda s: s + 1)
+
+        assert str(result) == "Success[2]"
+
+    def test_it_should_return_success_value_when_unpack_it(self):
+        example = try_of(lambda: 1)
+
         result = example.map(lambda s: s + 1).get_or_else_get(lambda _: 0)
 
         assert result == 2
 
-    def test_map_should_return_failure_when_function_raises_exception(self):
+    def test_it_should_return_failure_when_function_raises_exception(self):
         def explode() -> int:
             raise Exception("Boom!")
 
@@ -21,22 +28,23 @@ class TestSuccess:
 
         assert str(result) == "Failure[Exception('Boom!')]"
 
-    def test_it_should_return_value_when_ask_get_or_else_get(self):
-        example = try_of(lambda: 1)
-
-        result = example.get_or_else_get(lambda _: 0)
-
-        assert result == 1
-
-    def test_it_should_execute_on_success_callback(self):
-        on_success = Mock()
+    def test_it_should_ignore_on_failure_consumer(self):
+        on_success = None
         on_failure = Mock()
         example = try_of(lambda: 1)
 
-        example.on(on_success, on_failure)
+        example.run(on_success, on_failure)
+
+        on_failure.assert_not_called()
+
+    def test_it_should_execute_on_success_consumer(self):
+        on_success = Mock()
+        on_failure = None
+        example = try_of(lambda: 1)
+
+        example.run(on_success, on_failure)
 
         on_success.assert_called_once_with(1)
-        on_failure.assert_not_called()
 
     def test_it_should_ignore_catch_statement(self):
         catch_function = Mock()
@@ -60,6 +68,7 @@ class TestSuccess:
         result = example.to_either()
 
         assert result.is_right is True
+        assert str(result) == "Right[1]"
 
     def test_flat_map_should_return_success_with_new_value(
         self,
@@ -96,16 +105,23 @@ class TestFailure:
 
     def test_it_should_return_default_value_provided(self):
         def f():
-            raise Exception("Boom")
+            raise IOError("Boom")
+
+        def exc_handler(e: Exception) -> int:
+            if isinstance(e, ValueError):
+                return 10
+            elif isinstance(e, IOError):
+                return 20
+            return 30
 
         example = try_of(f)
 
-        result = example.map(lambda s: s + 1).get_or_else_get(lambda _: 0)
+        result = example.map(lambda s: s + 1).get_or_else_get(exc_handler)
 
-        assert result == 0
+        assert result == 20
 
-    def test_it_should_execute_on_failure_callback(self):
-        on_success = Mock()
+    def test_it_should_execute_on_failure_consumer(self):
+        on_success = None
         on_failure = Mock()
         error = Exception("Boom")
 
@@ -114,12 +130,25 @@ class TestFailure:
 
         example = try_of(f)
 
-        example.on(on_success, on_failure)
+        example.run(on_success, on_failure)
 
         on_failure.assert_called_once_with(error)
+
+    def test_it_should_ignore_on_success_consumer(self):
+        on_success = Mock()
+        on_failure = None
+        error = Exception("Boom")
+
+        def f():
+            raise error
+
+        example = try_of(f)
+
+        example.run(on_success, on_failure)
+
         on_success.assert_not_called()
 
-    def test_it_should_return_success_after_recover_from_exception(self):
+    def test_it_should_return_failure_if_recover_function_raise_exception(self):
         def f() -> int:
             raise Exception("Boom")
 
@@ -132,7 +161,7 @@ class TestFailure:
 
         assert str(result) == "Failure[ValueError('🤯')]"
 
-    def test_it_should_return_failure_if_recover_function_raise_exception(self):
+    def test_it_should_return_success_after_recover_from_exception(self):
         def f():
             raise Exception("Boom")
 
@@ -163,3 +192,4 @@ class TestFailure:
         result = example.to_either()
 
         assert result.is_left is True
+        assert str(result) == "Left[Boom]"

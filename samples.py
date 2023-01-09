@@ -133,9 +133,9 @@ try_example_2 = try_of(lambda: add_10(11)).map(lambda a: a + 1)
 try_example_3 = try_of(lambda: add_10(9)).map(lambda a: a + 1)
 
 print("*** Try samples ***")
-try_example.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
-try_example_2.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
-try_example_3.on(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
+try_example.run(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
+try_example_2.run(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
+try_example_3.run(lambda a: print(f"Result: {a}"), lambda e: print(f"Error: {e}"))
 
 
 print("*** Do notation with maybe ***")
