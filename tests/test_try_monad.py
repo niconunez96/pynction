@@ -33,7 +33,7 @@ class TestSuccess:
         on_failure = Mock()
         example = try_of(lambda: 1)
 
-        example.on(on_success, on_failure)
+        example.run(on_success, on_failure)
 
         on_success.assert_called_once_with(1)
         on_failure.assert_not_called()
@@ -114,7 +114,7 @@ class TestFailure:
 
         example = try_of(f)
 
-        example.on(on_success, on_failure)
+        example.run(on_success, on_failure)
 
         on_failure.assert_called_once_with(error)
         on_success.assert_not_called()

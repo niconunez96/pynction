@@ -76,11 +76,24 @@ class Try(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def on(
+    def on_success(self, consumer: Callable[[T], None]) -> "Try[T]":
+        """
+        Calls `consumer` if the projected `Try` is a `Success`.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def on_failure(self, consumer: Callable[[Exception], None]) -> "Try[T]":
+        """
+        Calls `consumer` if the projected `Try` is a `Failure`.
+        """
+        raise NotImplementedError
+
+    def run(
         self,
         on_success: Callable[[T], None] = None,
         on_failure: Callable[[Exception], None] = None,
-    ) -> "Try[T]":
+    ) -> None:
         """
         Applies:
         * `on_success` if it's a `Success` instance
@@ -98,7 +111,10 @@ class Try(ABC, Generic[T]):
         try_of(boom).on(on_failure=lambda err: print(str(err)))  # prints "BOOM"
         ```
         """
-        raise NotImplementedError
+        if on_success:
+            self.on_success(on_success)
+        if on_failure:
+            self.on_failure(on_failure)
 
     @abstractmethod
     def catch(self, f: Callable[[Exception], T]) -> "Try[T]":
@@ -177,13 +193,11 @@ class Failure(Try[T]):
     def get_or_else_get(self, default: Callable[[Exception], T]) -> T:
         return default(self._e)
 
-    def on(
-        self,
-        _: Callable[[T], None] = None,
-        on_failure: Callable[[Exception], None] = None,
-    ) -> "Try[T]":
-        if on_failure:
-            on_failure(self._e)
+    def on_success(self, _: Callable[[T], None]) -> Try[T]:
+        return self
+
+    def on_failure(self, consumer: Callable[[Exception], None]) -> Try[T]:
+        consumer(self._e)
         return self
 
     def catch(self, f: Callable[[Exception], T]) -> Try[T]:
@@ -218,13 +232,11 @@ class Success(Try[T]):
     def get_or_else_get(self, _: Callable[[Exception], T]) -> T:
         return self._value
 
-    def on(
-        self,
-        on_success: Callable[[T], None] = None,
-        _: Callable[[Exception], None] = None,
-    ) -> Try[T]:
-        if on_success:
-            on_success(self._value)
+    def on_success(self, consumer: Callable[[T], None]) -> Try[T]:
+        consumer(self._value)
+        return self
+
+    def on_failure(self, _: Callable[[Exception], None]) -> Try[T]:
         return self
 
     def catch(self, _: Callable[[Exception], T]) -> Try[T]:
