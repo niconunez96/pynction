@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2023-01-09)
+### Fix
+* Refactor try monad ([#54](https://github.com/niconunez96/pynction/issues/54)) ([`867296e`](https://github.com/niconunez96/pynction/commit/867296ee9b03a85e5158b453f190c1af269d12de))
+
+### Documentation
+* Create CODE_OF_CONDUCT.md ([#53](https://github.com/niconunez96/pynction/issues/53)) ([`23cddce`](https://github.com/niconunez96/pynction/commit/23cddcec01d4a5dfbc04d8657e8d2c5bc4b563a4))
+
 ## v0.4.0 (2023-01-04)
 ### Feature
 * Add either methods ([#50](https://github.com/niconunez96/pynction/issues/50)) ([`6f3e8be`](https://github.com/niconunez96/pynction/commit/6f3e8bea99c21b0a72ed864d51b95a659049b0c0))

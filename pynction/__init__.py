@@ -35,4 +35,4 @@ pynction2 = Function2.decorator
 pynction3 = Function3.decorator
 pynction4 = Function4.decorator
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
