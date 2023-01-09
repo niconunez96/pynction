@@ -168,10 +168,10 @@ class Failure(Try[T]):
     def __str__(self) -> str:
         return f"Failure[{self._e.__class__.__name__}('{self._e}')]"
 
-    def map(self, _: Callable[[T], S]) -> "Try[S]":
+    def map(self, _: Callable[[T], S]) -> Try[S]:
         return Failure(self._e)
 
-    def flat_map(self, _: Callable[[T], "Try[S]"]) -> "Try[S]":
+    def flat_map(self, _: Callable[[T], Try[S]]) -> Try[S]:
         return Failure(self._e)
 
     def get_or_else_get(self, default: Callable[[Exception], T]) -> T:
@@ -186,7 +186,7 @@ class Failure(Try[T]):
             on_failure(self._e)
         return self
 
-    def catch(self, f: Callable[[Exception], T]) -> "Try[T]":
+    def catch(self, f: Callable[[Exception], T]) -> Try[T]:
         try:
             return Success(f(self._e))
         except Exception as e:
@@ -203,13 +203,13 @@ class Success(Try[T]):
     def __str__(self) -> str:
         return f"Success[{self._value}]"
 
-    def map(self, f: Callable[[T], S]) -> "Try[S]":
+    def map(self, f: Callable[[T], S]) -> Try[S]:
         try:
             return Success(f(self._value))
         except Exception as e:
             return Failure(e)
 
-    def flat_map(self, f: Callable[[T], "Try[S]"]) -> "Try[S]":
+    def flat_map(self, f: Callable[[T], Try[S]]) -> Try[S]:
         try:
             return f(self._value)
         except Exception as e:
@@ -222,12 +222,12 @@ class Success(Try[T]):
         self,
         on_success: Callable[[T], None] = None,
         _: Callable[[Exception], None] = None,
-    ) -> "Try[T]":
+    ) -> Try[T]:
         if on_success:
             on_success(self._value)
         return self
 
-    def catch(self, _: Callable[[Exception], T]) -> "Try[T]":
+    def catch(self, _: Callable[[Exception], T]) -> Try[T]:
         return self
 
     def to_either(self) -> Either[Exception, T]:
